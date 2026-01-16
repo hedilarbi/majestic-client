@@ -124,13 +124,15 @@ export default function SiteHeader() {
                 onClick={(event) => event.stopPropagation()}
               >
                 <div className="mb-8 flex items-center justify-between">
-                  <Image
-                    src="/images/logo_light.png"
-                    alt="Lumière Cinéma"
-                    width={120}
-                    height={32}
-                    className="h-10 w-auto"
-                  />
+                  <Link href="/" onClick={() => setIsMenuOpen(false)}>
+                    <Image
+                      src="/images/logo_light.png"
+                      alt="Lumière Cinéma"
+                      width={120}
+                      height={32}
+                      className="h-10 w-auto"
+                    />
+                  </Link>
                   <button
                     className="rounded-full border border-white/20 p-2 text-white/70 transition hover:text-white"
                     type="button"
