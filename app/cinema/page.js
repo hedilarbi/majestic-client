@@ -216,9 +216,9 @@ export default async function CinemaPage({ searchParams }) {
                   </p>
                 </div>
                 <div className="space-y-3">
-                  <p className="text-sm font-medium uppercase tracking-wider text-white/40 font-body">
+                  {/* <p className="text-sm font-medium uppercase tracking-wider text-white/40 font-body">
                     Séances disponibles
-                  </p>
+                  </p> */}
                   <TrailerModalButton
                     trailerLink={event.trailerLink}
                     title={event.title}

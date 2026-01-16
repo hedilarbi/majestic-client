@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { MdArrowBack, MdArrowForward } from "react-icons/md";
 
 export default function SpectacleSection({ items = [] }) {
@@ -34,9 +35,11 @@ export default function SpectacleSection({ items = [] }) {
         </div>
         <div className="hide-scrollbar flex snap-x snap-mandatory gap-6 overflow-x-auto pb-8">
           {items.map((show) => (
-            <article
+            <Link
               key={show.id ?? show.title}
+              href={`/evenements/${show.id}`}
               className="group relative flex-none w-[280px] snap-start overflow-hidden rounded-xl aspect-[2/3] cursor-pointer transition-all duration-300 hover:-translate-y-2"
+              aria-label={`Voir ${show.title}`}
             >
               <Image
                 src={show.image}
@@ -58,12 +61,12 @@ export default function SpectacleSection({ items = [] }) {
                     {show.meta}
                   </p>
                 </div>
-                <button className="flex w-full translate-y-4 items-center justify-center gap-2 rounded-lg bg-primary py-3 text-sm font-semibold text-white opacity-0 shadow-lg shadow-primary/20 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
+                <span className="flex w-full translate-y-4 items-center justify-center gap-2 rounded-lg bg-primary py-3 text-sm font-semibold text-white opacity-0 shadow-lg shadow-primary/20 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
                   Réserver
                   <MdArrowForward className="h-4 w-4" />
-                </button>
+                </span>
               </div>
-            </article>
+            </Link>
           ))}
         </div>
       </div>

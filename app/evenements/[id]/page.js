@@ -25,6 +25,21 @@ const formatAgeRestriction = (value) => {
   return `-${label}`;
 };
 
+const parseDateValue = (value) => {
+  if (!value) return null;
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return null;
+  return date;
+};
+
+const isWithinAvailability = (fromDate, toDate) => {
+  if (!fromDate && !toDate) return true;
+  const now = new Date();
+  if (fromDate && now < fromDate) return false;
+  if (toDate && now > toDate) return false;
+  return true;
+};
+
 export default async function EvenementPage({ params }) {
   const { id } = await params;
   const { event, sessions } = await getEventSessions(id);
@@ -41,6 +56,12 @@ export default async function EvenementPage({ params }) {
   const directorLabel = event.directedBy || "À confirmer";
   const castLabel = event.cast?.length ? event.cast.join(", ") : "À confirmer";
   const trailerLink = event.trailerLink || "";
+  const availableFromDate = parseDateValue(event.availableFrom);
+  const availableToDate = parseDateValue(event.availableTo);
+  const isAvailableNow = isWithinAvailability(
+    availableFromDate,
+    availableToDate
+  );
 
   return (
     <div className="min-h-screen bg-black text-white">
@@ -88,6 +109,11 @@ export default async function EvenementPage({ params }) {
                     {event.name}
                   </h1>
                   <div className="mb-6 flex flex-wrap items-center justify-center gap-3 md:justify-start font-display">
+                    {!isAvailableNow ? (
+                      <span className="rounded border border-accent/40 bg-accent/10 px-3 py-1 text-xs text-accent">
+                        Prochainement
+                      </span>
+                    ) : null}
                     {ageRestrictionLabel ? (
                       <span className="rounded border border-white/5 bg-white/10 px-3 py-1 text-xs text-white">
                         {ageRestrictionLabel}
@@ -143,7 +169,7 @@ export default async function EvenementPage({ params }) {
           </div>
         </section>
 
-        <SessionSelector sessions={sessions} />
+        {isAvailableNow ? <SessionSelector sessions={sessions} /> : null}
       </main>
     </div>
   );

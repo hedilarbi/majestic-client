@@ -1,8 +1,7 @@
 import HeroSection from "./components/HeroSection";
 import NowShowingSection from "./components/NowShowingSection";
 import SpectacleSection from "./components/SpectacleSection";
-import SiteFooter from "./components/SiteFooter";
-import SiteHeader from "./components/SiteHeader";
+
 import UpcomingSection from "./components/UpcomingSection";
 import { getHomeData } from "./lib/home-api";
 

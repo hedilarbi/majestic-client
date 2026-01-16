@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { MdPlayArrow } from "react-icons/md";
 
 export default function UpcomingSection({ items = [] }) {
@@ -13,9 +14,11 @@ export default function UpcomingSection({ items = [] }) {
         </h2>
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           {items.map((movie) => (
-            <article
+            <Link
               key={movie.id ?? movie.title}
+              href={`/evenements/${movie.id}`}
               className="group relative aspect-video cursor-pointer overflow-hidden rounded-xl"
+              aria-label={`Voir ${movie.title}`}
             >
               <Image
                 src={movie.image}
@@ -41,7 +44,7 @@ export default function UpcomingSection({ items = [] }) {
                   {movie.description}
                 </p>
               </div>
-            </article>
+            </Link>
           ))}
         </div>
       </div>

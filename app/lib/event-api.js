@@ -22,6 +22,9 @@ const normalizeEvent = (event) => {
     trailerLink: event.trailerLink || "",
     directedBy: event.directedBy || "",
     cast: Array.isArray(event.cast) ? event.cast : [],
+    createdAt: event.createdAt || null,
+    availableFrom: event.availableFrom || null,
+    availableTo: event.availableTo || null,
   };
 };
 

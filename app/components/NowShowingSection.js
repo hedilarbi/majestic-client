@@ -54,11 +54,13 @@ export default function NowShowingSection({ items = [], showCta = true }) {
                       className="object-cover transition-transform duration-500 group-hover:scale-110"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-80 transition-opacity group-hover:opacity-60" />
-                    <div
-                      className={`absolute right-2 top-2 rounded px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider shadow-md font-display ${badgeClass}`}
-                    >
-                      {movie.badge}
-                    </div>
+                    {movie.badge ? (
+                      <div
+                        className={`absolute right-2 top-2 rounded px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider shadow-md font-display ${badgeClass}`}
+                      >
+                        {movie.badge}
+                      </div>
+                    ) : null}
                   </div>
                   <div className="mt-3">
                     <h3 className="text-lg font-semibold leading-tight text-white transition-colors group-hover:text-accent font-display">
@@ -75,10 +77,13 @@ export default function NowShowingSection({ items = [], showCta = true }) {
         </div>
         {showCta ? (
           <div className="mt-10 flex justify-center">
-            <button className="group flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.2em] text-white/50 transition-colors hover:text-white font-display">
+            <Link
+              className="group flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.2em] text-white/50 transition-colors hover:text-white font-display"
+              href="/cinema"
+            >
               Voir tout le programme
               <MdArrowForward className="h-5 w-5 transition-transform group-hover:translate-x-1" />
-            </button>
+            </Link>
           </div>
         ) : null}
       </div>

@@ -1,7 +1,25 @@
 import Image from "next/image";
 import Link from "next/link";
 import GenreFilter from "../components/GenreFilter";
+import TrailerModalButton from "../components/TrailerModalButton";
 import { getEventsWithALaffiche } from "../lib/events-api";
+
+const MOVIE_GENRES = [
+  "Action",
+  "Aventure",
+  "Science-fiction",
+  "Thriller",
+  "Drame",
+  "Horreur",
+  "Romance",
+  "Fantastique",
+  "Crime",
+  "Animation",
+  "Comedie",
+  "Famille",
+  "Musical",
+  "Historique",
+];
 
 export default async function EvenementsPage({ searchParams }) {
   const resolvedParams = await searchParams;
@@ -10,11 +28,14 @@ export default async function EvenementsPage({ searchParams }) {
     typeof resolvedParams?.genre === "string"
       ? resolvedParams.genre
       : undefined;
-  const [{ events, aLaffiche }, allEventsResponse] = await Promise.all([
-    getEventsWithALaffiche({ type, genre }),
-    genre ? getEventsWithALaffiche({ type }) : Promise.resolve(null),
-  ]);
+  const [{ events, aLaffiche, showTypes }, allEventsResponse] =
+    await Promise.all([
+      getEventsWithALaffiche({ type, genre }),
+      genre ? getEventsWithALaffiche({ type }) : Promise.resolve(null),
+    ]);
+
   const allEvents = allEventsResponse?.events ?? events;
+  const allShowTypes = allEventsResponse?.showTypes ?? showTypes ?? [];
   const heroEntry = aLaffiche?.[0];
   const heroEvent = heroEntry?.event || events?.[0];
   const heroImage = heroEntry?.poster || heroEvent?.image;
@@ -24,12 +45,11 @@ export default async function EvenementsPage({ searchParams }) {
     "Découvrez les plus grands films et expériences cinéma du moment.";
   const heroMeta = heroEvent?.meta || "Expérience cinéma premium";
   const heroEventId = heroEvent?.id;
+  const heroTrailerLink = heroEvent?.trailerLink || "";
   const countLabel = type === "show" ? "spectacles" : "films";
   const ctaLabel =
     type === "show" ? "VOIR PLUS DE SPECTACLES" : "VOIR PLUS DE FILMS";
-  const genres = Array.from(
-    new Set(allEvents.flatMap((event) => event.genres || []).filter(Boolean))
-  );
+  const genres = type === "show" ? allShowTypes : MOVIE_GENRES;
 
   return (
     <main className="flex min-h-screen flex-col items-center bg-black text-white">
@@ -72,16 +92,12 @@ export default async function EvenementsPage({ searchParams }) {
               >
                 Réserver
               </Link>
-              <Link
+              <TrailerModalButton
+                trailerLink={heroTrailerLink}
+                title={heroTitle}
+                label="Bande-annonce"
                 className="flex h-12 items-center gap-2 rounded-lg border border-white/10 bg-white/10 px-6 text-base font-semibold text-white transition-all hover:-translate-y-0.5 hover:bg-white/20 font-display"
-                href={
-                  heroEventId
-                    ? `/evenements/${heroEventId}`
-                    : `/evenements?type=${type}`
-                }
-              >
-                Bande-annonce
-              </Link>
+              />
             </div>
           </div>
         </div>

@@ -35,10 +35,13 @@ const normalizeEvent = (event) => {
     title: event.name || "Événement",
     description: event.description || "",
     image: event.poster || FALLBACK_POSTER,
-    imageAlt: event.name ? `Affiche de ${event.name}` : "Affiche de l'événement",
+    imageAlt: event.name
+      ? `Affiche de ${event.name}`
+      : "Affiche de l'événement",
     meta: buildMetaLine(genreLabel, durationLabel),
     genres: Array.isArray(event.genres) ? event.genres : [],
     duration: Number.isFinite(event.duration) ? event.duration : null,
+    trailerLink: event.trailerLink || "",
   };
 };
 
@@ -55,10 +58,7 @@ const normalizeALaffiche = (entries = []) =>
     })
     .filter(Boolean);
 
-export async function getEventsWithALaffiche({
-  type = "movie",
-  genre,
-} = {}) {
+export async function getEventsWithALaffiche({ type = "movie", genre } = {}) {
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), 8000);
 
@@ -70,7 +70,10 @@ export async function getEventsWithALaffiche({
     const response = await fetch(url, {
       method: "GET",
       headers: { Accept: "application/json" },
-      next: { revalidate: REVALIDATE_SECONDS, tags: [`events-${type || "all"}`] },
+      next: {
+        revalidate: REVALIDATE_SECONDS,
+        tags: [`events-${type || "all"}`],
+      },
       signal: controller.signal,
     });
 
@@ -83,11 +86,16 @@ export async function getEventsWithALaffiche({
       ? payload.events.map(normalizeEvent).filter(Boolean)
       : [];
     const aLaffiche = normalizeALaffiche(payload.aLaffiche || []);
+    const showTypes = Array.isArray(payload.showTypes)
+      ? payload.showTypes
+          .map((entry) => entry?.name || entry)
+          .filter(Boolean)
+      : [];
 
-    return { events, aLaffiche };
+    return { events, aLaffiche, showTypes };
   } catch (error) {
     console.error("Events fetch failed:", error);
-    return { events: [], aLaffiche: [] };
+    return { events: [], aLaffiche: [], showTypes: [] };
   } finally {
     clearTimeout(timeoutId);
   }

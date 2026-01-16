@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import {
   MdArrowBack,
   MdArrowForward,
@@ -15,8 +16,7 @@ const AUTOPLAY_DELAY = 7000;
 export default function HeroSection({ slides = [] }) {
   const [activeIndex, setActiveIndex] = useState(0);
   const slideCount = slides.length;
-  const safeIndex =
-    slideCount > 0 ? Math.min(activeIndex, slideCount - 1) : 0;
+  const safeIndex = slideCount > 0 ? Math.min(activeIndex, slideCount - 1) : 0;
 
   useEffect(() => {
     if (slideCount <= 1) return;
@@ -68,17 +68,24 @@ export default function HeroSection({ slides = [] }) {
                     {slide.subtitle}
                   </p>
                   <div className="flex flex-wrap gap-4 pt-4">
-                    <button className="group relative overflow-hidden rounded-lg bg-primary px-8 py-4 text-white transition-all hover:scale-105 active:scale-95 shadow-[0_0_20px_rgba(16,52,166,0.4)]">
+                    <Link
+                      className="group relative overflow-hidden rounded-lg bg-primary px-8 py-4 text-white transition-all hover:scale-105 active:scale-95 shadow-[0_0_20px_rgba(16,52,166,0.4)]"
+                      href={
+                        slide.eventId
+                          ? `/evenements/${slide.eventId}`
+                          : "/evenements"
+                      }
+                    >
                       <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent group-hover:animate-[shimmer_1s_infinite]" />
                       <span className="relative flex items-center gap-2 tracking-wide font-display">
                         {heroCtas.primary}
                         <MdConfirmationNumber className="h-5 w-5" />
                       </span>
-                    </button>
-                    <button className="neon-border flex items-center gap-2 rounded-lg border border-white/20 bg-transparent px-8 py-4 text-white transition-all hover:border-accent hover:bg-primary/10 hover:text-accent font-display">
+                    </Link>
+                    {/* <button className="neon-border flex items-center gap-2 rounded-lg border border-white/20 bg-transparent px-8 py-4 text-white transition-all hover:border-accent hover:bg-primary/10 hover:text-accent font-display">
                       {heroCtas.secondary}
                       <MdSchedule className="h-5 w-5" />
-                    </button>
+                    </button> */}
                   </div>
                 </div>
               </div>

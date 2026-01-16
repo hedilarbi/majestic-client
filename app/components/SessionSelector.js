@@ -124,11 +124,23 @@ export default function SessionSelector({ sessions = [] }) {
     ? formatShortDate(safeActiveDateKey)
     : "";
 
+  const tomorrowKey = useMemo(() => {
+    const tomorrow = new Date(now);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    return getLocalDateKey(tomorrow);
+  }, [now]);
+
   const scheduleDays = dateKeys.map((dateKey) => {
     const { day, month, weekday } = getDateParts(dateKey);
+    const label =
+      dateKey === todayKey
+        ? "AUJ"
+        : dateKey === tomorrowKey
+        ? "DEM"
+        : weekday.toUpperCase();
     return {
       key: dateKey,
-      label: dateKey === todayKey ? "Auj." : weekday,
+      label,
       day,
       month,
       active: dateKey === safeActiveDateKey,
@@ -151,23 +163,42 @@ export default function SessionSelector({ sessions = [] }) {
           </h2>
           <div className="mb-10">
             {scheduleDays.length ? (
-              <div className="hide-scrollbar flex snap-x gap-4 overflow-x-auto pb-4">
+              <div className="hide-scrollbar flex snap-x gap-4 overflow-x-auto pb-4 py-4">
                 {scheduleDays.map((day) => (
                   <button
                     key={day.key}
-                    className={`snap-start min-w-22.5 rounded-xl border px-3 py-3 text-center transition-all font-display ${
+                    className={`group relative flex h-32 w-24 snap-start flex-col items-center justify-center rounded-2xl border transition-transform hover:-translate-y-1 font-display ${
                       day.active
-                        ? "border-accent/30 bg-linear-to-b from-primary to-black text-white shadow-[0_0_15px_rgba(16,52,166,0.5),0_0_5px_rgba(116,208,241,0.3)] scale-105"
-                        : "border-white/5 bg-white/10 text-white/50 hover:border-accent/40 hover:text-white hover:bg-white/20"
+                        ? "border-accent bg-linear-to-br from-white/10 to-black text-white shadow-[0_0_15px_rgba(116,208,241,0.3)]"
+                        : "border-white/10 bg-white/5 text-white/50 hover:bg-white/10"
                     }`}
                     type="button"
                     onClick={() => handleDateChange(day.key)}
                   >
-                    <span className="text-xs uppercase opacity-90">
+                    {day.active ? (
+                      <div className="absolute inset-0 -z-10 rounded-2xl bg-accent/10 blur-md" />
+                    ) : null}
+                    <span
+                      className={`mb-1 text-sm font-medium ${
+                        day.active
+                          ? "text-accent/80"
+                          : "text-white/40 group-hover:text-accent"
+                      }`}
+                    >
                       {day.label}
                     </span>
-                    <span className="block text-2xl">{day.day}</span>
-                    <span className="text-xs opacity-80">{day.month}</span>
+                    <span
+                      className={`mb-1 text-3xl font-bold ${
+                        day.active
+                          ? "text-white"
+                          : "text-white/80 group-hover:text-white"
+                      }`}
+                    >
+                      {day.day}
+                    </span>
+                    <span className="text-xs font-medium text-white/40">
+                      {day.month.toUpperCase()}
+                    </span>
                   </button>
                 ))}
               </div>
@@ -191,18 +222,35 @@ export default function SessionSelector({ sessions = [] }) {
                     return (
                       <button
                         key={session.id ?? session.sessionTime}
-                        className={`relative flex flex-col items-center gap-1 rounded-lg border px-6 py-3 text-white transition-all duration-300 font-display ${
+                        className={`group/btn relative overflow-hidden rounded-xl border px-6 py-2.5 transition-all duration-300 font-display ${
                           isActive
-                            ? "border-accent/50 bg-primary shadow-[0_0_15px_rgba(16,52,166,0.5),0_0_5px_rgba(116,208,241,0.3)] ring-1 ring-accent ring-offset-2 ring-offset-black"
-                            : "border-white/10 bg-white/10 hover:bg-primary hover:text-white hover:shadow-[0_0_15px_rgba(16,52,166,0.5),0_0_5px_rgba(116,208,241,0.3)]"
+                            ? "border-accent/60 bg-accent/10 shadow-[0_0_10px_rgba(116,208,241,0.1)] ring-1 ring-accent/60 ring-offset-2 ring-offset-black"
+                            : "border-white/10 bg-white/5 hover:border-accent/50"
                         } ${soldOut ? "cursor-not-allowed opacity-60" : ""}`}
                         type="button"
                         disabled={soldOut}
                         onClick={() => setSelectedSessionId(session.id)}
                       >
-                        <span className="text-lg">{session.sessionTime}</span>
-                        <span className="text-[10px] font-normal uppercase opacity-80 font-body">
-                          {session.version || "VF"}
+                        <div className="absolute inset-0 bg-linear-to-r from-primary to-accent opacity-0 transition-opacity duration-300 group-hover/btn:opacity-100" />
+                        <span className="relative z-10 flex flex-col items-center">
+                          <span
+                            className={`text-lg font-bold tracking-wide transition-colors ${
+                              isActive
+                                ? "text-accent group-hover/btn:text-white"
+                                : "text-white"
+                            }`}
+                          >
+                            {session.sessionTime}
+                          </span>
+                          <span
+                            className={`text-[10px] font-medium uppercase tracking-wider transition-colors ${
+                              isActive
+                                ? "text-accent/80 group-hover/btn:text-white/90"
+                                : "text-white/60 group-hover/btn:text-white/90"
+                            } font-body`}
+                          >
+                            {session.version || "VF"}
+                          </span>
                         </span>
                         {soldOut ? (
                           <span className="absolute -right-2 -top-2 rounded-full bg-accent px-1.5 py-0.5 text-[10px] font-bold text-black shadow-lg">

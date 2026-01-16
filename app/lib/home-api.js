@@ -78,20 +78,31 @@ const toHeroSlides = (slides = []) => {
     : [{ id: "fallback", ...FALLBACK_HERO }];
 };
 
-const toNowShowing = (items = []) =>
-  items.map((item) => {
+const toNowShowing = (items = []) => {
+  const now = Date.now();
+  const weekInMs = 7 * 24 * 60 * 60 * 1000;
+
+  return items.map((item) => {
     const genreLabel = isNonEmptyArray(item.genres) ? item.genres[0] : "Film";
     const durationLabel = formatDuration(item.duration);
+    const createdAt = item.createdAt ? new Date(item.createdAt) : null;
+    const isNew =
+      createdAt instanceof Date &&
+      !Number.isNaN(createdAt.getTime()) &&
+      now - createdAt.getTime() <= weekInMs;
+
     return {
       id: item._id,
       title: item.name || "Film",
       meta: buildMetaLine(genreLabel, durationLabel),
-      badge: "À l'affiche",
-      badgeTone: "primary",
+      badge: isNew ? "Nouveau" : "",
+      badgeTone: isNew ? "accent" : "",
       image: item.poster || FALLBACK_POSTER,
       imageAlt: item.name ? `Affiche du film ${item.name}` : "Affiche du film",
+      createdAt: item.createdAt || null,
     };
   });
+};
 
 const toSpectacles = (items = []) =>
   items.map((item) => {
@@ -135,7 +146,9 @@ export const normalizeHomeData = (
 ) => {
   const heroSlides = toHeroSlides(payload.homeSlider || []);
   const nowShowingRaw = toNowShowing(payload.aLaffiche || []);
-  const nowShowing = limitNowShowing ? nowShowingRaw.slice(0, 5) : nowShowingRaw;
+  const nowShowing = limitNowShowing
+    ? nowShowingRaw.slice(0, 5)
+    : nowShowingRaw;
   const spectacles = toSpectacles(payload.spectacles || []);
   const upcomingRaw = toUpcoming(payload.prochainement || []);
   const upcoming = limitUpcoming ? upcomingRaw.slice(0, 2) : upcomingRaw;

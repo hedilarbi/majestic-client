@@ -12,8 +12,17 @@ const buildHref = (type, genre) => {
   return query ? `/evenements?${query}` : "/evenements";
 };
 
+const toLabel = (value) => {
+  if (!value) return "";
+  if (typeof value === "string") return value;
+  if (typeof value === "object") {
+    return value.name || value.label || value.value || "";
+  }
+  return String(value);
+};
+
 const uniqueSortedGenres = (genres, currentGenre) => {
-  const set = new Set((genres || []).filter(Boolean));
+  const set = new Set((genres || []).map(toLabel).filter(Boolean));
   if (currentGenre) set.add(currentGenre);
   return Array.from(set).sort((a, b) =>
     a.localeCompare(b, "fr", { sensitivity: "base" })
