@@ -84,9 +84,9 @@ export default async function EvenementsPage({ searchParams }) {
             <div className="absolute inset-0 bg-black" />
           )}
           <div className="relative z-20 flex min-h-120 flex-col items-start justify-end gap-4 px-10 pb-12 sm:px-16 sm:pb-16 lg:px-20">
-            <span className="rounded border border-accent/40 bg-accent/10 px-2 py-1 text-xs font-semibold text-accent font-display">
+            {/* <span className="rounded border border-accent/40 bg-accent/10 px-2 py-1 text-xs font-semibold text-accent font-display">
               TENDANCE
-            </span>
+            </span> */}
             <h1 className="text-3xl font-bold leading-tight tracking-[-0.03em] text-white drop-shadow-lg sm:text-6xl font-display">
               {heroTitle}
             </h1>
