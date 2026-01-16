@@ -72,7 +72,7 @@ export default async function EvenementsPage({ searchParams }) {
             <span className="rounded border border-accent/40 bg-accent/10 px-2 py-1 text-xs font-semibold text-accent font-display">
               TENDANCE
             </span>
-            <h1 className="text-4xl font-bold leading-tight tracking-[-0.03em] text-white drop-shadow-lg sm:text-6xl font-display">
+            <h1 className="text-3xl font-bold leading-tight tracking-[-0.03em] text-white drop-shadow-lg sm:text-6xl font-display">
               {heroTitle}
             </h1>
             <div className="text-sm text-white/70 sm:text-base font-body">
@@ -81,9 +81,9 @@ export default async function EvenementsPage({ searchParams }) {
             <p className="max-w-lg text-sm leading-relaxed text-white/70 sm:text-lg font-body">
               {heroSubtitle}
             </p>
-            <div className="mt-2 flex flex-wrap gap-4">
+            <div className="mt-2 flex flex-wrap gap-3">
               <Link
-                className="flex h-12 items-center gap-2 rounded-lg bg-primary px-6 text-base font-semibold text-white shadow-[0_0_20px_rgba(16,52,166,0.4)] transition-all hover:-translate-y-0.5 hover:bg-primary/90 hover:shadow-[0_0_30px_rgba(16,52,166,0.6)] font-display"
+                className="flex h-11 items-center gap-2 rounded-lg bg-primary px-4 text-sm font-semibold text-white shadow-[0_0_20px_rgba(16,52,166,0.4)] transition-all hover:-translate-y-0.5 hover:bg-primary/90 hover:shadow-[0_0_30px_rgba(16,52,166,0.6)] sm:h-12 sm:px-6 sm:text-base font-display"
                 href={
                   heroEventId
                     ? `/evenements/${heroEventId}`
@@ -96,7 +96,7 @@ export default async function EvenementsPage({ searchParams }) {
                 trailerLink={heroTrailerLink}
                 title={heroTitle}
                 label="Bande-annonce"
-                className="flex h-12 items-center gap-2 rounded-lg border border-white/10 bg-white/10 px-6 text-base font-semibold text-white transition-all hover:-translate-y-0.5 hover:bg-white/20 font-display"
+                className="flex h-11 items-center gap-2 rounded-lg border border-secondary/50 bg-secondary px-4 text-sm font-semibold text-white shadow-[0_0_12px_rgba(16,52,166,0.2)] transition-all hover:-translate-y-0.5 hover:bg-secondary/80 sm:h-12 sm:px-6 sm:text-base font-display"
               />
             </div>
           </div>

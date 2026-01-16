@@ -80,6 +80,7 @@
 @theme inline {
   --color-primary: #1034a6;
   --color-accent: #74d0f1;
+  --color-secondary: #16265a;
   --font-main: "Zujin", sans-serif;
   --font-secondary: "Brandon", sans-serif;
 }
