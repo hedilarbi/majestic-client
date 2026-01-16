@@ -103,9 +103,9 @@ export default async function EvenementPage({ params }) {
           </div>
           <div className="relative z-10 mx-auto px-10 py-10 sm:px-12 lg:px-20 md:py-16">
             <div className="flex flex-col items-start gap-10 md:flex-row">
-              <div className="space-y-6 text-center md:w-[55%] md:text-left">
+              <div className="order-2 space-y-6 text-center md:order-1 md:w-[55%] md:text-left">
                 <div>
-                  <h1 className="mb-4 text-5xl font-semibold uppercase tracking-wide text-glow md:text-6xl lg:text-5xl font-display">
+                  <h1 className="mb-4 text-4xl font-semibold uppercase tracking-wide text-glow md:text-6xl lg:text-5xl font-display">
                     {event.name}
                   </h1>
                   <div className="mb-6 flex flex-wrap items-center justify-center gap-3 md:justify-start font-display">
@@ -154,7 +154,7 @@ export default async function EvenementPage({ params }) {
                   </div>
                 </div>
               </div>
-              <div className="flex w-full justify-center md:w-[45%] md:justify-start">
+              <div className="order-1 flex w-full justify-center md:order-2 md:w-[45%] md:justify-start">
                 <div className="relative group w-full">
                   <div className="absolute -inset-1 rounded-xl bg-linear-to-r from-primary to-accent blur opacity-30 transition duration-1000 group-hover:opacity-60 group-hover:duration-200" />
                   <EventTrailer

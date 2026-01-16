@@ -1,13 +1,52 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname, useSearchParams } from "next/navigation";
+import { createPortal } from "react-dom";
+import { FaFacebookF, FaInstagram } from "react-icons/fa";
+import { FaXTwitter } from "react-icons/fa6";
 import { MdClose, MdMenu, MdSearch } from "react-icons/md";
 import { navLinks } from "../lib/site-data";
 
+const resolveType = (value) => (value === "show" ? "show" : "movie");
+
 export default function SiteHeader() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const currentType = resolveType(searchParams.get("type"));
+
+  const isLinkActive = useMemo(() => {
+    return (href) => {
+      if (!href || href === "#") return false;
+      if (href.startsWith("/evenements")) {
+        if (!pathname.startsWith("/evenements")) return false;
+        const linkType = new URL(href, "http://localhost").searchParams.get(
+          "type"
+        );
+        return resolveType(linkType) === currentType;
+      }
+      if (href.startsWith("/cinema")) {
+        return pathname.startsWith("/cinema");
+      }
+      return pathname === href;
+    };
+  }, [pathname, currentType]);
+
+  useEffect(() => {
+    setIsMenuOpen(false);
+  }, [pathname, searchParams]);
+
+  useEffect(() => {
+    if (!isMenuOpen) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [isMenuOpen]);
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-white/5 bg-black/80 backdrop-blur-md">
@@ -27,15 +66,21 @@ export default function SiteHeader() {
             />
           </Link>
           <div className="hidden items-center gap-6 md:flex">
-            {navLinks.map((link) => (
-              <a
-                key={link.label}
-                className="text-sm font-display uppercase tracking-wider text-white/70 transition-all hover:text-accent hover:[text-shadow:0_0_20px_rgba(116,208,241,0.3)]"
-                href={link.href}
-              >
-                {link.label}
-              </a>
-            ))}
+            {navLinks.map((link) => {
+              const isActive = isLinkActive(link.href);
+              return (
+                <Link
+                  key={link.label}
+                  className={`text-sm font-display uppercase tracking-wider transition-all hover:text-accent hover:[text-shadow:0_0_20px_rgba(116,208,241,0.3)] ${
+                    isActive ? "text-accent" : "text-white/70"
+                  }`}
+                  href={link.href}
+                  aria-current={isActive ? "page" : undefined}
+                >
+                  {link.label}
+                </Link>
+              );
+            })}
           </div>
         </div>
         <div className="flex items-center gap-4">
@@ -65,51 +110,88 @@ export default function SiteHeader() {
         </div>
       </nav>
 
-      {isMenuOpen ? (
-        <div
-          className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm md:hidden"
-          role="dialog"
-          aria-modal="true"
-          onClick={() => setIsMenuOpen(false)}
-        >
-          <div
-            className="absolute right-4 top-6 w-[min(90vw,360px)] rounded-2xl border border-white/10 bg-black/90 p-6 shadow-2xl"
-            onClick={(event) => event.stopPropagation()}
-          >
-            <div className="mb-6 flex items-center justify-between">
-              <span className="text-sm font-semibold uppercase tracking-[0.2em] text-white/60 font-display">
-                Menu
-              </span>
-              <button
-                className="rounded-full border border-white/20 p-2 text-white/70 transition hover:text-white"
-                type="button"
-                aria-label="Fermer le menu"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                <MdClose className="h-5 w-5" />
-              </button>
-            </div>
-            <div className="flex flex-col gap-4">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.label}
-                  className="text-sm font-display uppercase tracking-wider text-white/80 transition-all hover:text-accent"
-                  href={link.href}
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  {link.label}
-                </Link>
-              ))}
-            </div>
-            <button
-              className="mt-6 w-full rounded-full border border-white/20 px-6 py-3 text-xs font-semibold uppercase tracking-[0.2em] text-white/80 transition-all hover:border-accent hover:text-accent hover:shadow-[0_0_15px_rgba(116,208,241,0.3)]"
-              type="button"
+      {isMenuOpen && typeof document !== "undefined"
+        ? createPortal(
+            <div
+              className="fixed inset-0 z-50 md:hidden"
+              role="dialog"
+              aria-modal="true"
+              onClick={() => setIsMenuOpen(false)}
             >
-              Connexion
-            </button>
-          </div>
-        </div>
-      ) : null}
+              <div className="fixed inset-0 bg-black/80" />
+              <div
+                className="fixed right-0 top-0 flex h-screen w-[75vw] flex-col border-l border-white/10 bg-black p-6 shadow-2xl"
+                onClick={(event) => event.stopPropagation()}
+              >
+                <div className="mb-8 flex items-center justify-between">
+                  <span className="text-sm font-semibold uppercase tracking-[0.2em] text-white/60 font-display">
+                    Menu
+                  </span>
+                  <button
+                    className="rounded-full border border-white/20 p-2 text-white/70 transition hover:text-white"
+                    type="button"
+                    aria-label="Fermer le menu"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    <MdClose className="h-5 w-5" />
+                  </button>
+                </div>
+                <div className="flex flex-col gap-5">
+                  {navLinks.map((link) => {
+                    const isActive = isLinkActive(link.href);
+                    return (
+                      <Link
+                        key={link.label}
+                        className={`text-base font-display uppercase tracking-wider transition-all ${
+                          isActive
+                            ? "text-accent"
+                            : "text-white/80 hover:text-accent"
+                        }`}
+                        href={link.href}
+                        aria-current={isActive ? "page" : undefined}
+                        onClick={() => setIsMenuOpen(false)}
+                      >
+                        {link.label}
+                      </Link>
+                    );
+                  })}
+                </div>
+                <div className="mt-auto">
+                  <button
+                    className="w-full rounded-full border border-white/20 px-6 py-3 text-xs font-semibold uppercase tracking-[0.2em] text-white/80 transition-all hover:border-accent hover:text-accent hover:shadow-[0_0_15px_rgba(116,208,241,0.3)]"
+                    type="button"
+                  >
+                    Connexion
+                  </button>
+                  <div className="mt-4 flex items-center justify-center gap-4">
+                    <a
+                      className="rounded-full border border-white/20 p-2 text-white/60 transition hover:border-accent hover:text-accent"
+                      href="#"
+                      aria-label="Facebook"
+                    >
+                      <FaFacebookF className="h-4 w-4" />
+                    </a>
+                    <a
+                      className="rounded-full border border-white/20 p-2 text-white/60 transition hover:border-accent hover:text-accent"
+                      href="#"
+                      aria-label="Instagram"
+                    >
+                      <FaInstagram className="h-4 w-4" />
+                    </a>
+                    <a
+                      className="rounded-full border border-white/20 p-2 text-white/60 transition hover:border-accent hover:text-accent"
+                      href="#"
+                      aria-label="X"
+                    >
+                      <FaXTwitter className="h-4 w-4" />
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>,
+            document.body
+          )
+        : null}
     </header>
   );
 }
