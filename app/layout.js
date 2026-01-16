@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import SiteFooter from "./components/SiteFooter";
 import SiteHeader from "./components/SiteHeader";
 import "./globals.css";
@@ -37,7 +38,13 @@ export default function RootLayout({ children }) {
   return (
     <html lang="fr" className="dark">
       <body className="min-h-screen overflow-x-hidden bg-black antialiased">
-        <SiteHeader />
+        <Suspense
+          fallback={
+            <div className="h-24 w-full border-b border-white/5 bg-black/80" />
+          }
+        >
+          <SiteHeader />
+        </Suspense>
         {children}
         <SiteFooter />
       </body>
