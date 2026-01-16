@@ -47,13 +47,25 @@ export default function HeroSection({ slides = [] }) {
               key={slide.id ?? index}
               className="relative h-full min-w-full"
             >
+              {slide.mobileImage ? (
+                <Image
+                  src={slide.mobileImage}
+                  alt={slide.imageAlt}
+                  fill
+                  priority={index === 0}
+                  sizes="100vw"
+                  className="object-cover sm:hidden"
+                />
+              ) : null}
               <Image
                 src={slide.image}
                 alt={slide.imageAlt}
                 fill
                 priority={index === 0}
                 sizes="100vw"
-                className="object-cover"
+                className={`object-cover ${
+                  slide.mobileImage ? "hidden sm:block" : ""
+                }`}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-transparent" />
               <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/50 to-transparent" />
@@ -64,12 +76,12 @@ export default function HeroSection({ slides = [] }) {
                       {slide.titleHighlight}
                     </span>
                   </h1>
-                  <p className="max-w-lg text-lg leading-relaxed text-white/80 font-body">
+                  <p className="max-w-lg text-base leading-relaxed text-white/80 sm:text-lg font-body line-clamp-2 sm:line-clamp-none">
                     {slide.subtitle}
                   </p>
                   <div className="flex flex-wrap gap-4 pt-4">
                     <Link
-                      className="group relative overflow-hidden rounded-lg bg-primary px-8 py-4 text-white transition-all hover:scale-105 active:scale-95 shadow-[0_0_20px_rgba(16,52,166,0.4)]"
+                      className="group relative overflow-hidden rounded-lg bg-primary px-6 py-3 text-base text-white transition-all hover:scale-105 active:scale-95 shadow-[0_0_20px_rgba(16,52,166,0.4)] sm:px-8 sm:py-4"
                       href={
                         slide.eventId
                           ? `/evenements/${slide.eventId}`
@@ -95,7 +107,25 @@ export default function HeroSection({ slides = [] }) {
 
         {slideCount > 1 ? (
           <>
-            <div className="absolute inset-y-0 left-4 z-20 flex items-center">
+            <div className="absolute right-6 top-6 z-20 flex items-center gap-2 sm:hidden">
+              <button
+                aria-label="Diapositive précédente"
+                className="rounded-full border border-white/20 bg-black/40 p-2 text-white transition hover:bg-black/60"
+                onClick={handlePrev}
+                type="button"
+              >
+                <MdArrowBack className="h-4 w-4" />
+              </button>
+              <button
+                aria-label="Diapositive suivante"
+                className="rounded-full border border-white/20 bg-black/40 p-2 text-white transition hover:bg-black/60"
+                onClick={handleNext}
+                type="button"
+              >
+                <MdArrowForward className="h-4 w-4" />
+              </button>
+            </div>
+            <div className="absolute inset-y-0 left-4 z-20 hidden items-center sm:flex">
               <button
                 aria-label="Diapositive précédente"
                 className="rounded-full border border-white/20 bg-black/40 p-3 text-white transition hover:bg-black/60"
@@ -105,7 +135,7 @@ export default function HeroSection({ slides = [] }) {
                 <MdArrowBack className="h-5 w-5" />
               </button>
             </div>
-            <div className="absolute inset-y-0 right-4 z-20 flex items-center">
+            <div className="absolute inset-y-0 right-4 z-20 hidden items-center sm:flex">
               <button
                 aria-label="Diapositive suivante"
                 className="rounded-full border border-white/20 bg-black/40 p-3 text-white transition hover:bg-black/60"

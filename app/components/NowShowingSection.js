@@ -47,11 +47,18 @@ export default function NowShowingSection({ items = [], showCta = true }) {
                 <article className="cursor-pointer">
                   <div className="relative aspect-[2/3] overflow-hidden rounded-lg shadow-lg shadow-black/50">
                     <Image
+                      src={movie.mobileImage || movie.image}
+                      alt={movie.imageAlt}
+                      fill
+                      sizes="45vw"
+                      className="object-cover transition-transform duration-500 group-hover:scale-110 sm:hidden"
+                    />
+                    <Image
                       src={movie.image}
                       alt={movie.imageAlt}
                       fill
                       sizes="(min-width: 1024px) 18vw, (min-width: 768px) 22vw, 45vw"
-                      className="object-cover transition-transform duration-500 group-hover:scale-110"
+                      className="hidden object-cover transition-transform duration-500 group-hover:scale-110 sm:block"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-80 transition-opacity group-hover:opacity-60" />
                     {movie.badge ? (

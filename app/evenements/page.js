@@ -38,7 +38,8 @@ export default async function EvenementsPage({ searchParams }) {
   const allShowTypes = allEventsResponse?.showTypes ?? showTypes ?? [];
   const heroEntry = aLaffiche?.[0];
   const heroEvent = heroEntry?.event || events?.[0];
-  const heroImage = heroEntry?.poster || heroEvent?.image;
+  const heroImageDesktop = heroEntry?.poster || heroEvent?.image;
+  const heroImageMobile = heroEvent?.image || heroEntry?.poster;
   const heroTitle = heroEvent?.title || "À l'affiche";
   const heroSubtitle =
     heroEvent?.description ||
@@ -56,15 +57,29 @@ export default async function EvenementsPage({ searchParams }) {
       <section className="w-full px-10 py-6 sm:px-14 lg:px-20">
         <div className="group relative w-full overflow-hidden rounded-2xl border border-white/10 shadow-2xl">
           <div className="absolute inset-0 z-10 bg-linear-to-r from-black/90 via-black/40 to-transparent" />
-          {heroImage ? (
-            <Image
-              src={heroImage}
-              alt={heroTitle}
-              fill
-              priority
-              sizes="100vw"
-              className="object-cover transition-transform duration-10000 group-hover:scale-105"
-            />
+          {heroImageDesktop || heroImageMobile ? (
+            <>
+              {heroImageMobile ? (
+                <Image
+                  src={heroImageMobile}
+                  alt={heroTitle}
+                  fill
+                  priority
+                  sizes="100vw"
+                  className="object-cover transition-transform duration-10000 group-hover:scale-105 sm:hidden"
+                />
+              ) : null}
+              {heroImageDesktop ? (
+                <Image
+                  src={heroImageDesktop}
+                  alt={heroTitle}
+                  fill
+                  priority
+                  sizes="100vw"
+                  className="hidden object-cover transition-transform duration-10000 group-hover:scale-105 sm:block"
+                />
+              ) : null}
+            </>
           ) : (
             <div className="absolute inset-0 bg-black" />
           )}

@@ -61,17 +61,31 @@ const toHeroSlides = (slides = []) => {
   const activeSlides = slides
     .filter((slide) => slide && slide.active !== false)
     .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
-    .map((slide) => ({
-      id: slide._id,
+    .map((slide) => {
+      const eventData =
+        slide?.eventId && typeof slide.eventId === "object"
+          ? slide.eventId
+          : null;
+      const eventId =
+        eventData?._id ||
+        (typeof slide.eventId === "string" ? slide.eventId : undefined);
+      const title =
+        slide.title || eventData?.name || FALLBACK_HERO.titleHighlight;
+      const subtitle =
+        slide.subtitle || eventData?.description || FALLBACK_HERO.subtitle;
+      const image = slide.poster || FALLBACK_HERO.image;
+      const mobileImage = eventData?.poster || image;
 
-      titleHighlight: slide.title || FALLBACK_HERO.titleHighlight,
-      subtitle: slide.subtitle || FALLBACK_HERO.subtitle,
-      image: slide.poster || FALLBACK_HERO.image,
-      imageAlt: slide.title
-        ? `Affiche de ${slide.title}`
-        : FALLBACK_HERO.imageAlt,
-      eventId: slide.eventId,
-    }));
+      return {
+        id: slide._id,
+        titleHighlight: title,
+        subtitle,
+        image,
+        mobileImage,
+        imageAlt: title ? `Affiche de ${title}` : FALLBACK_HERO.imageAlt,
+        eventId,
+      };
+    });
 
   return activeSlides.length
     ? activeSlides
@@ -83,23 +97,35 @@ const toNowShowing = (items = []) => {
   const weekInMs = 7 * 24 * 60 * 60 * 1000;
 
   return items.map((item) => {
-    const genreLabel = isNonEmptyArray(item.genres) ? item.genres[0] : "Film";
-    const durationLabel = formatDuration(item.duration);
-    const createdAt = item.createdAt ? new Date(item.createdAt) : null;
+    const eventData = item?.eventId || item?.event || item || {};
+    const genreLabel = isNonEmptyArray(eventData.genres)
+      ? eventData.genres[0]
+      : "Film";
+    const durationLabel = formatDuration(eventData.duration);
+    const createdAt = eventData.createdAt
+      ? new Date(eventData.createdAt)
+      : null;
     const isNew =
       createdAt instanceof Date &&
       !Number.isNaN(createdAt.getTime()) &&
       now - createdAt.getTime() <= weekInMs;
+    const desktopImage =
+      item?.poster || eventData.poster || eventData.image || FALLBACK_POSTER;
+    const mobileImage =
+      eventData.poster || eventData.image || item?.poster || desktopImage;
 
     return {
-      id: item._id,
-      title: item.name || "Film",
+      id: eventData._id,
+      title: eventData.name || "Film",
       meta: buildMetaLine(genreLabel, durationLabel),
       badge: isNew ? "Nouveau" : "",
       badgeTone: isNew ? "accent" : "",
-      image: item.poster || FALLBACK_POSTER,
-      imageAlt: item.name ? `Affiche du film ${item.name}` : "Affiche du film",
-      createdAt: item.createdAt || null,
+      image: desktopImage,
+      mobileImage,
+      imageAlt: eventData.name
+        ? `Affiche du film ${eventData.name}`
+        : "Affiche du film",
+      createdAt: eventData.createdAt || null,
     };
   });
 };
@@ -179,6 +205,7 @@ export async function getHomeData(options) {
     }
 
     const payload = await response.json();
+
     return normalizeHomeData(payload, options);
   } catch (error) {
     console.error("Home data fetch failed:", error);

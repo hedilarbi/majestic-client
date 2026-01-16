@@ -36,10 +36,6 @@ export default function SiteHeader() {
   }, [pathname, currentType]);
 
   useEffect(() => {
-    setIsMenuOpen(false);
-  }, [pathname, searchParams]);
-
-  useEffect(() => {
     if (!isMenuOpen) return;
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";

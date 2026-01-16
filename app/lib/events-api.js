@@ -82,14 +82,13 @@ export async function getEventsWithALaffiche({ type = "movie", genre } = {}) {
     }
 
     const payload = await response.json();
+
     const events = Array.isArray(payload.events)
       ? payload.events.map(normalizeEvent).filter(Boolean)
       : [];
     const aLaffiche = normalizeALaffiche(payload.aLaffiche || []);
     const showTypes = Array.isArray(payload.showTypes)
-      ? payload.showTypes
-          .map((entry) => entry?.name || entry)
-          .filter(Boolean)
+      ? payload.showTypes.map((entry) => entry?.name || entry).filter(Boolean)
       : [];
 
     return { events, aLaffiche, showTypes };
