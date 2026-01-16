@@ -1,9 +1,9 @@
 export const navLinks = [
-  { label: "FILMES", href: "/evenements?type=movie" },
-  { label: "SPECTACLES", href: "/evenements?type=show" },
-  { label: "CINEMA", href: "/cinema" },
-  { label: "A PROPOS", href: "#" },
-  { label: "RESERVER L'ESPACE", href: "#" },
+  { label: "Films", href: "/evenements?type=movie" },
+  { label: "Spectacles", href: "/evenements?type=show" },
+  { label: "Cinéma", href: "/cinema" },
+  { label: "À propos", href: "#" },
+  { label: "Réserver l'espace", href: "#" },
 ];
 
 export const footerLinks = [
