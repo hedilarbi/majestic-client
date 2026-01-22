@@ -74,7 +74,7 @@ export default function CinemaCalendarButton({ selectedDate, todayKey }) {
 
   const calendarDays = useMemo(
     () => buildCalendarDays(activeDate, selectedKey, todayKey),
-    [activeDate, selectedKey, todayKey]
+    [activeDate, selectedKey, todayKey],
   );
 
   useEffect(() => {
@@ -96,7 +96,7 @@ export default function CinemaCalendarButton({ selectedDate, todayKey }) {
   }, [isOpen]);
 
   const handleSelect = (dateKey) => {
-    router.push(`/cinema?date=${dateKey}`);
+    router.push(`/programme?date=${dateKey}`);
     setIsOpen(false);
   };
 

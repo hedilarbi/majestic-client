@@ -23,9 +23,7 @@ const normalizeEvent = (event) => {
   const id = event._id || event.id;
   if (!id) return null;
   const genres = Array.isArray(event.genres) ? event.genres : [];
-  const genresLabel = genres.length
-    ? genres.slice(0, 2).join(" / ")
-    : "Cinéma";
+  const genresLabel = genres.length ? genres.slice(0, 2).join(" / ") : "Cinéma";
   const durationLabel = formatDuration(event.duration);
   return {
     id,
@@ -95,7 +93,9 @@ const consumeEntry = (eventsMap, entry, dateKey) => {
   if (hasSessionsArray) {
     const eventEntry = registerEvent(eventsMap, eventData || entry);
     const sessions = entry.sessions || entry.showtimes || [];
-    sessions.forEach((session) => addSessionToEvent(eventEntry, session, dateKey));
+    sessions.forEach((session) =>
+      addSessionToEvent(eventEntry, session, dateKey),
+    );
     return;
   }
 
@@ -124,7 +124,7 @@ export async function getSessionsByDate(dateKey) {
     const response = await fetch(url, {
       method: "GET",
       headers: { Accept: "application/json" },
-      next: { revalidate: REVALIDATE_SECONDS, tags: [`cinema-${dateKey}`] },
+      next: { revalidate: REVALIDATE_SECONDS, tags: [`programme-${dateKey}`] },
       signal: controller.signal,
     });
 
@@ -136,15 +136,21 @@ export async function getSessionsByDate(dateKey) {
     const eventsMap = new Map();
 
     if (Array.isArray(payload?.groups)) {
-      payload.groups.forEach((entry) => consumeEntry(eventsMap, entry, dateKey));
+      payload.groups.forEach((entry) =>
+        consumeEntry(eventsMap, entry, dateKey),
+      );
     }
 
     if (Array.isArray(payload?.events)) {
-      payload.events.forEach((entry) => consumeEntry(eventsMap, entry, dateKey));
+      payload.events.forEach((entry) =>
+        consumeEntry(eventsMap, entry, dateKey),
+      );
     }
 
     if (Array.isArray(payload?.sessions)) {
-      payload.sessions.forEach((entry) => consumeEntry(eventsMap, entry, dateKey));
+      payload.sessions.forEach((entry) =>
+        consumeEntry(eventsMap, entry, dateKey),
+      );
     }
 
     if (Array.isArray(payload?.data)) {
@@ -159,7 +165,7 @@ export async function getSessionsByDate(dateKey) {
       .map((event) => ({
         ...event,
         sessions: event.sessions.sort(
-          (a, b) => toMinutes(a.time) - toMinutes(b.time)
+          (a, b) => toMinutes(a.time) - toMinutes(b.time),
         ),
       }))
       .filter((event) => event.sessions.length > 0)

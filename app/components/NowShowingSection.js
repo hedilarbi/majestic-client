@@ -86,7 +86,7 @@ export default function NowShowingSection({ items = [], showCta = true }) {
           <div className="mt-10 flex justify-center">
             <Link
               className="group flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.2em] text-white/50 transition-colors hover:text-white font-display"
-              href="/cinema"
+              href="/programme"
             >
               Voir tout le programme
               <MdArrowForward className="h-5 w-5 transition-transform group-hover:translate-x-1" />

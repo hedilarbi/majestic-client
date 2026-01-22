@@ -1,7 +1,7 @@
 export const navLinks = [
   { label: "Films", href: "/evenements?type=movie" },
   { label: "Spectacles", href: "/evenements?type=show" },
-  { label: "Cinéma", href: "/cinema" },
+  { label: "Programme", href: "/programme" },
   { label: "À propos", href: "#" },
   { label: "Réserver l'espace", href: "#" },
 ];

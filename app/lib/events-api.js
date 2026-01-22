@@ -45,20 +45,42 @@ const normalizeEvent = (event) => {
   };
 };
 
-const normalizeALaffiche = (entries = []) =>
-  entries
+const normalizeALaffiche = (entries) => {
+  const list = Array.isArray(entries) ? entries : entries ? [entries] : [];
+  return list
     .map((entry) => {
       const eventData = entry?.eventId || entry?.event;
       const normalizedEvent = normalizeEvent(eventData);
-      if (!normalizedEvent) return null;
+      const entryHasContent =
+        entry?.poster || entry?.title || entry?.subtitle || entry?.eventAffiche;
+
+      if (!normalizedEvent && !entryHasContent) return null;
+
+      const rawEventId =
+        normalizedEvent?.id ||
+        (typeof entry?.eventId === "string" ? entry.eventId : undefined) ||
+        (eventData?._id ? String(eventData._id) : undefined);
+      const eventPoster = eventData?.poster || normalizedEvent?.image;
+      const poster = entry?.poster || eventPoster || FALLBACK_POSTER;
+
       return {
         event: normalizedEvent,
-        poster: entry?.poster || normalizedEvent.image,
+        eventId: rawEventId,
+        poster,
+        title: entry?.title || normalizedEvent?.title,
+        subtitle: entry?.subtitle || normalizedEvent?.description,
+        eventPoster,
+        eventAffiche: Boolean(entry?.eventAffiche),
       };
     })
     .filter(Boolean);
+};
 
-export async function getEventsWithALaffiche({ type = "movie", genre } = {}) {
+export async function getEventsWithALaffiche({
+  type = "movie",
+  genre,
+  noCache,
+} = {}) {
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), 8000);
 
@@ -67,15 +89,20 @@ export async function getEventsWithALaffiche({ type = "movie", genre } = {}) {
     if (type) url.searchParams.set("type", type);
     if (genre) url.searchParams.set("genre", genre);
 
-    const response = await fetch(url, {
+    const fetchOptions = {
       method: "GET",
       headers: { Accept: "application/json" },
-      next: {
+      signal: controller.signal,
+    };
+    if (noCache) {
+      fetchOptions.cache = "no-store";
+    } else {
+      fetchOptions.next = {
         revalidate: REVALIDATE_SECONDS,
         tags: [`events-${type || "all"}`],
-      },
-      signal: controller.signal,
-    });
+      };
+    }
+    const response = await fetch(url, fetchOptions);
 
     if (!response.ok) {
       throw new Error(`Events API error: ${response.status}`);
@@ -87,14 +114,17 @@ export async function getEventsWithALaffiche({ type = "movie", genre } = {}) {
       ? payload.events.map(normalizeEvent).filter(Boolean)
       : [];
     const aLaffiche = normalizeALaffiche(payload.aLaffiche || []);
+    const prochainement = Array.isArray(payload.prochainement)
+      ? payload.prochainement.map(normalizeEvent).filter(Boolean)
+      : [];
     const showTypes = Array.isArray(payload.showTypes)
       ? payload.showTypes.map((entry) => entry?.name || entry).filter(Boolean)
       : [];
 
-    return { events, aLaffiche, showTypes };
+    return { events, aLaffiche, showTypes, prochainement };
   } catch (error) {
     console.error("Events fetch failed:", error);
-    return { events: [], aLaffiche: [], showTypes: [] };
+    return { events: [], aLaffiche: [], showTypes: [], prochainement: [] };
   } finally {
     clearTimeout(timeoutId);
   }

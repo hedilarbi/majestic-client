@@ -5,8 +5,12 @@ import SpectacleSection from "./components/SpectacleSection";
 import UpcomingSection from "./components/UpcomingSection";
 import { getHomeData } from "./lib/home-api";
 
+export const dynamic = "force-dynamic";
+
 export default async function Home() {
-  const { heroSlides, nowShowing, spectacles, upcoming } = await getHomeData();
+  const { heroSlides, nowShowing, spectacles, upcoming } = await getHomeData({
+    noCache: true,
+  });
 
   return (
     <div className="flex min-h-screen flex-col">

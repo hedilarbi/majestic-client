@@ -24,12 +24,12 @@ export default function SiteHeader() {
       if (href.startsWith("/evenements")) {
         if (!pathname.startsWith("/evenements")) return false;
         const linkType = new URL(href, "http://localhost").searchParams.get(
-          "type"
+          "type",
         );
         return resolveType(linkType) === currentType;
       }
-      if (href.startsWith("/cinema")) {
-        return pathname.startsWith("/cinema");
+      if (href.startsWith("/programme")) {
+        return pathname.startsWith("/programme");
       }
       return pathname === href;
     };
@@ -67,7 +67,7 @@ export default function SiteHeader() {
               return (
                 <Link
                   key={link.label}
-                  className={`text-sm font-display uppercase tracking-wider transition-all hover:text-accent hover:[text-shadow:0_0_20px_rgba(116,208,241,0.3)] ${
+                  className={`text-sm font-display  tracking-wider transition-all hover:text-accent hover:[text-shadow:0_0_20px_rgba(116,208,241,0.3)] ${
                     isActive ? "text-accent" : "text-white/70"
                   }`}
                   href={link.href}
@@ -191,7 +191,7 @@ export default function SiteHeader() {
                 </div>
               </div>
             </div>,
-            document.body
+            document.body,
           )
         : null}
     </header>

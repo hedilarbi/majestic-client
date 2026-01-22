@@ -116,7 +116,7 @@ export default async function CinemaPage({ searchParams }) {
             {dateOptions.map((date) => (
               <Link
                 key={date.value}
-                href={`/cinema?date=${date.value}`}
+                href={`/programme?date=${date.value}`}
                 aria-current={date.isActive ? "date" : undefined}
                 className={`group relative flex h-32 w-24 flex-col items-center justify-center rounded-2xl border transition-transform hover:-translate-y-1 ${
                   date.isActive

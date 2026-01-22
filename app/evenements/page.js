@@ -4,6 +4,8 @@ import GenreFilter from "../components/GenreFilter";
 import TrailerModalButton from "../components/TrailerModalButton";
 import { getEventsWithALaffiche } from "../lib/events-api";
 
+export const dynamic = "force-dynamic";
+
 const MOVIE_GENRES = [
   "Action",
   "Aventure",
@@ -28,24 +30,30 @@ export default async function EvenementsPage({ searchParams }) {
     typeof resolvedParams?.genre === "string"
       ? resolvedParams.genre
       : undefined;
-  const [{ events, aLaffiche, showTypes }, allEventsResponse] =
+  const [{ events, aLaffiche, showTypes, prochainement }, allEventsResponse] =
     await Promise.all([
-      getEventsWithALaffiche({ type, genre }),
-      genre ? getEventsWithALaffiche({ type }) : Promise.resolve(null),
+      getEventsWithALaffiche({ type, genre, noCache: true }),
+      genre
+        ? getEventsWithALaffiche({ type, noCache: true })
+        : Promise.resolve(null),
     ]);
 
-  const allEvents = allEventsResponse?.events ?? events;
   const allShowTypes = allEventsResponse?.showTypes ?? showTypes ?? [];
+  const upcomingEvents =
+    allEventsResponse?.prochainement ?? prochainement ?? [];
   const heroEntry = aLaffiche?.[0];
   const heroEvent = heroEntry?.event || events?.[0];
   const heroImageDesktop = heroEntry?.poster || heroEvent?.image;
-  const heroImageMobile = heroEvent?.image || heroEntry?.poster;
-  const heroTitle = heroEvent?.title || "À l'affiche";
+  const heroImageMobile =
+    heroEntry?.eventPoster || heroEvent?.image || heroEntry?.poster;
+  const heroTitle =
+    heroEntry?.title || heroEvent?.title || "À l'affiche";
   const heroSubtitle =
+    heroEntry?.subtitle ||
     heroEvent?.description ||
     "Découvrez les plus grands films et expériences cinéma du moment.";
   const heroMeta = heroEvent?.meta || "Expérience cinéma premium";
-  const heroEventId = heroEvent?.id;
+  const heroEventId = heroEntry?.eventId || heroEvent?.id;
   const heroTrailerLink = heroEvent?.trailerLink || "";
   const countLabel = type === "show" ? "spectacles" : "films";
   const ctaLabel =
@@ -93,7 +101,7 @@ export default async function EvenementsPage({ searchParams }) {
             <div className="text-sm text-white/70 sm:text-base font-body">
               {heroMeta}
             </div>
-            <p className="max-w-lg text-sm leading-relaxed text-white/70 sm:text-lg font-body">
+            <p className="max-w-lg text-sm leading-relaxed text-white/70 sm:text-lg font-body line-clamp-4 sm:line-clamp-none">
               {heroSubtitle}
             </p>
             <div className="mt-2 flex flex-wrap gap-3">
@@ -135,7 +143,7 @@ export default async function EvenementsPage({ searchParams }) {
         </div>
       </section>
 
-      <section className="w-full px-10 py-8 sm:px-14 lg:px-20 mb-20">
+      <section className="w-full px-10 py-8 sm:px-14 lg:px-20">
         <div className="grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
           {events.map((movie) => (
             <Link
@@ -170,6 +178,54 @@ export default async function EvenementsPage({ searchParams }) {
           ))}
         </div>
       </section>
+
+      {upcomingEvents.length ? (
+        <section className="w-full px-10 py-8 sm:px-14 lg:px-20 mb-20">
+          <div className="mb-8 flex items-center gap-3">
+            <span className="h-8 w-1 rounded-full bg-accent" />
+            <h2 className="text-2xl font-semibold text-white sm:text-3xl font-display">
+              Prochainement
+            </h2>
+          </div>
+          <div className="grid gap-6 md:grid-cols-2">
+            {upcomingEvents.map((movie) => (
+              <Link
+                key={movie.id ?? movie.title}
+                href={`/evenements/${movie.id}`}
+                className="group relative overflow-hidden rounded-xl border border-white/10"
+              >
+                <div className="relative aspect-video w-full overflow-hidden">
+                  <Image
+                    src={movie.image}
+                    alt={movie.imageAlt}
+                    fill
+                    sizes="(min-width: 1024px) 45vw, 100vw"
+                    className="object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-black/40 transition-colors group-hover:bg-black/20" />
+                  <div className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                    <div className="flex h-14 w-14 items-center justify-center rounded-full border border-white/40 bg-white/20 backdrop-blur-sm transition-transform group-hover:scale-110">
+                      <span className="text-3xl text-white">▶</span>
+                    </div>
+                  </div>
+                  <div className="absolute bottom-0 left-0 w-full bg-linear-to-t from-black via-black/80 to-transparent p-6">
+                    <span className="text-xs font-semibold uppercase tracking-wider text-accent font-display">
+                      {movie.meta || "Prochainement"}
+                    </span>
+                    <h3 className="mt-1 text-2xl font-semibold text-white font-display">
+                      {movie.title}
+                    </h3>
+                    <p className="line-clamp-1 text-white/70 font-body">
+                      {movie.description ||
+                        "Découvrez bientôt cette nouvelle expérience."}
+                    </p>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+      ) : null}
     </main>
   );
 }

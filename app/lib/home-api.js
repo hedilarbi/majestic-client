@@ -187,18 +187,24 @@ export const normalizeHomeData = (
   };
 };
 
-export async function getHomeData(options) {
+export async function getHomeData(options = {}) {
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), 8000);
+  const { noCache, ...normalizeOptions } = options;
 
   try {
     const url = new URL(HOME_ENDPOINT, API_BASE_URL);
-    const response = await fetch(url, {
+    const fetchOptions = {
       method: "GET",
       headers: { Accept: "application/json" },
-      next: { revalidate: REVALIDATE_SECONDS, tags: ["home"] },
       signal: controller.signal,
-    });
+    };
+    if (noCache) {
+      fetchOptions.cache = "no-store";
+    } else {
+      fetchOptions.next = { revalidate: REVALIDATE_SECONDS, tags: ["home"] };
+    }
+    const response = await fetch(url, fetchOptions);
 
     if (!response.ok) {
       throw new Error(`Home API error: ${response.status}`);
@@ -206,10 +212,10 @@ export async function getHomeData(options) {
 
     const payload = await response.json();
 
-    return normalizeHomeData(payload, options);
+    return normalizeHomeData(payload, normalizeOptions);
   } catch (error) {
     console.error("Home data fetch failed:", error);
-    return normalizeHomeData(undefined, options);
+    return normalizeHomeData(undefined, normalizeOptions);
   } finally {
     clearTimeout(timeoutId);
   }
