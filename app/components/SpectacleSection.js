@@ -61,7 +61,7 @@ export default function SpectacleSection({ items = [] }) {
                     {show.meta}
                   </p>
                 </div>
-                <span className="flex w-full translate-y-4 items-center justify-center gap-2 rounded-lg bg-primary py-3 text-sm font-semibold text-white opacity-0 shadow-lg shadow-primary/20 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
+                <span className="flex w-full translate-y-4 items-center justify-center gap-2 rounded-lg bg-accent py-3 text-sm font-semibold text-black opacity-0 shadow-[0_0_16px_rgba(116,208,241,0.35)] transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
                   Réserver
                   <MdArrowForward className="h-4 w-4" />
                 </span>

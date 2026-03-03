@@ -81,7 +81,7 @@ export default function HeroSection({ slides = [] }) {
                   </p>
                   <div className="flex flex-wrap gap-4 pt-4">
                     <Link
-                      className="group relative overflow-hidden rounded-lg bg-primary px-6 py-3 text-base text-white transition-all hover:scale-105 active:scale-95 shadow-[0_0_20px_rgba(16,52,166,0.4)] sm:px-8 sm:py-4"
+                      className="group relative overflow-hidden rounded-lg bg-accent px-6 py-3 text-base text-black transition-all hover:scale-105 hover:brightness-110 active:scale-95 shadow-[0_0_20px_rgba(116,208,241,0.4)] sm:px-8 sm:py-4"
                       href={
                         slide.eventId
                           ? `/evenements/${slide.eventId}`

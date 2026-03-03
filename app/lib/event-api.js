@@ -6,7 +6,6 @@ const API_BASE_URL = RAW_API_BASE_URL.startsWith("http")
   : `http://${RAW_API_BASE_URL}`;
 const SESSION_ENDPOINT = "/sessions/home";
 const FALLBACK_POSTER = "/images/logo.png";
-const REVALIDATE_SECONDS = 60;
 
 const normalizeEvent = (event) => {
   if (!event || !event._id) return null;
@@ -54,7 +53,7 @@ export async function getEventSessions(eventId) {
     const response = await fetch(url, {
       method: "GET",
       headers: { Accept: "application/json" },
-      next: { revalidate: REVALIDATE_SECONDS, tags: [`event-${eventId}`] },
+      cache: "no-store",
       signal: controller.signal,
     });
 

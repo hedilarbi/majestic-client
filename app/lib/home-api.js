@@ -177,7 +177,7 @@ export const normalizeHomeData = (
     : nowShowingRaw;
   const spectacles = toSpectacles(payload.spectacles || []);
   const upcomingRaw = toUpcoming(payload.prochainement || []);
-  const upcoming = limitUpcoming ? upcomingRaw.slice(0, 2) : upcomingRaw;
+  const upcoming = limitUpcoming ? upcomingRaw.slice(0, 3) : upcomingRaw;
 
   return {
     heroSlides,

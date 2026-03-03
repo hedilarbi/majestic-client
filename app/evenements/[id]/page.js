@@ -5,6 +5,8 @@ import SessionSelector from "../../components/SessionSelector";
 import { getEventSessions } from "../../lib/event-api";
 import { MdInfoOutline, MdSchedule } from "react-icons/md";
 
+export const dynamic = "force-dynamic";
+
 const FALLBACK_SYNOPSIS = "Synopsis à venir.";
 
 const formatDuration = (minutes) => {

@@ -7,13 +7,19 @@ import { usePathname, useSearchParams } from "next/navigation";
 import { createPortal } from "react-dom";
 import { FaFacebookF, FaInstagram } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
-import { MdClose, MdMenu, MdSearch } from "react-icons/md";
+import { MdClose, MdMenu } from "react-icons/md";
 import { navLinks } from "../lib/site-data";
 
 const resolveType = (value) => (value === "show" ? "show" : "movie");
+const shouldHideChrome = (pathname) =>
+  typeof pathname === "string" &&
+  pathname.startsWith("/reserver-siege/") &&
+  pathname.includes("/checkout/succes");
 
 export default function SiteHeader() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
+  const [authChecked, setAuthChecked] = useState(false);
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const currentType = resolveType(searchParams.get("type"));
@@ -44,11 +50,56 @@ export default function SiteHeader() {
     };
   }, [isMenuOpen]);
 
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadUser = async () => {
+      try {
+        const response = await fetch("/api/users/me", {
+          method: "GET",
+          cache: "no-store",
+        });
+        if (!response.ok) {
+          if (isMounted) {
+            setCurrentUser(null);
+          }
+          return;
+        }
+        const data = await response.json().catch(() => ({}));
+        if (isMounted) {
+          setCurrentUser(data?.user || null);
+        }
+      } catch (error) {
+        if (isMounted) {
+          setCurrentUser(null);
+        }
+      } finally {
+        if (isMounted) {
+          setAuthChecked(true);
+        }
+      }
+    };
+
+    loadUser();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [pathname]);
+
+  const isAuthenticated =
+    authChecked && currentUser?.role && currentUser.role === "customer";
+  const hidden = shouldHideChrome(pathname);
+
+  if (hidden) {
+    return null;
+  }
+
   return (
     <header className="sticky top-0 z-50 w-full border-b border-white/5 bg-black/80 backdrop-blur-md">
       <nav
         aria-label="Navigation principale"
-        className="mx-auto flex h-24 items-center justify-between px-10 sm:px-12 lg:px-20"
+        className="mx-auto flex md:h-24 h-16 items-center justify-between px-10 sm:px-12 lg:px-20"
       >
         <div className="flex items-center gap-8">
           <Link className="flex items-center gap-2" href="/">
@@ -57,7 +108,7 @@ export default function SiteHeader() {
               alt="Lumière Cinéma"
               width={140}
               height={40}
-              className="h-14 w-auto"
+              className="md:h-14 w-auto h-10"
               priority
             />
           </Link>
@@ -80,20 +131,30 @@ export default function SiteHeader() {
           </div>
         </div>
         <div className="flex items-center gap-4">
-          <div className="relative hidden sm:block">
-            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-              <MdSearch className="h-5 w-5 text-white/50" />
-            </div>
-            <input
-              aria-label="Rechercher des films"
-              className="w-full rounded-full border border-white/10 bg-white/5 py-2 pl-10 pr-4 text-sm text-white placeholder:text-white/40 transition focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary/40 font-body"
-              placeholder="Rechercher des films..."
-              type="search"
-            />
-          </div>
-          <button className="hidden rounded-full border border-white/20 px-6 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-white/80 transition-all hover:border-accent hover:text-accent hover:shadow-[0_0_15px_rgba(116,208,241,0.3)] md:inline-flex">
-            Connexion
-          </button>
+          {isAuthenticated ? (
+            <Link
+              href="/profil"
+              className="hidden items-center justify-center rounded-full border border-white/20 px-5 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-white/80 transition-all hover:border-accent hover:text-accent md:inline-flex"
+              aria-label="Mon profil"
+            >
+              Profil
+            </Link>
+          ) : (
+            <>
+              <Link
+                href="/inscription"
+                className="hidden rounded-full bg-accent px-6 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-black shadow-[0_0_20px_rgba(116,208,241,0.35)] transition-all hover:brightness-110 md:inline-flex"
+              >
+                Inscription
+              </Link>
+              <Link
+                href="/connexion"
+                className="hidden rounded-full border border-white/20 px-6 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-white/80 transition-all hover:border-accent hover:text-accent hover:shadow-[0_0_15px_rgba(116,208,241,0.3)] md:inline-flex"
+              >
+                Connexion
+              </Link>
+            </>
+          )}
           <button
             className="inline-flex items-center justify-center rounded-full border border-white/20 p-2 text-white/80 transition-all hover:border-accent hover:text-accent md:hidden"
             type="button"
@@ -159,12 +220,33 @@ export default function SiteHeader() {
                   })}
                 </div>
                 <div className="mt-auto">
-                  <button
-                    className="w-full rounded-full border border-white/20 px-6 py-3 text-xs font-semibold uppercase tracking-[0.2em] text-white/80 transition-all hover:border-accent hover:text-accent hover:shadow-[0_0_15px_rgba(116,208,241,0.3)]"
-                    type="button"
-                  >
-                    Connexion
-                  </button>
+                  {isAuthenticated ? (
+                    <Link
+                      className="mx-auto flex w-full items-center justify-center rounded-full border border-white/20 py-3 text-xs font-semibold uppercase tracking-[0.2em] text-white/80 transition-all hover:border-accent hover:text-accent"
+                      href="/profil"
+                      onClick={() => setIsMenuOpen(false)}
+                      aria-label="Mon profil"
+                    >
+                      Profil
+                    </Link>
+                  ) : (
+                    <div className="flex flex-col gap-3">
+                      <Link
+                        className="w-full rounded-full bg-accent px-6 py-3 text-xs font-semibold uppercase tracking-[0.2em] text-black shadow-[0_0_20px_rgba(116,208,241,0.35)] transition-all hover:brightness-110"
+                        href="/inscription"
+                        onClick={() => setIsMenuOpen(false)}
+                      >
+                        Inscription
+                      </Link>
+                      <Link
+                        className="w-full rounded-full border border-white/20 px-6 py-3 text-xs font-semibold uppercase tracking-[0.2em] text-white/80 transition-all hover:border-accent hover:text-accent hover:shadow-[0_0_15px_rgba(116,208,241,0.3)]"
+                        href="/connexion"
+                        onClick={() => setIsMenuOpen(false)}
+                      >
+                        Connexion
+                      </Link>
+                    </div>
+                  )}
                   <div className="mt-4 flex items-center justify-center gap-4">
                     <a
                       className="rounded-full border border-white/20 p-2 text-white/60 transition hover:border-accent hover:text-accent"

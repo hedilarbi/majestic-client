@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import { MdArrowForward, MdCalendarMonth } from "react-icons/md";
 
 const normalizeShortLabel = (value) =>
@@ -88,6 +89,7 @@ const groupSessionsByDate = (sessions, now) => {
 };
 
 export default function SessionSelector({ sessions = [] }) {
+  const router = useRouter();
   const now = useMemo(() => new Date(), []);
   const todayKey = useMemo(() => getLocalDateKey(now), [now]);
   const { sessionsByDate, dateKeys } = useMemo(
@@ -152,6 +154,11 @@ export default function SessionSelector({ sessions = [] }) {
     setSelectedSessionId(null);
   };
 
+  const handleConfirm = () => {
+    if (!selectedSession?.id) return;
+    router.push(`/reservation-sieges/${selectedSession.id}`);
+  };
+
   return (
     <section className="relative z-20 mx-auto mt-12 px-10 pb-20 sm:px-12 lg:px-20">
       <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-white/5 shadow-2xl">
@@ -169,7 +176,7 @@ export default function SessionSelector({ sessions = [] }) {
                     key={day.key}
                     className={`group relative flex h-32 w-24 snap-start flex-col items-center justify-center rounded-2xl border transition-transform hover:-translate-y-1 font-display ${
                       day.active
-                        ? "border-accent bg-linear-to-br from-white/10 to-black text-white shadow-[0_0_15px_rgba(116,208,241,0.3)]"
+                        ? "border-accent bg-white/10 text-white shadow-[0_0_15px_rgba(116,208,241,0.3)]"
                         : "border-white/10 bg-white/5 text-white/50 hover:bg-white/10"
                     }`}
                     type="button"
@@ -231,7 +238,7 @@ export default function SessionSelector({ sessions = [] }) {
                         disabled={soldOut}
                         onClick={() => setSelectedSessionId(session.id)}
                       >
-                        <div className="absolute inset-0 bg-linear-to-r from-primary to-accent opacity-0 transition-opacity duration-300 group-hover/btn:opacity-100" />
+                        <div className="absolute inset-0 bg-accent/20 opacity-0 transition-opacity duration-300 group-hover/btn:opacity-100" />
                         <span className="relative z-10 flex flex-col items-center">
                           <span
                             className={`text-lg font-bold tracking-wide transition-colors ${
@@ -287,13 +294,14 @@ export default function SessionSelector({ sessions = [] }) {
             )}
           </div>
           <button
-            className={`flex w-full items-center justify-center gap-2 rounded-xl bg-linear-to-r from-primary to-accent px-8 py-3 font-semibold uppercase tracking-wider text-white shadow-[0_0_15px_rgba(16,52,166,0.6)] transition-all md:w-auto font-display ${
+            className={`flex w-full items-center justify-center gap-2 rounded-xl bg-accent px-8 py-3 font-semibold uppercase tracking-wider text-black shadow-[0_0_15px_rgba(116,208,241,0.35)] transition-all md:w-auto font-display ${
               selectedSession
-                ? "hover:scale-105 hover:shadow-[0_0_25px_rgba(16,52,166,0.8)]"
+                ? "hover:brightness-110"
                 : "cursor-not-allowed opacity-60"
             }`}
             type="button"
             disabled={!selectedSession}
+            onClick={handleConfirm}
           >
             <span>Confirmer la séance</span>
             <MdArrowForward className="h-5 w-5" />

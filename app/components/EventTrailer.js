@@ -133,7 +133,7 @@ export default function EventTrailer({
             onClick={() => setIsPlaying(true)}
             disabled={!hasTrailer}
           >
-            <span className="rounded-full bg-linear-to-r from-primary to-accent p-3 text-white shadow-[0_0_15px_rgba(16,52,166,0.5),0_0_5px_rgba(116,208,241,0.3)] transition-transform hover:scale-100 scale-90">
+            <span className="rounded-full bg-accent p-3 text-black shadow-[0_0_15px_rgba(116,208,241,0.35)] transition-transform hover:scale-100 scale-90">
               <MdPlayArrow className="h-8 w-8" />
             </span>
           </button>

@@ -27,7 +27,7 @@ export default function NowShowingSection({ items = [], showCta = true }) {
             </p>
           </div>
           <div className="flex gap-2">
-            <button className="rounded-full border border-primary/30 bg-primary/20 px-4 py-1.5 text-sm font-semibold text-accent transition-colors hover:bg-primary/40 font-display">
+            <button className="rounded-full border border-accent/40 bg-accent px-4 py-1.5 text-sm font-semibold text-black transition-colors hover:brightness-110 font-display">
               Tous
             </button>
           </div>

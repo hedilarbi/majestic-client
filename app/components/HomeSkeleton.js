@@ -1,6 +1,6 @@
 const posterSlots = Array.from({ length: 5 });
 const showSlots = Array.from({ length: 4 });
-const upcomingSlots = Array.from({ length: 2 });
+const upcomingSlots = Array.from({ length: 3 });
 
 export default function HomeSkeleton() {
   return (
@@ -75,11 +75,11 @@ export default function HomeSkeleton() {
         <section className="w-full py-4">
           <div className="mx-auto px-10 sm:px-12 lg:px-20">
             <div className="mb-8 h-6 w-44 rounded-full bg-white/10 animate-pulse" />
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+            <div className="grid grid-cols-2 gap-6 md:grid-cols-4 lg:grid-cols-5">
               {upcomingSlots.map((_, index) => (
                 <div
                   key={`upcoming-${index}`}
-                  className="aspect-video rounded-xl bg-white/10 animate-pulse"
+                  className="aspect-[2/3] rounded-xl bg-white/10 animate-pulse"
                 />
               ))}
             </div>

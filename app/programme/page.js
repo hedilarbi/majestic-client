@@ -120,7 +120,7 @@ export default async function CinemaPage({ searchParams }) {
                 aria-current={date.isActive ? "date" : undefined}
                 className={`group relative flex h-32 w-24 flex-col items-center justify-center rounded-2xl border transition-transform hover:-translate-y-1 ${
                   date.isActive
-                    ? "border-accent bg-linear-to-br from-white/10 to-black shadow-[0_0_15px_rgba(116,208,241,0.3)]"
+                    ? "border-accent bg-white/10 shadow-[0_0_15px_rgba(116,208,241,0.3)]"
                     : "border-white/10 bg-white/5 hover:bg-white/10"
                 }`}
               >
@@ -235,7 +235,7 @@ export default async function CinemaPage({ searchParams }) {
                           }`}
                           type="button"
                         >
-                          <div className="absolute inset-0 bg-linear-to-r from-primary to-accent opacity-0 transition-opacity duration-300 group-hover/btn:opacity-100" />
+                          <div className="absolute inset-0 bg-accent/20 opacity-0 transition-opacity duration-300 group-hover/btn:opacity-100" />
                           <span className="relative z-10 flex flex-col items-center">
                             <span
                               className={`text-lg font-bold tracking-wide transition-colors ${

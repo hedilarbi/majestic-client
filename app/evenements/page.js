@@ -106,7 +106,7 @@ export default async function EvenementsPage({ searchParams }) {
             </p>
             <div className="mt-2 flex flex-wrap gap-3">
               <Link
-                className="flex h-11 items-center gap-2 rounded-lg bg-primary px-4 text-sm font-semibold text-white shadow-[0_0_20px_rgba(16,52,166,0.4)] transition-all hover:-translate-y-0.5 hover:bg-primary/90 hover:shadow-[0_0_30px_rgba(16,52,166,0.6)] sm:h-12 sm:px-6 sm:text-base font-display"
+                className="flex h-11 items-center gap-2 rounded-lg bg-accent px-4 text-sm font-semibold text-black shadow-[0_0_20px_rgba(116,208,241,0.4)] transition-all hover:-translate-y-0.5 hover:brightness-110 hover:shadow-[0_0_30px_rgba(116,208,241,0.6)] sm:h-12 sm:px-6 sm:text-base font-display"
                 href={
                   heroEventId
                     ? `/evenements/${heroEventId}`
@@ -119,14 +119,14 @@ export default async function EvenementsPage({ searchParams }) {
                 trailerLink={heroTrailerLink}
                 title={heroTitle}
                 label="Bande-annonce"
-                className="flex h-11 items-center gap-2 rounded-lg border border-secondary/50 bg-secondary px-4 text-sm font-semibold text-white shadow-[0_0_12px_rgba(16,52,166,0.2)] transition-all hover:-translate-y-0.5 hover:bg-secondary/80 sm:h-12 sm:px-6 sm:text-base font-display"
+                className="flex h-11 items-center gap-2 rounded-lg border border-accent/40 bg-accent/10 px-4 text-sm font-semibold text-accent shadow-[0_0_12px_rgba(116,208,241,0.2)] transition-all hover:-translate-y-0.5 hover:bg-accent hover:text-black sm:h-12 sm:px-6 sm:text-base font-display"
               />
             </div>
           </div>
         </div>
       </section>
 
-      <section className="sticky top-18 z-30 w-full px-10 py-2 sm:px-14 lg:px-20">
+      <section className="w-full px-10 py-2 sm:px-14 lg:px-20">
         <div className="rounded-xl border border-white/10 bg-black/70 p-4 shadow-lg backdrop-blur-lg">
           <div className="mb-4 flex flex-col items-start justify-between gap-4 md:mb-0 md:flex-row md:items-center">
             <h2 className="text-xl font-semibold text-white font-display">
@@ -169,7 +169,7 @@ export default async function EvenementsPage({ searchParams }) {
                   </div>
                 </div>
                 <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                  <span className="rounded-full bg-primary px-6 py-2 text-sm font-semibold text-white shadow-lg font-display">
+                  <span className="rounded-full bg-accent px-6 py-2 text-sm font-semibold text-black shadow-[0_0_20px_rgba(116,208,241,0.45)] font-display">
                     Réserver
                   </span>
                 </div>
@@ -187,38 +187,36 @@ export default async function EvenementsPage({ searchParams }) {
               Prochainement
             </h2>
           </div>
-          <div className="grid gap-6 md:grid-cols-2">
+          <div className="grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
             {upcomingEvents.map((movie) => (
               <Link
                 key={movie.id ?? movie.title}
                 href={`/evenements/${movie.id}`}
-                className="group relative overflow-hidden rounded-xl border border-white/10"
+                className="group relative flex flex-col gap-3 rounded-xl border border-white/5 bg-white/5 transition-all duration-300 hover:shadow-[0_0_20px_rgba(16,52,166,0.4)]"
               >
-                <div className="relative aspect-video w-full overflow-hidden">
+                <div className="relative aspect-2/3 w-full overflow-hidden rounded-t-xl">
                   <Image
                     src={movie.image}
                     alt={movie.imageAlt}
                     fill
-                    sizes="(min-width: 1024px) 45vw, 100vw"
-                    className="object-cover transition-transform duration-700 group-hover:scale-105"
+                    sizes="(min-width: 1280px) 18vw, (min-width: 1024px) 22vw, (min-width: 768px) 30vw, 45vw"
+                    className="object-cover transition-transform duration-500 group-hover:scale-110"
                   />
-                  <div className="absolute inset-0 bg-black/40 transition-colors group-hover:bg-black/20" />
-                  <div className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                    <div className="flex h-14 w-14 items-center justify-center rounded-full border border-white/40 bg-white/20 backdrop-blur-sm transition-transform group-hover:scale-110">
-                      <span className="text-3xl text-white">▶</span>
-                    </div>
-                  </div>
-                  <div className="absolute bottom-0 left-0 w-full bg-linear-to-t from-black via-black/80 to-transparent p-6">
-                    <span className="text-xs font-semibold uppercase tracking-wider text-accent font-display">
-                      {movie.meta || "Prochainement"}
-                    </span>
-                    <h3 className="mt-1 text-2xl font-semibold text-white font-display">
+                  <div className="absolute inset-0 bg-linear-to-t from-black/90 via-transparent to-transparent opacity-80" />
+                  <div className="absolute bottom-0 left-0 w-full translate-y-2 p-4 transition-transform duration-300 group-hover:translate-y-0">
+                    <h3 className="text-lg font-semibold leading-tight text-white drop-shadow-md font-display">
                       {movie.title}
                     </h3>
-                    <p className="line-clamp-1 text-white/70 font-body">
-                      {movie.description ||
-                        "Découvrez bientôt cette nouvelle expérience."}
-                    </p>
+                    <div className="mt-1 line-clamp-1 text-xs text-white/70 font-body">
+                      {movie.meta ||
+                        movie.description ||
+                        "Prochainement"}
+                    </div>
+                  </div>
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                    <span className="rounded-full bg-accent px-6 py-2 text-sm font-semibold text-black shadow-[0_0_20px_rgba(116,208,241,0.45)] font-display">
+                      Réserver
+                    </span>
                   </div>
                 </div>
               </Link>
