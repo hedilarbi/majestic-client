@@ -7,6 +7,23 @@ const API_BASE_URL = RAW_API_BASE_URL.startsWith("http")
 const SESSION_ENDPOINT = "/sessions/home";
 const FALLBACK_POSTER = "/images/logo.png";
 
+const resolveSessionId = (session) => {
+  const raw =
+    session?.id ??
+    session?._id ??
+    session?.sessionId ??
+    session?.seanceId ??
+    "";
+  const normalized = String(raw || "").trim();
+  return normalized || null;
+};
+
+const toNumberOrZero = (value) => {
+  const parsed =
+    typeof value === "number" ? value : Number.parseFloat(String(value));
+  return Number.isFinite(parsed) ? parsed : 0;
+};
+
 const normalizeEvent = (event) => {
   if (!event || !event._id) return null;
   return {
@@ -30,14 +47,12 @@ const normalizeEvent = (event) => {
 const normalizeSessions = (sessions) =>
   Array.isArray(sessions)
     ? sessions.map((session) => ({
-        id: session._id,
-        date: session.date,
-        sessionTime: session.sessionTime,
+        id: resolveSessionId(session),
+        date: session?.date || null,
+        sessionTime: session?.sessionTime || session?.time || "",
         version: session.version,
-        availableSeats: Number.isFinite(session.availableSeats)
-          ? session.availableSeats
-          : 0,
-      }))
+        availableSeats: toNumberOrZero(session?.availableSeats),
+      })).filter((session) => Boolean(session.id))
     : [];
 
 export async function getEventSessions(eventId) {

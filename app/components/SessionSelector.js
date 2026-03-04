@@ -66,6 +66,17 @@ const getSessionDateTime = (dateKey, timeLabel) => {
   return date;
 };
 
+const resolveSessionId = (session) => {
+  const raw =
+    session?.id ??
+    session?._id ??
+    session?.sessionId ??
+    session?.seanceId ??
+    "";
+  const normalized = String(raw || "").trim();
+  return normalized || null;
+};
+
 const groupSessionsByDate = (sessions, now) => {
   const sessionsByDate = new Map();
   const nowTime = now?.getTime?.() ?? Date.now();
@@ -112,16 +123,20 @@ export default function SessionSelector({ sessions = [] }) {
   }, [sessionsByDate, safeActiveDateKey]);
 
   const fallbackSessionId =
-    sessionsForDate.find((session) => session.availableSeats > 0)?.id ??
-    sessionsForDate[0]?.id ??
+    resolveSessionId(
+      sessionsForDate.find((session) => session.availableSeats > 0)
+    ) ??
+    resolveSessionId(sessionsForDate[0]) ??
     null;
   const resolvedSessionId = sessionsForDate.some(
-    (session) => session.id === selectedSessionId
+    (session) => resolveSessionId(session) === selectedSessionId
   )
     ? selectedSessionId
     : fallbackSessionId;
   const selectedSession =
-    sessionsForDate.find((session) => session.id === resolvedSessionId) ?? null;
+    sessionsForDate.find(
+      (session) => resolveSessionId(session) === resolvedSessionId
+    ) ?? null;
   const selectedDateLabel = safeActiveDateKey
     ? formatShortDate(safeActiveDateKey)
     : "";
@@ -155,8 +170,9 @@ export default function SessionSelector({ sessions = [] }) {
   };
 
   const handleConfirm = () => {
-    if (!selectedSession?.id) return;
-    router.push(`/reservation-sieges/${selectedSession.id}`);
+    const sessionId = resolveSessionId(selectedSession);
+    if (!sessionId) return;
+    router.push(`/reservation-sieges/${sessionId}`);
   };
 
   return (
@@ -224,11 +240,12 @@ export default function SessionSelector({ sessions = [] }) {
               <div className="flex flex-wrap gap-3">
                 {sessionsForDate.length ? (
                   sessionsForDate.map((session) => {
-                    const isActive = session.id === resolvedSessionId;
+                    const sessionId = resolveSessionId(session);
+                    const isActive = sessionId === resolvedSessionId;
                     const soldOut = session.availableSeats <= 0;
                     return (
                       <button
-                        key={session.id ?? session.sessionTime}
+                        key={sessionId ?? session.sessionTime}
                         className={`group/btn relative overflow-hidden rounded-xl border px-6 py-2.5 transition-all duration-300 font-display ${
                           isActive
                             ? "border-accent/60 bg-accent/10 shadow-[0_0_10px_rgba(116,208,241,0.1)] ring-1 ring-accent/60 ring-offset-2 ring-offset-black"
@@ -236,7 +253,7 @@ export default function SessionSelector({ sessions = [] }) {
                         } ${soldOut ? "cursor-not-allowed opacity-60" : ""}`}
                         type="button"
                         disabled={soldOut}
-                        onClick={() => setSelectedSessionId(session.id)}
+                        onClick={() => setSelectedSessionId(sessionId)}
                       >
                         <div className="absolute inset-0 bg-accent/20 opacity-0 transition-opacity duration-300 group-hover/btn:opacity-100" />
                         <span className="relative z-10 flex flex-col items-center">
