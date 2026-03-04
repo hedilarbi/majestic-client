@@ -92,14 +92,55 @@ const normalizeOverrideMeta = (raw) => {
 };
 
 export const normalizeSocketUrl = (value) => {
-  if (!value) {
+  const browserOrigin =
+    typeof window !== "undefined" ? String(window.location.origin || "") : "";
+  const raw = String(value || "").trim();
+  const candidate = raw || browserOrigin;
+
+  if (!candidate) {
     return "";
   }
-  const raw = String(value).trim();
-  if (!raw) {
-    return "";
+
+  if (candidate.startsWith("/")) {
+    return browserOrigin.replace(/\/$/, "");
   }
-  return raw.endsWith("/") ? raw.slice(0, -1) : raw;
+
+  const normalizedCandidate = candidate.replace(/^wss?:\/\//i, (match) =>
+    match.toLowerCase() === "wss://" ? "https://" : "http://",
+  );
+  const hasProtocol = /^[a-z][a-z\d+\-.]*:\/\//i.test(normalizedCandidate);
+  const baseForRelative = browserOrigin || undefined;
+  const safeInput = hasProtocol
+    ? normalizedCandidate
+    : `https://${normalizedCandidate}`;
+
+  try {
+    const parsed = new URL(safeInput, baseForRelative);
+
+    if (typeof window !== "undefined") {
+      const pageProtocol = String(window.location.protocol || "").toLowerCase();
+      if (pageProtocol === "https:" && parsed.protocol === "http:") {
+        parsed.protocol = "https:";
+      }
+
+      const pageHost = String(window.location.hostname || "").toLowerCase();
+      const socketHost = String(parsed.hostname || "").toLowerCase();
+      const isLocalLikeHost =
+        socketHost === "localhost" ||
+        socketHost === "0.0.0.0" ||
+        socketHost.startsWith("127.") ||
+        socketHost.endsWith(".local") ||
+        !socketHost.includes(".");
+
+      if (pageHost && socketHost && pageHost !== socketHost && isLocalLikeHost) {
+        return browserOrigin.replace(/\/$/, "");
+      }
+    }
+
+    return parsed.origin.replace(/\/$/, "");
+  } catch (_error) {
+    return browserOrigin.replace(/\/$/, "");
+  }
 };
 
 export const resolveRedirectPath = (value, fallback = "/profil") => {

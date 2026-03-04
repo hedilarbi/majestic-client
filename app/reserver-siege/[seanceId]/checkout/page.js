@@ -6,12 +6,7 @@ export const metadata = {
 };
 
 const resolveSocketUrl = () => {
-  const raw =
-    process.env.NEXT_PUBLIC_SOCKET_URL ||
-    process.env.NEXT_PUBLIC_API_BASE_URL ||
-    process.env.API_BASE_URL ||
-    "http://localhost:5000";
-  return raw.startsWith("http") ? raw : `http://${raw}`;
+  return process.env.NEXT_PUBLIC_SOCKET_URL || "";
 };
 
 export default async function ReserverSiegeCheckoutPage({ params }) {

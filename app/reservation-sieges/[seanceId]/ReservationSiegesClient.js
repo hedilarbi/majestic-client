@@ -674,7 +674,11 @@ export default function ReservationSiegesClient({ seanceId, socketUrl }) {
       return undefined;
     }
 
-    const socket = io(resolvedSocketUrl);
+    const socket = io(resolvedSocketUrl, {
+      transports: ["websocket"],
+      reconnection: true,
+      timeout: 10000,
+    });
 
     socket.emit("join-session", { sessionId: seanceId });
 
