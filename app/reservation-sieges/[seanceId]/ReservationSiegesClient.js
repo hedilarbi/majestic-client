@@ -675,7 +675,7 @@ export default function ReservationSiegesClient({ seanceId, socketUrl }) {
     }
 
     const socket = io(resolvedSocketUrl, {
-      transports: ["websocket"],
+      transports: ["polling", "websocket"],
       reconnection: true,
       timeout: 10000,
     });

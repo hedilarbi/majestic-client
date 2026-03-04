@@ -364,7 +364,7 @@ export default function ReservationCheckoutClient({ seanceId, socketUrl }) {
     }
 
     const socket = io(resolvedSocketUrl, {
-      transports: ["websocket"],
+      transports: ["polling", "websocket"],
       reconnection: true,
       timeout: 10000,
     });
