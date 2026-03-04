@@ -1113,7 +1113,7 @@ export default function ReservationSiegesClient({ seanceId, socketUrl }) {
   }, []);
 
   useEffect(() => {
-    if (isDesktop) {
+    if (isDesktop || isLoading) {
       return undefined;
     }
 
@@ -1143,7 +1143,7 @@ export default function ReservationSiegesClient({ seanceId, socketUrl }) {
       viewport.removeEventListener("touchend", onTouchEnd);
       viewport.removeEventListener("touchcancel", onTouchEnd);
     };
-  }, [handleTouchEnd, handleTouchMove, handleTouchStart, isDesktop]);
+  }, [handleTouchEnd, handleTouchMove, handleTouchStart, isDesktop, isLoading]);
 
   const seatCellSize = 34;
   const gridGap = 3;
