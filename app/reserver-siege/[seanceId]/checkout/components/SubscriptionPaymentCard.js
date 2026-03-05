@@ -16,13 +16,10 @@ export default function SubscriptionPaymentCard({
       <div className="flex items-center gap-2">
         <RiVipCrown2Line className="h-5 w-5 text-accent" />
         <p className="text-xs font-semibold uppercase tracking-[0.24em] text-white/50">
-          Paiement abonnement (optionnel)
+          Paiement abonnement
         </p>
       </div>
       <label className="mt-3 flex flex-col gap-2">
-        <span className="text-xs font-semibold uppercase tracking-[0.2em] text-white/45">
-          Code abonnement
-        </span>
         <input
           value={subscriptionCodeInput}
           onChange={onSubscriptionCodeChange}
@@ -47,8 +44,8 @@ export default function SubscriptionPaymentCard({
       {isSubscriptionPaymentRequested ? (
         <p className="mt-2 text-xs font-semibold text-emerald-300">
           Mode abonnement active: {creditsToUseWithSubscription} credit
-          {creditsToUseWithSubscription > 1 ? "s" : ""} seront debites si le code
-          est valide.
+          {creditsToUseWithSubscription > 1 ? "s" : ""} seront debites si le
+          code est valide.
         </p>
       ) : null}
     </div>

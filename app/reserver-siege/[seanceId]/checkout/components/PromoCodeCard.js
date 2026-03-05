@@ -21,13 +21,10 @@ export default function PromoCodeCard({
       <div className="flex items-center gap-2">
         <RiPriceTag3Line className="h-5 w-5 text-accent" />
         <p className="text-xs font-semibold uppercase tracking-[0.24em] text-white/50">
-          Code promo (paiement en ligne)
+          Code promo
         </p>
       </div>
       <label className="mt-3 flex flex-col gap-2">
-        <span className="text-xs font-semibold uppercase tracking-[0.2em] text-white/45">
-          Code promo
-        </span>
         <input
           value={promoCodeInput}
           onChange={onPromoCodeChange}
