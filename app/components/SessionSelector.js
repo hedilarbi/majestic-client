@@ -180,8 +180,8 @@ export default function SessionSelector({ sessions = [] }) {
       <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-white/5 shadow-2xl">
         <div className="absolute left-0 right-0 top-0 h-px bg-linear-to-r from-primary to-accent opacity-50" />
         <div className="p-6 md:p-8">
-          <h2 className="mb-6 flex items-center gap-3 text-2xl uppercase tracking-wide text-white font-display">
-            <MdCalendarMonth className="h-6 w-6 text-accent" />
+          <h2 className="mb-6 flex items-center gap-2 text-lg uppercase tracking-wide text-white font-display md:gap-3 md:text-2xl">
+            <MdCalendarMonth className="h-5 w-5 text-accent md:h-6 md:w-6" />
             Sélectionnez votre séance
           </h2>
           <div className="mb-10">
@@ -190,7 +190,7 @@ export default function SessionSelector({ sessions = [] }) {
                 {scheduleDays.map((day) => (
                   <button
                     key={day.key}
-                    className={`group relative flex h-32 w-24 snap-start flex-col items-center justify-center rounded-2xl border transition-transform hover:-translate-y-1 font-display ${
+                    className={`group relative flex h-24 w-20 snap-start flex-col items-center justify-center rounded-2xl border transition-transform hover:-translate-y-1 font-display md:h-32 md:w-24 ${
                       day.active
                         ? "border-accent bg-white/10 text-white shadow-[0_0_15px_rgba(116,208,241,0.3)]"
                         : "border-white/10 bg-white/5 text-white/50 hover:bg-white/10"
@@ -202,7 +202,7 @@ export default function SessionSelector({ sessions = [] }) {
                       <div className="absolute inset-0 -z-10 rounded-2xl bg-accent/10 blur-md" />
                     ) : null}
                     <span
-                      className={`mb-1 text-sm font-medium ${
+                      className={`mb-1 text-xs font-medium md:text-sm ${
                         day.active
                           ? "text-accent/80"
                           : "text-white/40 group-hover:text-accent"
@@ -211,7 +211,7 @@ export default function SessionSelector({ sessions = [] }) {
                       {day.label}
                     </span>
                     <span
-                      className={`mb-1 text-3xl font-bold ${
+                      className={`mb-1 text-2xl font-bold md:text-3xl ${
                         day.active
                           ? "text-white"
                           : "text-white/80 group-hover:text-white"
@@ -219,7 +219,7 @@ export default function SessionSelector({ sessions = [] }) {
                     >
                       {day.day}
                     </span>
-                    <span className="text-xs font-medium text-white/40">
+                    <span className="text-[10px] font-medium text-white/40 md:text-xs">
                       {day.month.toUpperCase()}
                     </span>
                   </button>
@@ -246,7 +246,7 @@ export default function SessionSelector({ sessions = [] }) {
                     return (
                       <button
                         key={sessionId ?? session.sessionTime}
-                        className={`group/btn relative overflow-hidden rounded-xl border px-6 py-2.5 transition-all duration-300 font-display ${
+                        className={`group/btn relative overflow-hidden rounded-xl border px-4 py-2 transition-all duration-300 font-display md:px-6 md:py-2.5 ${
                           isActive
                             ? "border-accent/60 bg-accent/10 shadow-[0_0_10px_rgba(116,208,241,0.1)] ring-1 ring-accent/60 ring-offset-2 ring-offset-black"
                             : "border-white/10 bg-white/5 hover:border-accent/50"
@@ -258,7 +258,7 @@ export default function SessionSelector({ sessions = [] }) {
                         <div className="absolute inset-0 bg-accent/20 opacity-0 transition-opacity duration-300 group-hover/btn:opacity-100" />
                         <span className="relative z-10 flex flex-col items-center">
                           <span
-                            className={`text-lg font-bold tracking-wide transition-colors ${
+                            className={`text-base font-bold tracking-wide transition-colors md:text-lg ${
                               isActive
                                 ? "text-accent group-hover/btn:text-white"
                                 : "text-white"
@@ -267,7 +267,7 @@ export default function SessionSelector({ sessions = [] }) {
                             {session.sessionTime}
                           </span>
                           <span
-                            className={`text-[10px] font-medium uppercase tracking-wider transition-colors ${
+                            className={`text-[9px] font-medium uppercase tracking-wider transition-colors md:text-[10px] ${
                               isActive
                                 ? "text-accent/80 group-hover/btn:text-white/90"
                                 : "text-white/60 group-hover/btn:text-white/90"

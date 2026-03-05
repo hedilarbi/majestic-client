@@ -67,8 +67,10 @@ export default function CinemaCalendarButton({ selectedDate, todayKey }) {
   const router = useRouter();
   const containerRef = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
-  const activeDate =
-    parseDateKey(selectedDate) || parseDateKey(todayKey) || new Date();
+  const activeDate = useMemo(
+    () => parseDateKey(selectedDate) || parseDateKey(todayKey) || new Date(),
+    [selectedDate, todayKey],
+  );
   const selectedKey = selectedDate || toDateKey(activeDate);
   const monthLabel = formatMonthLabel(activeDate);
 
@@ -103,17 +105,17 @@ export default function CinemaCalendarButton({ selectedDate, todayKey }) {
   return (
     <div className="relative" ref={containerRef}>
       <button
-        className="rounded-lg border border-white/10 bg-white/5 p-2 transition-colors hover:bg-white/10"
+        className="rounded-lg border border-white/10 bg-white/5 p-1.5 transition-colors hover:bg-white/10 md:p-2"
         type="button"
         aria-haspopup="dialog"
         aria-expanded={isOpen}
         onClick={() => setIsOpen((current) => !current)}
       >
-        <MdCalendarMonth className="h-10 w-10 text-white/60" />
+        <MdCalendarMonth className="h-7 w-7 text-white/60 md:h-10 md:w-10" />
       </button>
       {isOpen ? (
-        <div className="absolute right-0 top-12 z-30 w-80 rounded-2xl border border-white/10 bg-black/90 p-6 shadow-2xl backdrop-blur-xl">
-          <div className="mb-4 text-center text-lg font-semibold text-white font-display">
+        <div className="absolute right-0 top-11 z-30 w-72 rounded-2xl border border-white/10 bg-black/90 p-4 shadow-2xl backdrop-blur-xl md:top-12 md:w-80 md:p-6">
+          <div className="mb-4 text-center text-base font-semibold text-white font-display md:text-lg">
             {monthLabel}
           </div>
           <div className="grid grid-cols-7 gap-2 text-center text-xs font-semibold uppercase text-white/40 font-display">
