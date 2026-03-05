@@ -45,6 +45,23 @@ const formatDisplayDate = (value) => {
   return capitalize(formatter.format(date));
 };
 
+const toNonNegativeIntegerOrNull = (value, fallback = null) => {
+  if (value === null || value === undefined || value === "") {
+    return fallback;
+  }
+
+  const parsed =
+    typeof value === "number"
+      ? value
+      : Number.parseFloat(String(value).replace(",", "."));
+
+  if (!Number.isFinite(parsed)) {
+    return fallback;
+  }
+
+  return Math.max(0, Math.trunc(parsed));
+};
+
 const normalizeOverrideMeta = (raw) => {
   if (!raw) {
     return null;
@@ -307,6 +324,11 @@ export const resolvePricingItems = (data) => {
         limit?.label ||
         "";
       const price = pricingSource?.price ?? limit?.price ?? null;
+      const maxTickets = toNonNegativeIntegerOrNull(limit?.maxTickets, null);
+      const soldCount = toNonNegativeIntegerOrNull(limit?.soldCount, 0);
+      const remainingTickets =
+        maxTickets === null ? null : Math.max(maxTickets - soldCount, 0);
+      const isAvailable = remainingTickets === null || remainingTickets > 0;
       const id =
         pricingSource?._id ??
         pricingSource?.id ??
@@ -323,6 +345,10 @@ export const resolvePricingItems = (data) => {
         id: String(id || name),
         name: name || "Tarif",
         price,
+        maxTickets,
+        soldCount,
+        remainingTickets,
+        isAvailable,
       };
     })
     .filter(Boolean);

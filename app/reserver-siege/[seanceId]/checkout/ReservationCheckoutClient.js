@@ -37,6 +37,23 @@ import {
   toNumber,
 } from "./checkout-utils";
 
+const normalizePricingLookupToken = (value) =>
+  String(value || "").trim().toLowerCase();
+
+const buildPricingLookupKey = (name, price) => {
+  const normalizedName = normalizePricingLookupToken(name);
+  const normalizedPrice = toNumber(price);
+
+  if (!normalizedName || !Number.isFinite(normalizedPrice)) {
+    return "";
+  }
+
+  return `${normalizedName}|${normalizedPrice}`;
+};
+
+const resolvePricingItemKey = (item, index) =>
+  String(item?.id ?? item?.name ?? index);
+
 export default function ReservationCheckoutClient({ seanceId, socketUrl }) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -471,10 +488,10 @@ export default function ReservationCheckoutClient({ seanceId, socketUrl }) {
     [seats],
   );
 
-  const safePricingItems = useMemo(
+  const availablePricingItems = useMemo(
     () =>
       Array.isArray(pricingItems)
-        ? pricingItems.filter((item) => item && item.name)
+        ? pricingItems.filter((item) => item && item.name && item.isAvailable !== false)
         : [],
     [pricingItems],
   );
@@ -491,6 +508,82 @@ export default function ReservationCheckoutClient({ seanceId, socketUrl }) {
   );
 
   const assignableSeatsCount = Math.max(safeSeats.length - fixedSeats.length, 0);
+
+  const fixedPricingUsage = useMemo(() => {
+    const byId = new Map();
+    const byKey = new Map();
+
+    fixedSeats.forEach((seat) => {
+      const override = resolveSeatOverride(seat, overrideMap, seatKey);
+      if (!override) {
+        return;
+      }
+
+      const id = override?.id ? String(override.id) : "";
+      const lookupKey = buildPricingLookupKey(override?.name, override?.price);
+
+      if (id) {
+        byId.set(id, (byId.get(id) || 0) + 1);
+      }
+      if (lookupKey) {
+        byKey.set(lookupKey, (byKey.get(lookupKey) || 0) + 1);
+      }
+    });
+
+    return { byId, byKey };
+  }, [fixedSeats, overrideMap]);
+
+  const safePricingItems = useMemo(
+    () =>
+      availablePricingItems
+        .map((item) => {
+          const id = item?.id ? String(item.id) : "";
+          const lookupKey = buildPricingLookupKey(item?.name, item?.price);
+          const parsedRemaining = Number.parseInt(item?.remainingTickets, 10);
+          const hasRemainingLimit = Number.isFinite(parsedRemaining);
+          const remainingTickets = hasRemainingLimit
+            ? Math.max(parsedRemaining, 0)
+            : null;
+
+          let variableRemainingTickets = remainingTickets;
+          if (hasRemainingLimit) {
+            const fixedSeatsCount =
+              (id && fixedPricingUsage.byId.has(id)
+                ? fixedPricingUsage.byId.get(id)
+                : lookupKey
+                  ? fixedPricingUsage.byKey.get(lookupKey) || 0
+                  : 0) || 0;
+            variableRemainingTickets = Math.max(
+              remainingTickets - fixedSeatsCount,
+              0,
+            );
+          }
+
+          if (
+            variableRemainingTickets !== null &&
+            variableRemainingTickets <= 0
+          ) {
+            return null;
+          }
+
+          return {
+            ...item,
+            variableRemainingTickets,
+          };
+        })
+        .filter(Boolean),
+    [availablePricingItems, fixedPricingUsage],
+  );
+
+  const pricingItemByKey = useMemo(() => {
+    const map = new Map();
+
+    safePricingItems.forEach((item, index) => {
+      map.set(resolvePricingItemKey(item, index), item);
+    });
+
+    return map;
+  }, [safePricingItems]);
 
   const fixedPricingGroups = useMemo(() => {
     if (!fixedSeats.length) {
@@ -531,19 +624,76 @@ export default function ReservationCheckoutClient({ seanceId, socketUrl }) {
 
   const assignedCount = useMemo(
     () =>
-      Object.values(quantities).reduce(
-        (sum, value) => sum + (Number.isFinite(value) ? value : 0),
-        0,
-      ),
-    [quantities],
+      safePricingItems.reduce((sum, item, index) => {
+        const itemKey = resolvePricingItemKey(item, index);
+        return sum + (Number.isFinite(quantities[itemKey]) ? quantities[itemKey] : 0);
+      }, 0),
+    [quantities, safePricingItems],
   );
 
   const remainingToAssign = Math.max(assignableSeatsCount - assignedCount, 0);
 
+  useEffect(() => {
+    setQuantities((prev) => {
+      const previous = prev && typeof prev === "object" ? prev : {};
+      const next = {};
+
+      safePricingItems.forEach((item, index) => {
+        const itemKey = resolvePricingItemKey(item, index);
+        const rawValue = Number.parseInt(previous[itemKey] ?? 0, 10);
+        if (!Number.isFinite(rawValue) || rawValue <= 0) {
+          return;
+        }
+
+        const maxForItem = Number.isFinite(item?.variableRemainingTickets)
+          ? Math.max(item.variableRemainingTickets, 0)
+          : null;
+        const safeValue =
+          maxForItem === null ? rawValue : Math.min(rawValue, maxForItem);
+
+        if (safeValue > 0) {
+          next[itemKey] = safeValue;
+        }
+      });
+
+      let assignableLeft = Math.max(assignableSeatsCount, 0);
+      const capped = {};
+
+      safePricingItems.forEach((item, index) => {
+        const itemKey = resolvePricingItemKey(item, index);
+        const value = Number.parseInt(next[itemKey] ?? 0, 10);
+        if (!Number.isFinite(value) || value <= 0 || assignableLeft <= 0) {
+          return;
+        }
+
+        const safeValue = Math.min(value, assignableLeft);
+        if (safeValue > 0) {
+          capped[itemKey] = safeValue;
+          assignableLeft -= safeValue;
+        }
+      });
+
+      const previousKeys = Object.keys(previous);
+      const nextKeys = Object.keys(capped);
+
+      if (previousKeys.length !== nextKeys.length) {
+        return capped;
+      }
+
+      for (const key of previousKeys) {
+        if ((previous[key] || 0) !== (capped[key] || 0)) {
+          return capped;
+        }
+      }
+
+      return previous;
+    });
+  }, [assignableSeatsCount, safePricingItems]);
+
   const variableTotal = useMemo(
     () =>
       safePricingItems.reduce((sum, item, index) => {
-        const itemKey = String(item?.id ?? item?.name ?? index);
+        const itemKey = resolvePricingItemKey(item, index);
         const quantity = quantities[itemKey] || 0;
         return sum + quantity * toNumber(item?.price);
       }, 0),
@@ -610,6 +760,11 @@ export default function ReservationCheckoutClient({ seanceId, socketUrl }) {
       }
 
       setQuantities((prev) => {
+        const targetPricing = pricingItemByKey.get(itemKey);
+        if (!targetPricing) {
+          return prev;
+        }
+
         const currentAssigned = Object.values(prev).reduce(
           (sum, value) => sum + (Number.isFinite(value) ? value : 0),
           0,
@@ -618,11 +773,19 @@ export default function ReservationCheckoutClient({ seanceId, socketUrl }) {
           return prev;
         }
 
-        const nextValue = (prev[itemKey] || 0) + 1;
+        const currentValue = prev[itemKey] || 0;
+        const maxForItem = Number.isFinite(targetPricing?.variableRemainingTickets)
+          ? Math.max(targetPricing.variableRemainingTickets, 0)
+          : null;
+        if (maxForItem !== null && currentValue >= maxForItem) {
+          return prev;
+        }
+
+        const nextValue = currentValue + 1;
         return { ...prev, [itemKey]: nextValue };
       });
     },
-    [assignableSeatsCount, canAdjust, isSubmitting, isSuccess],
+    [assignableSeatsCount, canAdjust, isSubmitting, isSuccess, pricingItemByKey],
   );
 
   const handleDecrement = useCallback(
@@ -646,7 +809,7 @@ export default function ReservationCheckoutClient({ seanceId, socketUrl }) {
     (sourceQuantities = quantities) =>
       safePricingItems
         .map((item, index) => {
-          const itemKey = String(item?.id ?? item?.name ?? index);
+          const itemKey = resolvePricingItemKey(item, index);
           const quantity = sourceQuantities[itemKey] || 0;
           if (!quantity) {
             return null;
@@ -791,11 +954,13 @@ export default function ReservationCheckoutClient({ seanceId, socketUrl }) {
           return;
         }
 
-        const match = safePricingItems.find((item) => {
+        let matchedIndex = -1;
+        const match = safePricingItems.find((item, index) => {
           const itemId = item?.id ? String(item.id) : "";
           const selectionId = selection?.pricingId ? String(selection.pricingId) : "";
 
           if (itemId && selectionId && itemId === selectionId) {
+            matchedIndex = index;
             return true;
           }
 
@@ -804,19 +969,24 @@ export default function ReservationCheckoutClient({ seanceId, socketUrl }) {
           const itemPrice = toNumber(item?.price);
           const selectionPrice = toNumber(selection?.price);
 
-          return (
+          const matched =
             itemName &&
             selectionName &&
             itemName === selectionName &&
-            itemPrice === selectionPrice
-          );
+            itemPrice === selectionPrice;
+
+          if (matched) {
+            matchedIndex = index;
+          }
+
+          return matched;
         });
 
         if (!match) {
           return;
         }
 
-        const key = String(match?.id ?? match?.name);
+        const key = resolvePricingItemKey(match, matchedIndex);
         next[key] = (next[key] || 0) + quantity;
       });
 
@@ -1184,16 +1354,17 @@ export default function ReservationCheckoutClient({ seanceId, socketUrl }) {
       setPromoCodeInput(intent.promoCode);
     }
     autoFinalizeAttemptedRef.current = true;
+    const restoredSelections =
+      buildPricingSelectionsFromQuantities(restoredQuantities);
 
     finalizeBooking({
-      selectionsOverride: Array.isArray(intent.selections)
-        ? intent.selections
-        : [],
+      selectionsOverride: restoredSelections,
       subscriptionCodeOverride: intent.subscriptionCode,
       promoCodeOverride: intent.promoCode,
       silent: true,
     });
   }, [
+    buildPricingSelectionsFromQuantities,
     clearCheckoutIntent,
     finalizeBooking,
     readCheckoutIntent,

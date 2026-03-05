@@ -1,4 +1,8 @@
 export default function SeanceInfoPanel({ seanceInfo, pricingItems, formatPrice }) {
+  const availablePricingItems = Array.isArray(pricingItems)
+    ? pricingItems.filter((item) => item?.isAvailable !== false)
+    : [];
+
   return (
     <div className="space-y-6">
       <div>
@@ -26,8 +30,8 @@ export default function SeanceInfoPanel({ seanceInfo, pricingItems, formatPrice 
           Tarifs disponibles
         </h3>
         <div className="mt-4 space-y-3">
-          {pricingItems.length ? (
-            pricingItems.map((item) => (
+          {availablePricingItems.length ? (
+            availablePricingItems.map((item) => (
               <div
                 key={item.id || item.name}
                 className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/5 px-5 py-4"

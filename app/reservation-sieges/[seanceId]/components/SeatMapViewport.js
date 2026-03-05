@@ -21,6 +21,7 @@ export default function SeatMapViewport({
   onToggleSeat,
   onTouchSeatEnd,
   getFixedSeatMeta,
+  isFixedPricingSoldOut,
 }) {
   return (
     <div className="w-full">
@@ -86,9 +87,14 @@ export default function SeatMapViewport({
                   const displayStatus = isSelected || isMine ? "selected" : status;
                   const fixedSeatMeta = getFixedSeatMeta?.(cell) || null;
                   const isFixedPricing = Boolean(fixedSeatMeta);
+                  const isSoldOutFixedPricing = Boolean(
+                    isFixedPricingSoldOut?.(cell),
+                  );
                   const isBookable = cell.isBookable !== false;
                   const canSelect =
-                    (status === "available" && isBookable) || isSelected || isMine;
+                    (status === "available" && isBookable && !isSoldOutFixedPricing) ||
+                    isSelected ||
+                    isMine;
                   const isDisabled = !canSelect;
 
                   return (

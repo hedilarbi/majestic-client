@@ -60,6 +60,21 @@ const getTouchCenter = (touches, rect) => {
   };
 };
 
+const normalizePricingLookupToken = (value) =>
+  String(value || "").trim().toLowerCase();
+
+const buildPricingLookupKey = (name, price) => {
+  const normalizedName = normalizePricingLookupToken(name);
+  const parsedPrice =
+    typeof price === "number" ? price : Number.parseFloat(String(price));
+
+  if (!normalizedName || !Number.isFinite(parsedPrice)) {
+    return "";
+  }
+
+  return `${normalizedName}|${parsedPrice}`;
+};
+
 export default function ReservationSiegesClient({ seanceId, socketUrl }) {
   const router = useRouter();
   const [seatRows, setSeatRows] = useState([]);
@@ -143,10 +158,61 @@ export default function ReservationSiegesClient({ seanceId, socketUrl }) {
     () => new Map(pricingItems.map((item) => [String(item.id), item])),
     [pricingItems],
   );
+  const availablePricingItems = useMemo(
+    () =>
+      Array.isArray(pricingItems)
+        ? pricingItems.filter((item) => item && item.name && item.isAvailable !== false)
+        : [],
+    [pricingItems],
+  );
+  const pricingAvailability = useMemo(() => {
+    const byId = new Map();
+    const byKey = new Map();
+
+    pricingItems.forEach((item) => {
+      if (!item) {
+        return;
+      }
+
+      const available = item.isAvailable !== false;
+      const id = item?.id ? String(item.id) : "";
+      const key = buildPricingLookupKey(item?.name, item?.price);
+
+      if (id) {
+        byId.set(id, available);
+      }
+      if (key) {
+        byKey.set(key, available);
+      }
+    });
+
+    return { byId, byKey };
+  }, [pricingItems]);
   const getFixedSeatMeta = useCallback(
     (seat) => resolveSeatOverride(seat, fixedSeatOverrideMap),
     [fixedSeatOverrideMap],
   );
+  const isPricingMetaAvailable = useCallback(
+    (meta) => {
+      if (!meta) {
+        return true;
+      }
+
+      const id = meta?.id ? String(meta.id) : "";
+      if (id && pricingAvailability.byId.has(id)) {
+        return Boolean(pricingAvailability.byId.get(id));
+      }
+
+      const key = buildPricingLookupKey(meta?.name, meta?.price);
+      if (key && pricingAvailability.byKey.has(key)) {
+        return Boolean(pricingAvailability.byKey.get(key));
+      }
+
+      return true;
+    },
+    [pricingAvailability],
+  );
+  const hasAvailableVariablePricing = availablePricingItems.length > 0;
 
   const measureLayout = useCallback(() => {
     const viewport = viewportRef.current;
@@ -833,6 +899,16 @@ export default function ReservationSiegesClient({ seanceId, socketUrl }) {
       const action = exists ? "release" : "reserve";
       const toggledSeat = { row: cell.row, col: cell.col };
 
+      if (action === "reserve" && fixedSeatMeta && !isPricingMetaAvailable(fixedSeatMeta)) {
+        alert("Ce tarif est epuise pour cette seance.");
+        return;
+      }
+
+      if (action === "reserve" && !fixedSeatMeta && !hasAvailableVariablePricing) {
+        alert("Aucun tarif disponible pour cette seance.");
+        return;
+      }
+
       const pending = pendingSeatActionsRef.current.get(key);
       if (pending?.action === action) {
         return;
@@ -949,7 +1025,26 @@ export default function ReservationSiegesClient({ seanceId, socketUrl }) {
         }
       }
     },
-    [getFixedSeatMeta, pricingById, seanceId, syncSelectedSeats, updateSeatStatuses],
+    [
+      getFixedSeatMeta,
+      hasAvailableVariablePricing,
+      isPricingMetaAvailable,
+      pricingById,
+      seanceId,
+      syncSelectedSeats,
+      updateSeatStatuses,
+    ],
+  );
+
+  const isFixedPricingSoldOut = useCallback(
+    (cell) => {
+      const fixedSeatMeta = getFixedSeatMeta(cell);
+      if (!fixedSeatMeta) {
+        return false;
+      }
+      return !isPricingMetaAvailable(fixedSeatMeta);
+    },
+    [getFixedSeatMeta, isPricingMetaAvailable],
   );
 
   const handleSeatTouchEnd = useCallback(
@@ -1156,6 +1251,14 @@ export default function ReservationSiegesClient({ seanceId, socketUrl }) {
     () => sortSeatLabels(selectedSeats),
     [selectedSeats],
   );
+  const selectedFixedSeatsCount = useMemo(
+    () => selectedSeats.filter((seat) => Boolean(getFixedSeatMeta(seat))).length,
+    [getFixedSeatMeta, selectedSeats],
+  );
+  const selectedVariableSeatsCount = Math.max(
+    selectedSeats.length - selectedFixedSeatsCount,
+    0,
+  );
   const isSessionUnavailable = Boolean(
     !isLoading &&
       seanceInfo.sessionStatus &&
@@ -1178,7 +1281,9 @@ export default function ReservationSiegesClient({ seanceId, socketUrl }) {
     router.push(`/evenements/${seanceInfo.eventId}`);
   }, [router, seanceInfo.eventId]);
   const canGoCheckout = Boolean(
-    myReservation?.reservationId && (myReservation?.seats?.length || 0) > 0,
+    myReservation?.reservationId &&
+      (myReservation?.seats?.length || 0) > 0 &&
+      (selectedVariableSeatsCount === 0 || hasAvailableVariablePricing),
   );
   const handleGoCheckout = useCallback(() => {
     if (!canGoCheckout || isSessionUnavailable) {
@@ -1252,6 +1357,7 @@ export default function ReservationSiegesClient({ seanceId, socketUrl }) {
             onToggleSeat={handleToggleSeat}
             onTouchSeatEnd={handleSeatTouchEnd}
             getFixedSeatMeta={getFixedSeatMeta}
+            isFixedPricingSoldOut={isFixedPricingSoldOut}
           />
 
           <SeatLegend />
@@ -1261,7 +1367,7 @@ export default function ReservationSiegesClient({ seanceId, socketUrl }) {
       <aside className="hidden w-full shrink-0 rounded-3xl border border-white/10 bg-white/5 p-4 shadow-2xl backdrop-blur-2xl sm:p-6 lg:block lg:w-[360px] lg:p-8">
         <SeanceInfoPanel
           seanceInfo={seanceInfo}
-          pricingItems={pricingItems}
+          pricingItems={availablePricingItems}
           formatPrice={formatPrice}
         />
         <div className="mt-8 border-t border-white/10 pt-6">
@@ -1284,7 +1390,7 @@ export default function ReservationSiegesClient({ seanceId, socketUrl }) {
       >
         <SeanceInfoPanel
           seanceInfo={seanceInfo}
-          pricingItems={pricingItems}
+          pricingItems={availablePricingItems}
           formatPrice={formatPrice}
         />
       </MobileInfoDrawer>

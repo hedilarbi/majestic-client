@@ -23,7 +23,13 @@ export default function PricingQuantityList({
       {safePricingItems.map((item, index) => {
         const itemKey = String(item?.id ?? item?.name ?? index);
         const quantity = quantities[itemKey] || 0;
-        const canIncrement = canAdjust && assignedCount < assignableSeatsCount;
+        const maxForItem = Number.isFinite(item?.variableRemainingTickets)
+          ? Math.max(item.variableRemainingTickets, 0)
+          : null;
+        const canIncrement =
+          canAdjust &&
+          assignedCount < assignableSeatsCount &&
+          (maxForItem === null || quantity < maxForItem);
         const canDecrement = canAdjust && quantity > 0;
 
         return (
