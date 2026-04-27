@@ -1,5 +1,5 @@
 import { getSessionsByDate } from "../lib/cinema-api";
-import ProgrammePageClient from "./programmePageClient";
+import ProgrammePageClient from "./ProgrammePageClient";
 
 const DAYS_TO_SHOW = 10;
 const WEEKDAY_FORMATTER = new Intl.DateTimeFormat("fr-FR", {
