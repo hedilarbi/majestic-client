@@ -43,7 +43,7 @@ export default function ResetPasswordForm() {
     }
 
     if (formValues.oldPassword === formValues.newPassword) {
-      setErrorMessage("Le nouveau mot de passe doit etre different.");
+      setErrorMessage("Le nouveau mot de passe doit être différent.");
       return;
     }
 
@@ -188,7 +188,7 @@ export default function ResetPasswordForm() {
         type="submit"
         disabled={isSubmitting}
       >
-        {isSubmitting ? "Mise a jour..." : "Mettre a jour"}
+        {isSubmitting ? "Mise à jour..." : "Mettre a jour"}
         <span aria-hidden="true">→</span>
       </button>
     </form>

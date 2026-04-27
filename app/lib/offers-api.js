@@ -36,7 +36,11 @@ const normalizeSubscriptions = (items) =>
 
 const normalizePromoCodes = (items) =>
   (Array.isArray(items) ? items : []).filter(
-    (item) => item && item.isActive !== false && isFutureDate(item.expiresAt),
+    (item) =>
+      item &&
+      item.isActive !== false &&
+      item.availability !== "private" &&
+      isFutureDate(item.expiresAt),
   );
 
 export const getPublicOffers = async () => {

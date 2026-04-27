@@ -36,7 +36,7 @@ export async function POST(request) {
   const body = {
     subscriptionId: payload?.subscriptionId,
     paymentMethod: payload?.paymentMethod,
-    source: payload?.source || "mobile",
+    source: payload?.source || "web",
   };
 
   const response = await fetch(
@@ -63,4 +63,3 @@ export async function POST(request) {
 
   return NextResponse.json(data || {});
 }
-

@@ -35,7 +35,7 @@ export default function ForgotPasswordForm() {
       if (!response.ok) {
         throw new Error(data?.message || "Erreur serveur");
       }
-      setSuccessMessage(data?.message || "Code envoye.");
+      setSuccessMessage(data?.message || "Code envoyé.");
       router.push(
         `/mot-de-passe-oublie/verification?email=${encodeURIComponent(
           email.trim(),

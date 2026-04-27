@@ -40,7 +40,7 @@ export default async function InscriptionPage({ searchParams }) {
           <InscriptionForm />
 
           <div className="mt-8 text-center text-xs text-white font-body">
-            Vous avez deja un compte ?{" "}
+            Vous avez déjà un compte ?{" "}
             <Link
               className="text-accent underline underline-offset-4 transition hover:text-white"
               href={`/connexion?redirect=${encodeURIComponent(redirectPath)}`}

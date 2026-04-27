@@ -4,7 +4,7 @@ import SubscriptionCheckoutClient from "./SubscriptionCheckoutClient";
 export const metadata = {
   title: "Checkout abonnement | Majestic",
   description:
-    "Finalisez votre abonnement Majestic en quelques etapes.",
+    "Finalisez votre abonnement Majestic en quelques étapes.",
 };
 
 export default async function SubscriptionCheckoutPage({ params }) {

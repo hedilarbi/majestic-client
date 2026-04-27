@@ -157,7 +157,7 @@ export default function ResetPasswordVerifyForm({ email }) {
       if (!response.ok) {
         throw new Error(data?.message || "Erreur serveur");
       }
-      setSuccessMessage(data?.message || "Code renvoye.");
+      setSuccessMessage(data?.message || "Code renvoyé.");
     } catch (error) {
       setServerError(error?.message || "Erreur serveur");
     } finally {
@@ -288,7 +288,7 @@ export default function ResetPasswordVerifyForm({ email }) {
         type="submit"
         disabled={!isComplete || isSubmitting}
       >
-        {isSubmitting ? "Mise a jour..." : "Reinitialiser"}
+        {isSubmitting ? "Mise à jour..." : "Reinitialiser"}
         <span aria-hidden="true">→</span>
       </button>
 
@@ -300,7 +300,7 @@ export default function ResetPasswordVerifyForm({ email }) {
           onClick={handleResend}
           disabled={isResending}
         >
-          {isResending ? "Envoi..." : "Renvoyer le code"}
+          {isResending ? "Envoi..." : "Renvoyér le code"}
         </button>
       </div>
     </form>

@@ -55,13 +55,37 @@ export default function SubscriptionCheckoutClient({
   const searchParams = useSearchParams();
   const autoFinalizeAttemptedRef = useRef(false);
   const [userRole, setUserRole] = useState("guest");
+  const [userEmailVerified, setUserEmailVerified] = useState(null);
   const [submitState, setSubmitState] = useState({
     status: "idle",
     message: "",
   });
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const verificationRedirectPath = resolveRedirectPath(
+    `/offres/abonnements/${subscriptionId}/checkout?autofinalize=1`,
+    "/profil/abonnements",
+  );
+  const redirectToVerifyEmail = useCallback(
+    (replace = false) => {
+      const target = `/verify-email?redirect=${encodeURIComponent(
+        verificationRedirectPath,
+      )}&send=1&info=${encodeURIComponent(
+        "Un nouveau code OTP vous sera envoyé pour finaliser votre achat.",
+      )}`;
+
+      if (replace) {
+        router.replace(target);
+        return;
+      }
+
+      router.push(target);
+    },
+    [router, verificationRedirectPath],
+  );
 
   const isSubmitting = submitState.status === "loading";
+  const requiresEmailVerification =
+    userRole === "customer" && userEmailVerified === false;
   const canContinue = Boolean(subscription) && !initialError && !isSubmitting;
 
   useEffect(() => {
@@ -79,6 +103,11 @@ export default function SubscriptionCheckoutClient({
         }
         const role = data?.user?.role ? String(data.user.role) : "guest";
         setUserRole(role);
+        setUserEmailVerified(
+          typeof data?.user?.emailVerified === "boolean"
+            ? data.user.emailVerified
+            : null,
+        );
       } catch (_error) {
         // noop
       }
@@ -109,18 +138,33 @@ export default function SubscriptionCheckoutClient({
           body: JSON.stringify({
             subscriptionId,
             paymentMethod: "online",
-            source: "mobile",
+            source: "web",
           }),
         });
 
         const data = await response.json().catch(() => ({}));
         if (!response.ok) {
-          throw new Error(data?.message || "Impossible de finaliser l'achat.");
+          const message = data?.message || "Impossible de finaliser l'achat.";
+          if (
+            response.status === 403 &&
+            typeof message === "string" &&
+            message.toLowerCase().includes("vérifier votre adresse email")
+          ) {
+            setSubmitState({ status: "idle", message: "" });
+            redirectToVerifyEmail();
+            return false;
+          }
+          throw new Error(message);
+        }
+
+        if (data?.paymentFormUrl) {
+          window.location.href = data.paymentFormUrl;
+          return true;
         }
 
         setSubmitState({
           status: "success",
-          message: "Abonnement active avec succes.",
+          message: "Abonnement active avec succès.",
         });
 
         const saleId =
@@ -143,7 +187,13 @@ export default function SubscriptionCheckoutClient({
         return false;
       }
     },
-    [isSubmitting, router, subscription, subscriptionId],
+    [
+      isSubmitting,
+      redirectToVerifyEmail,
+      router,
+      subscription,
+      subscriptionId,
+    ],
   );
 
   const handleContinue = useCallback(async () => {
@@ -156,8 +206,19 @@ export default function SubscriptionCheckoutClient({
       return;
     }
 
+    if (requiresEmailVerification) {
+      redirectToVerifyEmail();
+      return;
+    }
+
     await finalizePurchase();
-  }, [canContinue, finalizePurchase, userRole]);
+  }, [
+    canContinue,
+    finalizePurchase,
+    redirectToVerifyEmail,
+    requiresEmailVerification,
+    userRole,
+  ]);
 
   const handleOpenLogin = useCallback(
     (target) => {
@@ -175,6 +236,18 @@ export default function SubscriptionCheckoutClient({
       return;
     }
 
+    if (userEmailVerified === false) {
+      if (!autoFinalizeAttemptedRef.current) {
+        autoFinalizeAttemptedRef.current = true;
+      }
+      redirectToVerifyEmail(true);
+      return;
+    }
+
+    if (userEmailVerified !== true) {
+      return;
+    }
+
     const shouldAutoFinalize = searchParams?.get("autofinalize") === "1";
     if (!shouldAutoFinalize || autoFinalizeAttemptedRef.current) {
       return;
@@ -182,7 +255,7 @@ export default function SubscriptionCheckoutClient({
 
     autoFinalizeAttemptedRef.current = true;
     finalizePurchase({ silent: true });
-  }, [finalizePurchase, searchParams, userRole]);
+  }, [finalizePurchase, redirectToVerifyEmail, searchParams, userEmailVerified, userRole]);
 
   return (
     <main className="relative min-h-screen overflow-x-hidden px-4 py-8 text-white md:px-10 md:py-12">
@@ -210,8 +283,8 @@ export default function SubscriptionCheckoutClient({
               Finaliser votre abonnement
             </h1>
             <p className="mt-3 text-sm text-white/60 md:text-base">
-              Le paiement sera integre plus tard. Pour le moment, la validation
-              cree directement votre abonnement actif.
+              Le paiement sera intégré plus tard. Pour le moment, la validation
+              créé directement votre abonnement actif.
             </p>
           </div>
 
@@ -224,6 +297,13 @@ export default function SubscriptionCheckoutClient({
           {submitState.status === "error" ? (
             <div className="mb-6 rounded-2xl border border-rose-400/30 bg-rose-500/10 px-5 py-4 text-sm font-semibold text-rose-200">
               {submitState.message}
+            </div>
+          ) : null}
+
+          {requiresEmailVerification ? (
+            <div className="mb-6 rounded-2xl border border-amber-400/30 bg-amber-500/10 px-5 py-4 text-sm font-semibold text-amber-100">
+              Votre compte n&apos;est pas encore vérifié. Vérifiez votre adresse
+              email pour acheter cet abonnement.
             </div>
           ) : null}
 
@@ -244,30 +324,27 @@ export default function SubscriptionCheckoutClient({
               <div className="mt-4 flex flex-wrap gap-2 text-xs text-white/60">
                 <span className="rounded-full border border-white/20 px-3 py-1">
                   {Number.isFinite(subscription?.totalCredits)
-                    ? `${subscription.totalCredits} credits`
+                    ? `${subscription.totalCredits} crédits`
                     : "Credits"}
                 </span>
                 <span className="rounded-full border border-white/20 px-3 py-1">
-                  Expire le {formatDate(subscription?.expirationDate)}
+                  Expiré le {formatDate(subscription?.expirationDate)}
                 </span>
               </div>
             </div>
 
             <div className="rounded-2xl border border-primary/30 bg-primary/10 p-5">
-              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary/80">
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-accent/80">
                 Total a payer
               </p>
               <p className="mt-2 text-4xl font-black text-white">
                 {formatPrice(subscription?.price)}
               </p>
               <div className="mt-5 rounded-xl border border-white/15 bg-black/25 p-3 text-xs text-white/70">
-                <div className="flex items-center gap-2">
-                  <RiShieldCheckLine className="h-4 w-4 text-accent" />
-                  Paiement temporairement simule (API non integree)
-                </div>
                 <div className="mt-2 flex items-center gap-2">
                   <RiPriceTag3Line className="h-4 w-4 text-accent" />
-                  L&apos;abonnement sera rattache a votre compte apres confirmation
+                  L&apos;abonnement sera rattache a votre compte apres
+                  confirmation
                 </div>
               </div>
             </div>
@@ -310,7 +387,7 @@ export default function SubscriptionCheckoutClient({
               type="button"
               onClick={() => setIsAuthModalOpen(false)}
               className="absolute right-3 top-3 inline-flex h-8 w-8 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white/80"
-              aria-label="Fermer la fenetre"
+              aria-label="Fermer la fenêtre"
             >
               <RiCloseLine className="h-4 w-4" />
             </button>

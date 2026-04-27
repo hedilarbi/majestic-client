@@ -72,7 +72,7 @@ const resolveTicketPdfHref = (ticket) => {
 
 export const metadata = {
   title: "Mes billets | Majestic",
-  description: "Gerez vos réservations et vos codes d'accés.",
+  description: "Gérez vos réservations et vos codes d'accès.",
 };
 
 export default async function BilletsPage() {
@@ -97,7 +97,7 @@ export default async function BilletsPage() {
             Mes billets
           </h1>
           <p className="mt-2 text-sm text-white/50 font-body sm:text-base">
-            Gerez vos reservations et accedez a vos codes d&apos;acces.
+            Gérez vos réservations et accédez à vos codes d&apos;accès.
           </p>
         </div>
         <button className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/10">
@@ -108,10 +108,10 @@ export default async function BilletsPage() {
 
       <div className="flex gap-8 border-b border-white/10 pb-3 text-sm font-bold uppercase tracking-wide">
         <div className="border-b-2 border-primary pb-3 text-white">
-          A venir ({upcomingTickets.length})
+          À venir ({upcomingTickets.length})
         </div>
         <div className="border-b-2 border-transparent pb-3 text-white/40">
-          Passes ({pastTickets.length})
+          Passés ({pastTickets.length})
         </div>
       </div>
 
@@ -145,7 +145,7 @@ export default async function BilletsPage() {
                       Ticket
                     </span>
                     <h2 className="mt-2 text-2xl font-black uppercase tracking-tight text-white">
-                      {ticket?.session?.event?.name || "Seance"}
+                      {ticket?.session?.event?.name || "Séance"}
                     </h2>
                     <div className="mt-4 flex flex-wrap items-center gap-4 text-sm text-white/70">
                       <div className="flex items-center gap-2">
@@ -164,7 +164,7 @@ export default async function BilletsPage() {
                       </div>
                       <div className="flex items-center gap-2">
                         <MdEventSeat className="h-5 w-5 text-accent" />
-                        Siege {formatSeatLabel(ticket.seat)}
+                        Siège {formatSeatLabel(ticket.seat)}
                       </div>
                     </div>
                     <div className="mt-2 flex items-center gap-2 text-xs text-white/50">
@@ -204,12 +204,12 @@ export default async function BilletsPage() {
 
         {upcomingTickets.length === 0 && !error ? (
           <div className="rounded-2xl border border-white/10 bg-black/50 px-5 py-4 text-sm text-white/60">
-            Aucun billet a venir.
+            Aucun billet à venir.
           </div>
         ) : null}
 
         <div className="mt-6 flex items-center gap-4 opacity-60">
-          <h2 className="text-lg font-bold text-white">Seances passees</h2>
+          <h2 className="text-lg font-bold text-white">Séances passees</h2>
           <div className="h-px flex-1 bg-white/10" />
         </div>
 
@@ -226,7 +226,7 @@ export default async function BilletsPage() {
               <div className="relative h-32 w-full md:h-auto md:w-32">
                 <Image
                   src={ticket?.session?.event?.poster || FALLBACK_POSTER}
-                  alt={ticket?.session?.event?.name || "Seance"}
+                  alt={ticket?.session?.event?.name || "Séance"}
                   fill
                   sizes="8rem"
                   className="object-cover"
@@ -235,7 +235,7 @@ export default async function BilletsPage() {
               <div className="flex flex-1 items-center justify-between gap-4 p-4">
                 <div>
                   <h3 className="text-lg font-bold text-white">
-                    {ticket?.session?.event?.name || "Seance"}
+                    {ticket?.session?.event?.name || "Séance"}
                   </h3>
                   <p className="mt-2 text-sm text-white/50">
                     {formatSessionDate(ticket)} • {resolveRoom(ticket)}

@@ -57,7 +57,7 @@ const buildPromoDetail = (promoCode) => {
     ? `Par client: ${promoCode.userUsageLimit}`
     : "Par client: illimite";
 
-  return `Expire le ${expiresAt} • ${totalUsage} • ${userUsage}`;
+  return `Expiré le ${expiresAt} • ${totalUsage} • ${userUsage}`;
 };
 
 export default function OffresClient({
@@ -103,9 +103,9 @@ export default function OffresClient({
           title: subscription.name || "Abonnement",
           description:
             subscription.description ||
-            `Abonnement ${subscription.name || ""} a ${formatPrice(subscription.price)} pour ${Number.isFinite(subscription.totalCredits) ? `${subscription.totalCredits} credits` : "credits illimites"}.`,
+            `Abonnement ${subscription.name || ""} a ${formatPrice(subscription.price)} pour ${Number.isFinite(subscription.totalCredits) ? `${subscription.totalCredits} crédits` : "crédits illimites"}.`,
           accent: Number.isFinite(subscription.totalCredits)
-            ? `${subscription.totalCredits} credits`
+            ? `${subscription.totalCredits} crédits`
             : "Premium",
           icon: index % 2 === 0 ? MdStars : MdNightlight,
           price: formatPrice(subscription.price),
@@ -207,7 +207,7 @@ export default function OffresClient({
                     {offer.price}
                   </span>
                   <span className="rounded-full border border-white/15 px-3 py-1">
-                    Expire le {offer.expirationDate}
+                    Expiré le {offer.expirationDate}
                   </span>
                 </div>
                 {offer.checkoutId ? (

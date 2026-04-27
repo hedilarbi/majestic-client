@@ -4,7 +4,7 @@ import ProfilForm from "./ProfilForm";
 
 export const metadata = {
   title: "Profil | Majestic",
-  description: "Gerez vos informations personnelles et votre securite.",
+  description: "Gérez vos informations personnelles et votre sécurité.",
 };
 
 export default async function ProfilPage() {
@@ -26,7 +26,7 @@ export default async function ProfilPage() {
           Modifier mon profil
         </h1>
         <p className="text-sm text-white/50 font-body">
-          Gerez vos informations personnelles et vos preferences de securite.
+          Gérez vos informations personnelles et vos préférences de sécurité.
         </p>
       </div>
 

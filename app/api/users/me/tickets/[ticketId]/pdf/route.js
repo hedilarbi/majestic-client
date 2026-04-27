@@ -37,7 +37,7 @@ export async function GET(request, { params }) {
   const token = getTokenFromRequest(request);
   if (!token) {
     return NextResponse.json(
-      { message: "Vous devez etre connecte." },
+      { message: "Vous devez être connecte." },
       { status: 401 },
     );
   }

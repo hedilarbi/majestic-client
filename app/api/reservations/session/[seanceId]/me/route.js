@@ -60,7 +60,7 @@ export async function GET(request, { params }) {
   const { seanceId } = (await params) || {};
 
   if (!seanceId) {
-    return NextResponse.json({ message: "Seance invalide" }, { status: 400 });
+    return NextResponse.json({ message: "Séance invalide" }, { status: 400 });
   }
 
   let token = getTokenFromRequest(request);

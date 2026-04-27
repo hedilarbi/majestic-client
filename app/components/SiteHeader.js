@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { createPortal } from "react-dom";
 import { FaFacebookF, FaInstagram } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
@@ -13,13 +13,15 @@ import { navLinks } from "../lib/site-data";
 const resolveType = (value) => (value === "show" ? "show" : "movie");
 const shouldHideChrome = (pathname) =>
   typeof pathname === "string" &&
-  pathname.startsWith("/reserver-siege/") &&
+  pathname.startsWith("/reservations/") &&
   pathname.includes("/checkout/succes");
 
 export default function SiteHeader() {
+  const router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
   const [authChecked, setAuthChecked] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const currentType = resolveType(searchParams.get("type"));
@@ -91,6 +93,28 @@ export default function SiteHeader() {
     authChecked && currentUser?.role && currentUser.role === "customer";
   const hidden = shouldHideChrome(pathname);
 
+  const handleLogout = async () => {
+    if (isLoggingOut) {
+      return;
+    }
+
+    setIsLoggingOut(true);
+
+    try {
+      await fetch("/api/auth/logout", {
+        method: "POST",
+      });
+    } catch (_error) {
+      // Ignore logout transport errors and force local refresh.
+    } finally {
+      setCurrentUser(null);
+      setIsMenuOpen(false);
+      setIsLoggingOut(false);
+      router.push("/");
+      router.refresh();
+    }
+  };
+
   if (hidden) {
     return null;
   }
@@ -132,13 +156,23 @@ export default function SiteHeader() {
         </div>
         <div className="flex items-center gap-4">
           {isAuthenticated ? (
-            <Link
-              href="/profil"
-              className="hidden items-center justify-center rounded-full border border-white/20 px-5 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-white/80 transition-all hover:border-accent hover:text-accent md:inline-flex"
-              aria-label="Mon profil"
-            >
-              Profil
-            </Link>
+            <>
+              <Link
+                href="/profil"
+                className="hidden items-center justify-center rounded-full border border-white/20 px-5 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-white/80 transition-all hover:border-accent hover:text-accent md:inline-flex"
+                aria-label="Mon compte"
+              >
+                Mon compte
+              </Link>
+              <button
+                type="button"
+                onClick={handleLogout}
+                disabled={isLoggingOut}
+                className="hidden items-center justify-center rounded-full border border-red-500/40 bg-red-500/10 px-5 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-red-200 transition-all hover:border-red-400 hover:bg-red-500/15 hover:text-white md:inline-flex disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {isLoggingOut ? "Déconnexion..." : "Déconnexion"}
+              </button>
+            </>
           ) : (
             <>
               <Link
@@ -221,14 +255,24 @@ export default function SiteHeader() {
                 </div>
                 <div className="mt-auto">
                   {isAuthenticated ? (
-                    <Link
-                      className="mx-auto flex w-full items-center justify-center rounded-full border border-white/20 py-3 text-xs font-semibold uppercase tracking-[0.2em] text-white/80 transition-all hover:border-accent hover:text-accent"
-                      href="/profil"
-                      onClick={() => setIsMenuOpen(false)}
-                      aria-label="Mon profil"
-                    >
-                      Profil
-                    </Link>
+                    <div className="flex flex-col gap-3">
+                      <Link
+                        className="mx-auto flex w-full items-center justify-center rounded-full border border-white/20 py-3 text-xs font-semibold uppercase tracking-[0.2em] text-white/80 transition-all hover:border-accent hover:text-accent"
+                        href="/profil"
+                        onClick={() => setIsMenuOpen(false)}
+                        aria-label="Mon compte"
+                      >
+                        Mon compte
+                      </Link>
+                      <button
+                        type="button"
+                        onClick={handleLogout}
+                        disabled={isLoggingOut}
+                        className="w-full rounded-full border border-red-500/40 bg-red-500/10 px-6 py-3 text-xs font-semibold uppercase tracking-[0.2em] text-red-200 transition-all hover:border-red-400 hover:bg-red-500/15 hover:text-white disabled:cursor-not-allowed disabled:opacity-60"
+                      >
+                        {isLoggingOut ? "Déconnexion..." : "Déconnexion"}
+                      </button>
+                    </div>
                   ) : (
                     <div className="flex flex-col gap-3">
                       <Link

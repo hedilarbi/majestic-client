@@ -2,7 +2,7 @@ import ResetPasswordForm from "./ResetPasswordForm";
 
 export const metadata = {
   title: "Changer mot de passe | Majestic",
-  description: "Mettez a jour votre mot de passe en toute securite.",
+  description: "Mettez à jour votre mot de passe en toute sécurité.",
 };
 
 export default function ResetPasswordPage() {

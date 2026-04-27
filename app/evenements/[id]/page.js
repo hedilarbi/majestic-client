@@ -104,8 +104,8 @@ export default async function EvenementPage({ params }) {
             <div className="absolute bottom-0 left-0 h-125 w-125 translate-y-1/2 -translate-x-1/2 rounded-full bg-accent/10 blur-[100px]" />
           </div>
           <div className="relative z-10 mx-auto px-10 py-10 sm:px-12 lg:px-20 md:py-16">
-            <div className="flex flex-col items-start gap-10 md:flex-row">
-              <div className="order-2 space-y-6 text-center md:order-1 md:w-[55%] md:text-left">
+            <div className="flex flex-col items-start gap-10 md:flex-row md:gap-12">
+              <div className="order-2 space-y-6 text-center md:order-1 md:w-[62%] md:text-left">
                 <div>
                   <h1 className="mb-4 text-4xl font-semibold uppercase tracking-wide text-glow md:text-6xl lg:text-5xl font-display">
                     {event.name}
@@ -156,14 +156,14 @@ export default async function EvenementPage({ params }) {
                   </div>
                 </div>
               </div>
-              <div className="order-1 flex w-full justify-center md:order-2 md:w-[45%] md:justify-start">
-                <div className="relative group w-full">
-                  <div className="absolute -inset-1 rounded-xl bg-linear-to-r from-primary to-accent blur opacity-30 transition duration-1000 group-hover:opacity-60 group-hover:duration-200" />
+              <div className="order-1 flex w-full justify-center md:order-2 md:w-[38%] md:justify-end">
+                <div className="relative group w-full max-w-[280px] sm:max-w-[320px] lg:max-w-[360px]">
+                  <div className="absolute -inset-1 rounded-2xl bg-linear-to-r from-primary to-accent blur opacity-30 transition duration-1000 group-hover:opacity-60 group-hover:duration-200" />
                   <EventTrailer
                     poster={event.poster}
                     title={event.name}
                     trailerLink={trailerLink}
-                    className="relative w-full aspect-[5/6] overflow-hidden rounded-xl border border-white/10 shadow-2xl"
+                    className="relative aspect-[4/5] overflow-hidden rounded-2xl border border-white/10 shadow-2xl"
                   />
                 </div>
               </div>

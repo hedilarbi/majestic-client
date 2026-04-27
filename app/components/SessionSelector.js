@@ -172,7 +172,7 @@ export default function SessionSelector({ sessions = [] }) {
   const handleConfirm = () => {
     const sessionId = resolveSessionId(selectedSession);
     if (!sessionId) return;
-    router.push(`/reservation-sieges/${sessionId}`);
+    router.push(`/reservations/${sessionId}`);
   };
 
   return (

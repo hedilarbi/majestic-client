@@ -11,8 +11,8 @@ import {
 import { getProfileSubscriptionSaleById } from "@/app/lib/profile-api";
 
 export const metadata = {
-  title: "Paiement reussi | Abonnement Majestic",
-  description: "Confirmation de votre achat d'abonnement et details de la vente.",
+  title: "Paiement réussi | Abonnement Majestic",
+  description: "Confirmation de votre achat d'abonnement et détails de la vente.",
 };
 
 const formatPrice = (value) => {
@@ -77,7 +77,7 @@ export default async function SubscriptionCheckoutSuccessPage({
             <RiCheckboxCircleLine className="h-9 w-9" />
           </div>
           <h1 className="text-3xl font-black tracking-tight text-white md:text-4xl">
-            Paiement reussi
+            Paiement réussi
           </h1>
           <p className="mt-2 text-sm text-white/65 md:text-base">
             Votre abonnement est actif. Conservez le code pour l&apos;utiliser au
@@ -93,7 +93,7 @@ export default async function SubscriptionCheckoutSuccessPage({
 
         {!error && !sale ? (
           <div className="mt-6 rounded-2xl border border-rose-400/30 bg-rose-500/10 px-4 py-3 text-sm font-semibold text-rose-200">
-            Impossible de recuperer les details de la vente.
+            Impossible de récupérer les détails de la vente.
           </div>
         ) : null}
 
@@ -114,10 +114,10 @@ export default async function SubscriptionCheckoutSuccessPage({
               </p>
               <div className="mt-3 flex flex-wrap gap-2 text-xs text-white/60">
                 <span className="rounded-full border border-white/20 px-3 py-1">
-                  {remainingCredits} / {totalCredits} credits
+                  {remainingCredits} / {totalCredits} crédits
                 </span>
                 <span className="rounded-full border border-white/20 px-3 py-1">
-                  Expire le {formatDate(subscription?.expirationDate)}
+                  Expiré le {formatDate(subscription?.expirationDate)}
                 </span>
               </div>
             </div>

@@ -41,6 +41,10 @@ export default async function VerifyEmailPage({ searchParams }) {
   const otpError =
     typeof resolvedParams?.error === "string" ? resolvedParams.error : "";
   const redirectPath = resolveRedirectPath(resolvedParams?.redirect);
+  const autoSendOtp =
+    String(resolvedParams?.send || "")
+      .trim()
+      .toLowerCase() === "1";
   let email = "";
   let errorMessage = "";
 
@@ -71,7 +75,7 @@ export default async function VerifyEmailPage({ searchParams }) {
             Verifier votre email
           </h1>
           <p className="mt-3 text-sm text-white/60 font-body">
-            Nous avons envoye un code vers la boite{" "}
+            Nous avons envoyé un code vers la boîte{" "}
             <span className="text-white">{maskEmail(email)}</span>.
           </p>
           {errorMessage ? (
@@ -90,7 +94,11 @@ export default async function VerifyEmailPage({ searchParams }) {
         </div>
 
         <div className="rounded-3xl border border-white/10 bg-black/60 p-8 shadow-[0_35px_120px_rgba(0,0,0,0.45)] backdrop-blur-2xl sm:p-10">
-          <OtpForm otpError={otpError} redirectPath={redirectPath} />
+          <OtpForm
+            otpError={otpError}
+            redirectPath={redirectPath}
+            autoSendOtp={autoSendOtp}
+          />
 
           <div className="mt-8 h-px w-full bg-white/10" />
         </div>

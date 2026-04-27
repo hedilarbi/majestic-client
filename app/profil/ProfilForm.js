@@ -68,7 +68,7 @@ export default function ProfilForm({ user }) {
       if (!response.ok) {
         throw new Error(data?.message || "Erreur serveur");
       }
-      setSuccessMessage("Profil mis a jour avec succes.");
+      setSuccessMessage("Profil mis a jour avec succès.");
     } catch (error) {
       setErrorMessage(error?.message || "Erreur serveur");
     } finally {
@@ -102,7 +102,7 @@ export default function ProfilForm({ user }) {
           </label>
           <label className="flex flex-col gap-2">
             <span className="text-[10px] font-black uppercase tracking-widest text-white/40">
-              Prenom
+              Prénom
             </span>
             <input
               className={inputClassName}
@@ -126,7 +126,7 @@ export default function ProfilForm({ user }) {
           </label>
           <label className="flex flex-col gap-2">
             <span className="text-[10px] font-black uppercase tracking-widest text-white/40">
-              Numero de telephone
+              Numéro de téléphone
             </span>
             <input
               className={inputClassName}

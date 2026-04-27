@@ -68,7 +68,7 @@ export async function POST(request) {
     customerContact: payload?.customerContact,
     subscriptionCode: payload?.subscriptionCode,
     promoCode: payload?.promoCode,
-    bookingSource: "mobile",
+    bookingSource: "web",
   };
 
   let token = getTokenFromRequest(request);

@@ -16,13 +16,13 @@ export default function ForgotPasswordPage() {
       <div className="w-full max-w-xl">
         <div className="mb-10 text-center">
           <p className="mb-3 text-xs font-bold uppercase tracking-[0.35em] text-accent">
-            Reinitialisation
+            Réinitialisation
           </p>
           <h1 className="text-3xl font-bold uppercase tracking-tight text-white sm:text-4xl font-display text-glow">
             Mot de passe oublie
           </h1>
           <p className="mt-3 text-sm text-white/60 font-body">
-            Entrez votre email pour recevoir un code de reinitialisation.
+            Entrez votre email pour recevoir un code de réinitialisation.
           </p>
         </div>
 

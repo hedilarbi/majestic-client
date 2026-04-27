@@ -3,17 +3,21 @@ export const navLinks = [
   { label: "Spectacles", href: "/evenements?type=show" },
   { label: "Programme", href: "/programme" },
   { label: "Offres", href: "/offres" },
-  { label: "À propos", href: "#" },
-  { label: "Réserver l'espace", href: "#" },
+  { label: "Actualité", href: "/actualite" },
+  { label: "Réserver l'espace", href: "/reserver-espace" },
 ];
 
 export const footerLinks = [
   {
-    title: "Films",
+    title: "Navigation",
     links: [
-      { label: "À l'affiche", href: "#" },
-      { label: "Prochainement", href: "#" },
-      { label: "Les mieux notés", href: "#" },
+      { label: "Films", href: "/evenements?type=movie" },
+      { label: "Spectacles", href: "/evenements?type=show" },
+      { label: "Programme", href: "/programme" },
+      { label: "Offres", href: "/offres" },
+      { label: "Actualité", href: "/actualite" },
+      { label: "Réserver l'espace", href: "/reserver-espace" },
+      { label: "À propos", href: "#" },
     ],
   },
   {

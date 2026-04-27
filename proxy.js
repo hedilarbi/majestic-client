@@ -36,7 +36,7 @@ export async function proxy(request) {
         return NextResponse.next();
       }
     } catch (error) {
-      // If validation fails, fall back to guest creation below.
+      // If validation fails, fall back to guest création below.
     }
   }
 

@@ -112,7 +112,7 @@ export default function ProgrammePageClient({
     if (!sessionId) {
       return;
     }
-    router.push(`/reservation-siege/${sessionId}`);
+    router.push(`/reservations/${sessionId}`);
   }, [activeSession, router]);
 
   const modalSessionTime = String(activeSession?.session?.time || "").trim();
@@ -286,7 +286,7 @@ export default function ProgrammePageClient({
                     </div>
                   ) : (
                     <p className="text-xs text-white/50 font-body">
-                      Aucune seance disponible pour cette date.
+                      Aucune séance disponible pour cette date.
                     </p>
                   )}
                 </div>
@@ -374,7 +374,7 @@ export default function ProgrammePageClient({
                         </div>
                       ) : (
                         <p className="text-sm text-white/50 font-body">
-                          Aucune seance disponible pour cette date.
+                          Aucune séance disponible pour cette date.
                         </p>
                       )}
                     </div>
@@ -384,7 +384,7 @@ export default function ProgrammePageClient({
             ))
           ) : (
             <div className="rounded-2xl border border-white/10 bg-white/5 p-10 text-center text-white/60 font-body">
-              Aucune seance disponible pour cette date.
+              Aucune séance disponible pour cette date.
             </div>
           )}
         </section>
@@ -399,7 +399,7 @@ export default function ProgrammePageClient({
         <div className="fixed inset-0 z-[120]">
           <button
             type="button"
-            aria-label="Fermer le detail de la seance"
+            aria-label="Fermer le detail de la séance"
             onClick={closeSessionModal}
             className="absolute inset-0 bg-black/70 backdrop-blur-[1px]"
           />
@@ -420,7 +420,7 @@ export default function ProgrammePageClient({
                 <div className="flex items-start justify-between gap-4">
                   <div>
                     <p className="text-xs font-semibold uppercase tracking-[0.22em] text-accent/80">
-                      Details seance
+                      Details séance
                     </p>
                     <h3 className="mt-2 text-2xl font-black leading-tight text-white font-display">
                       {activeSession.event.title}

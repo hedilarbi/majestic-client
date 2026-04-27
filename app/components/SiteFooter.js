@@ -29,7 +29,7 @@ export default function SiteFooter() {
   const pathname = usePathname();
   const hidden =
     typeof pathname === "string" &&
-    pathname.startsWith("/reserver-siege/") &&
+    pathname.startsWith("/reservations/") &&
     pathname.includes("/checkout/succes");
 
   if (hidden) {
@@ -73,12 +73,12 @@ export default function SiteFooter() {
               <ul className="space-y-2 font-body">
                 {column.links.map((link) => (
                   <li key={link.label}>
-                    <a
+                    <Link
                       className="text-white/60 transition-colors hover:text-primary"
                       href={link.href}
                     >
                       {link.label}
-                    </a>
+                    </Link>
                   </li>
                 ))}
               </ul>

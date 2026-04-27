@@ -85,3 +85,18 @@ export const getCustomerMe = async (token) => {
 
   return data;
 };
+
+export const getCurrentCustomerUser = async () => {
+  const token = await getTokenCookie();
+
+  if (!token) {
+    return null;
+  }
+
+  try {
+    const data = await getCustomerMe(token);
+    return data?.user?.role === "customer" ? data.user : null;
+  } catch (_error) {
+    return null;
+  }
+};

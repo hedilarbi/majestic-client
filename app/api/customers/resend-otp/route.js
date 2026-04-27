@@ -55,5 +55,5 @@ export async function POST(request) {
     );
   }
 
-  return NextResponse.json({ message: data?.message || "Code OTP renvoye" });
+  return NextResponse.json({ message: data?.message || "Code OTP renvoyé" });
 }

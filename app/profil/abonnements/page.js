@@ -36,7 +36,7 @@ const resolveSaleState = (sale) => {
 
   if (isCancelled || isExpiredByDate) {
     return {
-      label: "Expire",
+      label: "Expiré",
       tone: "border border-white/15 text-white/60",
       card: "bg-black/50 opacity-75",
     };
@@ -65,7 +65,7 @@ const resolveRemainingCredits = (sale) => {
 
 export const metadata = {
   title: "Abonnements | Majestic",
-  description: "Gerez vos abonnements cinema et vos acces premium.",
+  description: "Gérez vos abonnements cinéma et vos accès premium.",
 };
 
 export default async function AbonnementsPage() {
@@ -89,7 +89,7 @@ export default async function AbonnementsPage() {
           Mes abonnements
         </h1>
         <p className="max-w-2xl text-sm text-white/50 font-body sm:text-base">
-          Gerez vos acces exclusifs et vos entrees cinema en toute simplicite.
+          Gérez vos accès exclusifs et vos entrées cinéma en toute simplicité.
           Profitez de l&apos;experience premium sans limite.
         </p>
       </header>
@@ -153,7 +153,7 @@ export default async function AbonnementsPage() {
 
             <div className="relative z-10 mt-6 flex items-center gap-2 border-t border-white/10 pt-6 text-sm text-white/50">
               <MdCalendarMonth className="h-4 w-4 text-white/30" />
-              Achat le {formatDate(sale.createdAt)} • Expire le{" "}
+              Achat le {formatDate(sale.createdAt)} • Expiré le{" "}
               {formatDate(sale?.subscription?.expirationDate)}
             </div>
             {sale?.subscriptionCode ? (
@@ -220,7 +220,7 @@ export default async function AbonnementsPage() {
 
             <div className="relative z-10 mt-6 flex items-center gap-2 border-t border-white/10 pt-6 text-sm text-white/50">
               <MdCalendarMonth className="h-4 w-4 text-white/30" />
-              Achat le {formatDate(sale.createdAt)} • Expire le{" "}
+              Achat le {formatDate(sale.createdAt)} • Expiré le{" "}
               {formatDate(sale?.subscription?.expirationDate)}
             </div>
             {sale?.subscriptionCode ? (

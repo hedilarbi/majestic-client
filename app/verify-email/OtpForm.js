@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 
 const otpClassName =
@@ -8,8 +8,13 @@ const otpClassName =
 
 const isFilled = (value) => value.trim().length > 0;
 
-export default function OtpForm({ otpError, redirectPath = "/profil" }) {
+export default function OtpForm({
+  otpError,
+  redirectPath = "/profil",
+  autoSendOtp = false,
+}) {
   const inputRefs = useRef([]);
+  const autoSendTriggeredRef = useRef(false);
   const [otp, setOtp] = useState(Array(6).fill(""));
   const [clientError, setClientError] = useState("");
   const [serverError, setServerError] = useState("");
@@ -100,7 +105,7 @@ export default function OtpForm({ otpError, redirectPath = "/profil" }) {
         if (!response.ok) {
           throw new Error(data?.message || "Erreur serveur");
         }
-        setSuccessMessage("Email verifie avec succes.");
+        setSuccessMessage("Email vérifié avec succès.");
         router.refresh();
         router.replace(redirectPath || "/profil");
       } catch (error) {
@@ -113,7 +118,7 @@ export default function OtpForm({ otpError, redirectPath = "/profil" }) {
     verifyOtp();
   };
 
-  const handleResend = async () => {
+  const handleResend = useCallback(async () => {
     if (isResending) return;
     setIsResending(true);
     setServerError("");
@@ -126,13 +131,22 @@ export default function OtpForm({ otpError, redirectPath = "/profil" }) {
       if (!response.ok) {
         throw new Error(data?.message || "Erreur serveur");
       }
-      setSuccessMessage(data?.message || "Code OTP renvoye.");
+      setSuccessMessage(data?.message || "Code OTP renvoyé.");
     } catch (error) {
       setServerError(error?.message || "Erreur serveur");
     } finally {
       setIsResending(false);
     }
-  };
+  }, [isResending]);
+
+  useEffect(() => {
+    if (!autoSendOtp || autoSendTriggeredRef.current) {
+      return;
+    }
+
+    autoSendTriggeredRef.current = true;
+    handleResend();
+  }, [autoSendOtp, handleResend]);
 
   return (
     <form className="space-y-6" onSubmit={handleSubmit}>
@@ -214,7 +228,7 @@ export default function OtpForm({ otpError, redirectPath = "/profil" }) {
           onClick={handleResend}
           disabled={isResending}
         >
-          {isResending ? "Envoi..." : "Renvoyer le code"}
+          {isResending ? "Envoi..." : "Renvoyér le code"}
         </button>
       </div>
     </form>

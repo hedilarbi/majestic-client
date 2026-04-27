@@ -60,7 +60,7 @@ export async function DELETE(request, { params }) {
   const { reservationId } = (await params) || {};
 
   if (!reservationId) {
-    return NextResponse.json({ message: "Reservation invalide" }, { status: 400 });
+    return NextResponse.json({ message: "Réservation invalide" }, { status: 400 });
   }
 
   let token = getTokenFromRequest(request);

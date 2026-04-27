@@ -28,7 +28,7 @@ const fetchWithCustomerToken = async (path, { page, limit } = {}) => {
       total: 0,
       page: 1,
       limit: limit || 50,
-      error: "Vous devez etre connecte.",
+      error: "Vous devez être connecte.",
       status: 401,
     };
   }
@@ -71,7 +71,7 @@ const fetchSingleWithCustomerToken = async (path, { key = "item" } = {}) => {
   if (!token) {
     return {
       [key]: null,
-      error: "Vous devez etre connecte.",
+      error: "Vous devez être connecte.",
       status: 401,
     };
   }

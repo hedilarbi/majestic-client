@@ -8,6 +8,9 @@ import { MdVisibility, MdVisibilityOff } from "react-icons/md";
 const inputClassName =
   "h-14 w-full rounded-xl border border-white/10 bg-white/5 pl-4 pr-12 text-white placeholder:text-white/35 transition focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/30";
 
+const OTP_INFO_MESSAGE =
+  "Un code OTP a été envoyé à votre adresse email.";
+
 const resolveRedirectPath = (value, fallback = "/profil") => {
   if (typeof value !== "string") {
     return fallback;
@@ -82,7 +85,9 @@ export default function InscriptionForm() {
       if (!response.ok) {
         throw new Error(data?.message || "Erreur serveur");
       }
-      router.push(`/verify-email?redirect=${encodeURIComponent(redirectPath)}`);
+      router.push(
+        `/verify-email?redirect=${encodeURIComponent(redirectPath)}&info=${encodeURIComponent(OTP_INFO_MESSAGE)}`,
+      );
     } catch (error) {
       setErrorMessage(error?.message || "Erreur serveur");
     } finally {

@@ -1,8 +1,9 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { createPortal } from "react-dom";
 import Image from "next/image";
-import { MdPlayArrow } from "react-icons/md";
+import { MdClose, MdPlayArrow } from "react-icons/md";
 
 const parseStartSeconds = (value) => {
   if (!value) return 0;
@@ -59,7 +60,7 @@ export default function EventTrailer({
   trailerLink,
   className = "",
 }) {
-  const [isPlaying, setIsPlaying] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const trimmedTrailer = trailerLink?.trim() || "";
   const hasTrailer = Boolean(trimmedTrailer);
 
@@ -84,61 +85,102 @@ export default function EventTrailer({
     return { type: "iframe", src: trimmedTrailer };
   }, [hasTrailer, trimmedTrailer]);
 
+  useEffect(() => {
+    if (!isOpen) return undefined;
+
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [isOpen]);
+
   return (
-    <div className={`group ${className}`}>
-      {isPlaying && videoConfig.type !== "none" ? (
-        <>
-          <button
-            className="absolute right-3 top-3 z-10 inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/20 bg-black/60 text-white transition hover:border-accent hover:text-accent"
-            type="button"
-            aria-label="Fermer la bande annonce"
-            onClick={() => setIsPlaying(false)}
-          >
-            X
-          </button>
-          {videoConfig.type === "video" ? (
-            <video
-              className="absolute inset-0 h-full w-full object-cover"
-              controls
-              autoPlay
-              playsInline
-              src={videoConfig.src}
+    <>
+      <div className={`group ${className}`}>
+        <Image
+          src={poster}
+          alt={`Affiche de ${title}`}
+          fill
+          sizes="(min-width: 1024px) 360px, (min-width: 768px) 320px, 78vw"
+          className="object-cover"
+          priority
+        />
+
+        <button
+          className="absolute inset-0 flex items-center justify-center bg-black/50 transition-opacity backdrop-blur-[2px] hover:bg-black/35 disabled:cursor-not-allowed disabled:bg-black/65"
+          type="button"
+          aria-label="Lire la bande annonce"
+          onClick={() => hasTrailer && setIsOpen(true)}
+          disabled={!hasTrailer}
+        >
+          <span className="flex h-[4.5rem] w-[4.5rem] items-center justify-center rounded-full border border-white/20 bg-accent text-black shadow-[0_0_24px_rgba(116,208,241,0.45)] transition-transform duration-200 group-hover:scale-105">
+            <MdPlayArrow className="h-10 w-10 translate-x-[1px]" />
+          </span>
+        </button>
+
+        {!hasTrailer ? (
+          <div className="absolute inset-x-4 bottom-4 rounded-full border border-white/10 bg-black/65 px-4 py-2 text-center text-xs font-semibold uppercase tracking-[0.18em] text-white/55">
+            Bande annonce indisponible
+          </div>
+        ) : null}
+      </div>
+
+      {isOpen && videoConfig.type !== "none"
+        ? createPortal(
+            <div
+              className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 px-4 py-6 sm:px-6"
+              role="dialog"
+              aria-modal="true"
+              onClick={() => setIsOpen(false)}
             >
-              Votre navigateur ne prend pas en charge la lecture vidéo.
-            </video>
-          ) : (
-            <iframe
-              className="absolute inset-0 h-full w-full"
-              src={videoConfig.src}
-              title={`Bande annonce ${title}`}
-              allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
-              allowFullScreen
-            />
-          )}
-        </>
-      ) : (
-        <>
-          <Image
-            src={poster}
-            alt={`Affiche de ${title}`}
-            fill
-            sizes="(min-width: 1024px) 45vw, (min-width: 768px) 55vw, 90vw"
-            className="object-cover"
-            priority
-          />
-          <button
-            className="absolute inset-0 flex items-center justify-center bg-black/60 opacity-0 transition-opacity backdrop-blur-[2px] group-hover:opacity-100"
-            type="button"
-            aria-label="Lire la bande annonce"
-            onClick={() => setIsPlaying(true)}
-            disabled={!hasTrailer}
-          >
-            <span className="rounded-full bg-accent p-3 text-black shadow-[0_0_15px_rgba(116,208,241,0.35)] transition-transform hover:scale-100 scale-90">
-              <MdPlayArrow className="h-8 w-8" />
-            </span>
-          </button>
-        </>
-      )}
-    </div>
+              <div
+                className="relative w-[min(92vw,calc(82vh*16/9))] max-w-5xl overflow-hidden rounded-3xl border border-white/10 bg-black shadow-2xl"
+                onClick={(event) => event.stopPropagation()}
+              >
+                <button
+                  className="absolute right-4 top-4 z-10 inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-black/65 text-white transition hover:border-accent hover:text-accent"
+                  type="button"
+                  aria-label="Fermer la bande annonce"
+                  onClick={() => setIsOpen(false)}
+                >
+                  <MdClose className="h-5 w-5" />
+                </button>
+                <div className="aspect-video w-full bg-black">
+                  {videoConfig.type === "video" ? (
+                    <video
+                      className="h-full w-full"
+                      controls
+                      autoPlay
+                      playsInline
+                      src={videoConfig.src}
+                    >
+                      Votre navigateur ne prend pas en charge la lecture vidéo.
+                    </video>
+                  ) : (
+                    <iframe
+                      className="h-full w-full"
+                      src={videoConfig.src}
+                      title={`Bande annonce ${title}`}
+                      allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
+                      allowFullScreen
+                    />
+                  )}
+                </div>
+              </div>
+            </div>,
+            document.body,
+          )
+        : null}
+    </>
   );
 }
