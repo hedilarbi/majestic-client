@@ -36,27 +36,27 @@ function PaymentVerifyContent() {
         if (response.ok) {
           setStatus("success");
           setTimeout(() => {
-             if (data.type === "booking" && data.seanceId) {
-               router.push(`/reservations/${data.seanceId}/checkout/succes?bookingId=${data.bookingId}`);
-             } else {
-               router.push("/profil");
-             }
+            if (data.type === "booking" && data.seanceId) {
+              router.push(`/reservations/${data.seanceId}/checkout/succes?bookingId=${data.bookingId}`);
+            } else {
+              router.push("/profil");
+            }
           }, 3000);
         } else {
           setStatus("failed");
           setTimeout(() => {
-             if (data.seanceId) {
-               router.push(`/reservations/${data.seanceId}/checkout`);
-             } else {
-               router.push("/");
-             }
+            if (data.seanceId) {
+              router.push(`/reservations/${data.seanceId}/checkout`);
+            } else {
+              router.push("/");
+            }
           }, 3000);
         }
       } catch (error) {
         console.error("Payment verification failed", error);
         setStatus("failed");
         setTimeout(() => {
-           router.push("/");
+          router.push("/");
         }, 3000);
       }
     };
@@ -70,11 +70,11 @@ function PaymentVerifyContent() {
         {status === "verifying" && (
           <div>
             <div className="w-16 h-16 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin mx-auto mb-6"></div>
-            <h1 className="text-2xl font-bold mb-2">Vérification du paiement...</h1>
+            <h1 className="text-2xl font-bold mb-2">Vérification du paiement de test...</h1>
             <p className="text-zinc-400">Veuillez ne pas fermer cette page.</p>
           </div>
         )}
-        
+
         {status === "success" && (
           <div>
             <div className="w-16 h-16 bg-emerald-500/20 text-emerald-500 rounded-full flex items-center justify-center mx-auto mb-6">
