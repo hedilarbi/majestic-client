@@ -7,12 +7,11 @@ function PaymentVerifyContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const orderId = searchParams.get("orderId");
-  const [status, setStatus] = useState("verifying"); // verifying, success, failed
+  const [status, setStatus] = useState(() => orderId ? "verifying" : "failed"); // verifying, success, failed
   const [hasVerified, setHasVerified] = useState(false);
 
   useEffect(() => {
     if (!orderId) {
-      setStatus("failed");
       return;
     }
 
@@ -91,7 +90,7 @@ function PaymentVerifyContent() {
               <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
             </div>
             <h1 className="text-2xl font-bold mb-2">Paiement échoué</h1>
-            <p className="text-zinc-400">La transaction n'a pas pu aboutir. Redirection vers la commande en cours...</p>
+            <p className="text-zinc-400">La transaction n&apos;a pas pu aboutir. Redirection vers la commande en cours...</p>
           </div>
         )}
       </div>
