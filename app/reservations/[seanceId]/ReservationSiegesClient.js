@@ -883,6 +883,38 @@ export default function ReservationSiegesClient({ seanceId, socketUrl }) {
   seanceInfo.sessionStatus]
   );
 
+  // Handle local expiration
+  useEffect(() => {
+    if (!myReservation?.expiresAt) return;
+
+    const expiresAtTs = new Date(myReservation.expiresAt).getTime();
+    if (!Number.isFinite(expiresAtTs)) return;
+
+    const handleExpiration = () => {
+      const now = Date.now();
+      if (now >= expiresAtTs) {
+        const seats = myReservation.seats || [];
+        if (seats.length > 0) {
+          updateSeatStatuses(seats, "available", { keepSelected: false });
+        }
+        setMyReservation(null);
+        setSelectedSeats([]);
+        selectedSeatsRef.current = [];
+        selectedSeatKeysRef.current = new Set();
+        pendingSeatActionsRef.current.clear();
+      }
+    };
+
+    // Check immediately
+    handleExpiration();
+
+    const delay = expiresAtTs - Date.now();
+    if (delay > 0) {
+      const timerId = setTimeout(handleExpiration, delay);
+      return () => clearTimeout(timerId);
+    }
+  }, [myReservation?.expiresAt, myReservation?.seats, updateSeatStatuses]);
+
   const handleToggleSeat = useCallback(
     async (cell) => {
       if (!cell) {
