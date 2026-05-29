@@ -2,6 +2,7 @@ import HeroSection from "./components/HeroSection";
 import NowShowingSection from "./components/NowShowingSection";
 import SpectacleSection from "./components/SpectacleSection";
 import ActualiteHomeSection from "./components/actualite/ActualiteHomeSection";
+import PartenairesSection from "./components/PartenairesSection";
 
 import UpcomingSection from "./components/UpcomingSection";
 import { getPublishedActualites } from "./lib/actualites-api";
@@ -10,11 +11,9 @@ import { getHomeData } from "./lib/home-api";
 export const dynamic = "force-dynamic";
 
 export default async function Home() {
-  const [{ heroSlides, nowShowing, spectacles, upcoming }, actualites] =
+  const [{ heroSlides, nowShowing, spectacles, upcoming, lastExpiredShow }, actualites] =
     await Promise.all([
-      getHomeData({
-        noCache: true,
-      }),
+      getHomeData({ noCache: true }),
       getPublishedActualites({ noCache: true, limit: 3 }),
     ]);
 
@@ -23,9 +22,10 @@ export default async function Home() {
       <main className="flex-1">
         <HeroSection slides={heroSlides} />
         <NowShowingSection items={nowShowing} />
-        <SpectacleSection items={spectacles} />
+        <SpectacleSection items={spectacles} lastExpiredItem={lastExpiredShow} />
         <UpcomingSection items={upcoming} />
         <ActualiteHomeSection items={actualites} />
+        <PartenairesSection />
       </main>
     </div>
   );

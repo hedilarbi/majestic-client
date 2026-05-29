@@ -3,7 +3,7 @@ import Link from "next/link";
 import { MdArrowForward } from "react-icons/md";
 
 const badgeStyles = {
-  primary: "bg-primary text-white",
+  primary: "bg-accent text-white",
   accent: "bg-accent text-black",
 };
 

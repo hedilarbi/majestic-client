@@ -37,6 +37,7 @@ const normalizeActualiteItem = (item) => ({
   slug: item?.slug || "",
   excerpt: item?.excerpt || "",
   image: item?.image || "",
+  images: Array.isArray(item?.images) ? item.images : [],
   contentHtml: item?.contentHtml || "",
   videoUrl: item?.videoUrl || "",
   thumbnail: item?.thumbnail || "",

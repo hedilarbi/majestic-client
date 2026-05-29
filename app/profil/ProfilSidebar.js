@@ -81,7 +81,7 @@ export function ProfilSidebar({ user }) {
                 href={item.href}
                 className={`flex items-center gap-3 rounded-xl px-4 py-3 transition-all ${
                   isActive
-                    ? "border border-primary/40 bg-primary/15 text-white shadow-[0_0_20px_rgba(16,52,166,0.25)]"
+                    ? "border border-primary/40 bg-accent/15 text-white shadow-[0_0_20px_rgba(16,52,166,0.25)]"
                     : "text-white/60 hover:bg-white/5 hover:text-white"
                 }`}
               >
@@ -221,7 +221,7 @@ export function ProfilMobileNav({ user }) {
                         onClick={() => setIsDrawerOpen(false)}
                         className={`flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition ${
                           isActive
-                            ? "border border-primary/40 bg-primary/15 text-white"
+                            ? "border border-primary/40 bg-accent/15 text-white"
                             : "border border-white/10 text-white/70 hover:bg-white/5 hover:text-white"
                         }`}
                       >

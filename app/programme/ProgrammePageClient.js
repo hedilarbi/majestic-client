@@ -123,7 +123,7 @@ export default function ProgrammePageClient({
     <>
       <main className="relative min-h-screen w-full px-4 pb-14 pt-5 text-white sm:px-6 md:px-12 md:pb-20 md:pt-6 lg:px-20">
         <div className="pointer-events-none absolute inset-0 -z-10">
-          <div className="absolute left-1/2 top-0 h-[60vh] w-[80vw] -translate-x-1/2 rounded-full bg-primary/20 blur-[120px] opacity-60" />
+          <div className="absolute left-1/2 top-0 h-[60vh] w-[80vw] -translate-x-1/2 rounded-full bg-accent/20 blur-[120px] opacity-60" />
           <div className="absolute bottom-0 right-0 h-[40vh] w-[40vw] rounded-full bg-accent/10 blur-[100px] opacity-40" />
         </div>
 
@@ -202,7 +202,7 @@ export default function ProgrammePageClient({
                 <div
                   className={`pointer-events-none absolute h-64 w-64 rounded-full blur-[80px] transition-colors duration-500 ${
                     index % 2 === 0
-                      ? "-right-20 -top-20 bg-primary/10 group-hover:bg-primary/20"
+                      ? "-right-20 -top-20 bg-accent/10 group-hover:bg-accent/20"
                       : "-bottom-20 -left-20 bg-accent/10 group-hover:bg-accent/20"
                   }`}
                 />

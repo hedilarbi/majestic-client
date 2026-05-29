@@ -22,7 +22,7 @@ export default function ActualiteHomeSection({ items = [] }) {
         <div className="mb-10 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <div>
             <h2 className="text-2xl font-semibold uppercase tracking-wide text-white md:text-3xl font-display">
-              Actualité
+              Actualités
             </h2>
             <p className="mt-2 max-w-2xl text-sm text-white/60 sm:text-base">
               Retrouvez les derniers articles, bandes-annonces et formulaires

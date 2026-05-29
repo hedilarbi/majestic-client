@@ -8,8 +8,9 @@ import { RiArrowLeftSLine } from "react-icons/ri";
 import {
   buildSeatRows,
   normalizeSeatsPayload,
-  seatKey } from
-"@/app/lib/seat-utils";
+  seatKey
+} from
+  "@/app/lib/seat-utils";
 import { normalizeReservationResponse } from "@/app/lib/reservation-utils";
 import MobileInfoDrawer from "./components/MobileInfoDrawer";
 import MobileReservedBar from "./components/MobileReservedBar";
@@ -32,8 +33,9 @@ import {
   resolveSeatOverride,
   resolveSeanceInfo,
   sortSeatLabels,
-  toSeatKeySet } from
-"./seat-map-utils";
+  toSeatKeySet
+} from
+  "./seat-map-utils";
 
 const MIN_SCALE_FLOOR = 0.22;
 const MAX_SCALE = 3;
@@ -61,12 +63,12 @@ const getTouchCenter = (touches, rect) => {
 };
 
 const normalizePricingLookupToken = (value) =>
-String(value || "").trim().toLowerCase();
+  String(value || "").trim().toLowerCase();
 
 const buildPricingLookupKey = (name, price) => {
   const normalizedName = normalizePricingLookupToken(name);
   const parsedPrice =
-  typeof price === "number" ? price : Number.parseFloat(String(price));
+    typeof price === "number" ? price : Number.parseFloat(String(price));
 
   if (!normalizedName || !Number.isFinite(parsedPrice)) {
     return "";
@@ -160,9 +162,9 @@ export default function ReservationSiegesClient({ seanceId, socketUrl }) {
   );
   const availablePricingItems = useMemo(
     () =>
-    Array.isArray(pricingItems) ?
-    pricingItems.filter((item) => item && item.name && item.isAvailable !== false) :
-    [],
+      Array.isArray(pricingItems) ?
+        pricingItems.filter((item) => item && item.name && item.isAvailable !== false) :
+        [],
     [pricingItems]
   );
   const pricingAvailability = useMemo(() => {
@@ -229,11 +231,10 @@ export default function ReservationSiegesClient({ seanceId, socketUrl }) {
     };
 
     if (
-    metrics.viewportWidth <= 0 ||
-    metrics.viewportHeight <= 0 ||
-    metrics.canvasWidth <= 0 ||
-    metrics.canvasHeight <= 0)
-    {
+      metrics.viewportWidth <= 0 ||
+      metrics.viewportHeight <= 0 ||
+      metrics.canvasWidth <= 0 ||
+      metrics.canvasHeight <= 0) {
       return null;
     }
 
@@ -244,19 +245,19 @@ export default function ReservationSiegesClient({ seanceId, socketUrl }) {
   const clampTransform = useCallback((next) => {
     const metrics = layoutMetricsRef.current;
     const measuredMetrics =
-    metrics.viewportWidth > 0 &&
-    metrics.viewportHeight > 0 &&
-    metrics.canvasWidth > 0 &&
-    metrics.canvasHeight > 0 ?
-    metrics :
-    measureLayout();
+      metrics.viewportWidth > 0 &&
+        metrics.viewportHeight > 0 &&
+        metrics.canvasWidth > 0 &&
+        metrics.canvasHeight > 0 ?
+        metrics :
+        measureLayout();
 
     if (!measuredMetrics) {
       return next;
     }
 
     const { viewportWidth, viewportHeight, canvasWidth, canvasHeight } =
-    measuredMetrics;
+      measuredMetrics;
 
     const minScale = Math.min(fitScaleRef.current || 1, MIN_SCALE_FLOOR);
     const scale = Math.max(minScale, Math.min(MAX_SCALE, next.scale));
@@ -328,10 +329,10 @@ export default function ReservationSiegesClient({ seanceId, socketUrl }) {
 
   const mergeSelectedSeats = useCallback((reservationSeats = []) => {
     const safeReservationSeats = Array.isArray(reservationSeats) ?
-    reservationSeats.filter(
-      (seat) => seat && seat.row !== undefined && seat.col !== undefined
-    ) :
-    [];
+      reservationSeats.filter(
+        (seat) => seat && seat.row !== undefined && seat.col !== undefined
+      ) :
+      [];
 
     const reservationKeys = new Set(
       safeReservationSeats.map((seat) => seatKey(seat.row, seat.col))
@@ -351,29 +352,29 @@ export default function ReservationSiegesClient({ seanceId, socketUrl }) {
     );
     const pendingReleaseKeys = new Set(
       Array.from(pendingSeatActionsRef.current.entries()).
-      filter(([, value]) => value?.action === "release").
-      map(([key]) => key)
+        filter(([, value]) => value?.action === "release").
+        map(([key]) => key)
     );
 
     const preserveExisting = pendingSeatActionsRef.current.size > 0;
     const stableSelectedSeats = preserveExisting ?
-    selectedSeatsRef.current.filter((seat) => {
-      if (!seat || seat.row === undefined || seat.col === undefined) {
-        return false;
-      }
-      const key = seatKey(seat.row, seat.col);
-      if (reservationKeys.has(key)) {
-        return false;
-      }
-      if (pendingReserveKeys.has(key)) {
-        return false;
-      }
-      if (pendingReleaseKeys.has(key)) {
-        return false;
-      }
-      return true;
-    }) :
-    [];
+      selectedSeatsRef.current.filter((seat) => {
+        if (!seat || seat.row === undefined || seat.col === undefined) {
+          return false;
+        }
+        const key = seatKey(seat.row, seat.col);
+        if (reservationKeys.has(key)) {
+          return false;
+        }
+        if (pendingReserveKeys.has(key)) {
+          return false;
+        }
+        if (pendingReleaseKeys.has(key)) {
+          return false;
+        }
+        return true;
+      }) :
+      [];
 
     const merged = new Map();
     const mergeList = (list = []) => {
@@ -414,8 +415,8 @@ export default function ReservationSiegesClient({ seanceId, socketUrl }) {
 
     const keysToRemove = new Set(
       seatsToRemove.
-      filter((seat) => seat && seat.row !== undefined && seat.col !== undefined).
-      map((seat) => seatKey(seat.row, seat.col))
+        filter((seat) => seat && seat.row !== undefined && seat.col !== undefined).
+        map((seat) => seatKey(seat.row, seat.col))
     );
 
     if (!keysToRemove.size) {
@@ -462,10 +463,10 @@ export default function ReservationSiegesClient({ seanceId, socketUrl }) {
     const { keepSelected = false } = options;
     const seatKeys = new Set(
       seats.
-      filter(
-        (seat) => seat && seat.row !== undefined && seat.col !== undefined
-      ).
-      map((seat) => seatKey(seat.row, seat.col))
+        filter(
+          (seat) => seat && seat.row !== undefined && seat.col !== undefined
+        ).
+        map((seat) => seatKey(seat.row, seat.col))
     );
 
     setSeatRows((prevRows) => {
@@ -510,17 +511,17 @@ export default function ReservationSiegesClient({ seanceId, socketUrl }) {
 
     if (status !== "available" && !keepSelected) {
       setSelectedSeats((prev) =>
-      prev.filter((seat) => {
-        const key = seatKey(seat.row, seat.col);
-        if (!seatKeys.has(key)) {
-          return true;
-        }
-        const pending = pendingSeatActionsRef.current.get(key);
-        if (pending?.action) {
-          return true;
-        }
-        return selectedSeatKeysRef.current.has(key);
-      })
+        prev.filter((seat) => {
+          const key = seatKey(seat.row, seat.col);
+          if (!seatKeys.has(key)) {
+            return true;
+          }
+          const pending = pendingSeatActionsRef.current.get(key);
+          if (pending?.action) {
+            return true;
+          }
+          return selectedSeatKeysRef.current.has(key);
+        })
       );
     }
   }, []);
@@ -593,7 +594,7 @@ export default function ReservationSiegesClient({ seanceId, socketUrl }) {
       }
 
       const { viewportWidth, viewportHeight, canvasWidth, canvasHeight } =
-      metrics;
+        metrics;
       let nextFitScale = Math.min(
         1,
         viewportWidth / canvasWidth,
@@ -651,8 +652,8 @@ export default function ReservationSiegesClient({ seanceId, socketUrl }) {
             const serverStatus = String(
               data?.sessionStatus || data?.session?.status || "completed"
             ).
-            trim().
-            toLowerCase();
+              trim().
+              toLowerCase();
             setSeanceInfo((prev) => ({
               ...prev,
               sessionStatus: serverStatus || "completed"
@@ -734,8 +735,8 @@ export default function ReservationSiegesClient({ seanceId, socketUrl }) {
   useEffect(() => {
     const resolvedSocketUrl = normalizeSocketUrl(socketUrl);
     const isSessionUnavailable =
-    Boolean(seanceInfo.sessionStatus) &&
-    seanceInfo.sessionStatus !== "in_progress";
+      Boolean(seanceInfo.sessionStatus) &&
+      seanceInfo.sessionStatus !== "in_progress";
     if (!resolvedSocketUrl || !seanceId || isSessionUnavailable) {
       return undefined;
     }
@@ -835,9 +836,8 @@ export default function ReservationSiegesClient({ seanceId, socketUrl }) {
       if (payloadSeats.length) {
         removeSelectedSeats(payloadSeats);
         if (
-        selectedSeatsRef.current.length === 0 &&
-        pendingSeatActionsRef.current.size === 0)
-        {
+          selectedSeatsRef.current.length === 0 &&
+          pendingSeatActionsRef.current.size === 0) {
           setMyReservation(null);
         }
         return;
@@ -873,14 +873,14 @@ export default function ReservationSiegesClient({ seanceId, socketUrl }) {
       socket.disconnect();
     };
   }, [
-  isSeatPending,
-  removeSelectedSeats,
-  seanceId,
-  socketUrl,
-  syncSelectedSeats,
-  updateSeatStatuses,
-  userId,
-  seanceInfo.sessionStatus]
+    isSeatPending,
+    removeSelectedSeats,
+    seanceId,
+    socketUrl,
+    syncSelectedSeats,
+    updateSeatStatuses,
+    userId,
+    seanceInfo.sessionStatus]
   );
 
   // Handle local expiration
@@ -949,15 +949,15 @@ export default function ReservationSiegesClient({ seanceId, socketUrl }) {
       const prevSelectedSeats = selectedSeatsRef.current;
       const position = indexRef.current.get(key);
       const prevStatus = position ?
-      seatRowsRef.current?.[position.rowIndex]?.cells?.[position.colIndex]?.
-      status :
-      undefined;
+        seatRowsRef.current?.[position.rowIndex]?.cells?.[position.colIndex]?.
+          status :
+        undefined;
       const fallbackStatus = exists ? "reserved" : "available";
       const nextSelectedSeats = exists ?
-      prevSelectedSeats.filter(
-        (item) => seatKey(item.row, item.col) !== key
-      ) :
-      [...prevSelectedSeats, toggledSeat];
+        prevSelectedSeats.filter(
+          (item) => seatKey(item.row, item.col) !== key
+        ) :
+        [...prevSelectedSeats, toggledSeat];
 
       const opId = nextSeatOpRef.current + 1;
       nextSeatOpRef.current = opId;
@@ -1018,19 +1018,19 @@ export default function ReservationSiegesClient({ seanceId, socketUrl }) {
         if (!exists && fixedSeatMeta) {
           const seatLabel = `${cell.row}${cell.col}`;
           const pricingId = fixedSeatMeta.id ?
-          String(fixedSeatMeta.id) :
-          cell?.pricingOverrideId ?
-          String(cell.pricingOverrideId) :
-          "";
+            String(fixedSeatMeta.id) :
+            cell?.pricingOverrideId ?
+              String(cell.pricingOverrideId) :
+              "";
           const pricing = pricingId ? pricingById.get(pricingId) : null;
           const pricingName = String(
             fixedSeatMeta.name || pricing?.name || "Tarif fixe"
           );
           const pricingValue = fixedSeatMeta.price ?? pricing?.price ?? null;
           const pricingPriceLabel =
-          pricingValue !== null && pricingValue !== undefined ?
-          formatPrice(pricingValue) :
-          "Prix non defini";
+            pricingValue !== null && pricingValue !== undefined ?
+              formatPrice(pricingValue) :
+              "Prix non defini";
 
           setFixedSeatInfoModal({
             seatLabel,
@@ -1058,13 +1058,13 @@ export default function ReservationSiegesClient({ seanceId, socketUrl }) {
       }
     },
     [
-    getFixedSeatMeta,
-    hasAvailableVariablePricing,
-    isPricingMetaAvailable,
-    pricingById,
-    seanceId,
-    syncSelectedSeats,
-    updateSeatStatuses]
+      getFixedSeatMeta,
+      hasAvailableVariablePricing,
+      isPricingMetaAvailable,
+      pricingById,
+      seanceId,
+      syncSelectedSeats,
+      updateSeatStatuses]
 
   );
 
@@ -1174,22 +1174,22 @@ export default function ReservationSiegesClient({ seanceId, socketUrl }) {
         const nextScale = baseScale * pinchRatio;
 
         const sourceX =
-        (pinchStateRef.current.startCenterX -
-        pinchStateRef.current.startTranslateX) /
-        baseScale;
+          (pinchStateRef.current.startCenterX -
+            pinchStateRef.current.startTranslateX) /
+          baseScale;
         const sourceY =
-        (pinchStateRef.current.startCenterY -
-        pinchStateRef.current.startTranslateY) /
-        baseScale;
+          (pinchStateRef.current.startCenterY -
+            pinchStateRef.current.startTranslateY) /
+          baseScale;
 
         const nextTranslateX =
-        center.x -
-        sourceX * nextScale + (
-        center.x - pinchStateRef.current.startCenterX);
+          center.x -
+          sourceX * nextScale + (
+            center.x - pinchStateRef.current.startCenterX);
         const nextTranslateY =
-        center.y -
-        sourceY * nextScale + (
-        center.y - pinchStateRef.current.startCenterY);
+          center.y -
+          sourceY * nextScale + (
+            center.y - pinchStateRef.current.startCenterY);
 
         isInteractingRef.current = true;
         applyTransform({
@@ -1277,8 +1277,8 @@ export default function ReservationSiegesClient({ seanceId, socketUrl }) {
   const safeMaxCols = Math.max(maxCols || 1, 1);
   const seatGridWidth = safeMaxCols * seatCellSize + (safeMaxCols - 1) * gridGap;
   const sessionDateTime = [seanceInfo.date, seanceInfo.time].
-  filter(Boolean).
-  join(" • ");
+    filter(Boolean).
+    join(" • ");
   const reservedSeatLabels = useMemo(
     () => sortSeatLabels(selectedSeats),
     [selectedSeats]
@@ -1315,7 +1315,7 @@ export default function ReservationSiegesClient({ seanceId, socketUrl }) {
   const canGoCheckout = Boolean(
     myReservation?.reservationId &&
     (myReservation?.seats?.length || 0) > 0 && (
-    selectedVariableSeatsCount === 0 || hasAvailableVariablePricing)
+      selectedVariableSeatsCount === 0 || hasAvailableVariablePricing)
   );
   const handleGoCheckout = useCallback(() => {
     if (!canGoCheckout || isSessionUnavailable) {
@@ -1359,7 +1359,7 @@ export default function ReservationSiegesClient({ seanceId, socketUrl }) {
             <button
               type="button"
               onClick={handleGoBack}
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-black/40 text-white/80"
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-accent text-black/80"
               aria-label="Retour">
 
               <RiArrowLeftSLine className="h-6 w-6" />

@@ -260,7 +260,7 @@ export default function SubscriptionCheckoutClient({
   return (
     <main className="relative min-h-screen overflow-x-hidden px-4 py-8 text-white md:px-10 md:py-12">
       <div className="pointer-events-none absolute inset-0 -z-10">
-        <div className="absolute left-1/2 top-10 h-[40vh] w-[70vw] -translate-x-1/2 rounded-full bg-primary/20 blur-[120px] opacity-70" />
+        <div className="absolute left-1/2 top-10 h-[40vh] w-[70vw] -translate-x-1/2 rounded-full bg-accent/20 blur-[120px] opacity-70" />
       </div>
 
       <div className="mx-auto w-full max-w-4xl">
@@ -333,7 +333,7 @@ export default function SubscriptionCheckoutClient({
               </div>
             </div>
 
-            <div className="rounded-2xl border border-primary/30 bg-primary/10 p-5">
+            <div className="rounded-2xl border border-primary/30 bg-accent/10 p-5">
               <p className="text-xs font-semibold uppercase tracking-[0.2em] text-accent/80">
                 Total a payer
               </p>

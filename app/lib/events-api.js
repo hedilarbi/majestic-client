@@ -120,8 +120,11 @@ export async function getEventsWithALaffiche({
     const showTypes = Array.isArray(payload.showTypes)
       ? payload.showTypes.map((entry) => entry?.name || entry).filter(Boolean)
       : [];
+    const expiredShows = Array.isArray(payload.expiredShows)
+      ? payload.expiredShows.map(normalizeEvent).filter(Boolean)
+      : [];
 
-    return { events, aLaffiche, showTypes, prochainement };
+    return { events, aLaffiche, showTypes, prochainement, expiredShows };
   } catch (error) {
     console.error("Events fetch failed:", error);
     return { events: [], aLaffiche: [], showTypes: [], prochainement: [] };

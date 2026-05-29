@@ -3,8 +3,8 @@ export const navLinks = [
   { label: "Spectacles", href: "/evenements?type=show" },
   { label: "Programme", href: "/programme" },
   { label: "Offres", href: "/offres" },
-  { label: "Actualité", href: "/actualite" },
-  { label: "Réserver l'espace", href: "/reserver-espace" },
+  { label: "Actualités", href: "/actualite" },
+  { label: "Réserver nos espaces", href: "/reserver-espace" },
 ];
 
 export const footerLinks = [
@@ -15,8 +15,8 @@ export const footerLinks = [
       { label: "Spectacles", href: "/evenements?type=show" },
       { label: "Programme", href: "/programme" },
       { label: "Offres", href: "/offres" },
-      { label: "Actualité", href: "/actualite" },
-      { label: "Réserver l'espace", href: "/reserver-espace" },
+      { label: "Actualités", href: "/actualite" },
+      { label: "Réserver nos espaces", href: "/reserver-espace" },
       { label: "À propos", href: "#" },
     ],
   },

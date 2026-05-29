@@ -87,16 +87,12 @@
 
 body {
   background-color: var(--background);
-  background-image: radial-gradient(
-      circle at 12% 20%,
+  background-image: radial-gradient(circle at 12% 20%,
       rgba(16, 52, 166, 0.22) 0%,
-      transparent 40%
-    ),
-    radial-gradient(
-      circle at 88% 80%,
+      transparent 40%),
+    radial-gradient(circle at 88% 80%,
       rgba(116, 208, 241, 0.16) 0%,
-      transparent 40%
-    );
+      transparent 40%);
   background-attachment: fixed;
   color: var(--foreground);
   font-family: var(--font-secondary);
@@ -143,6 +139,7 @@ button {
     opacity: 0;
     transform: translateY(12px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -157,6 +154,7 @@ button {
   0% {
     transform: translateX(-100%);
   }
+
   100% {
     transform: translateX(100%);
   }

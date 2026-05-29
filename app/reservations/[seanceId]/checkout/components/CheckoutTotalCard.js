@@ -45,7 +45,11 @@ export default function CheckoutTotalCard({
               : "cursor-not-allowed bg-white/10 text-white/35"
           }`}
         >
-          {isSubmitting ? "Finalisation..." : "Continuer vers le paiement"}
+          {isSubmitting
+            ? "Finalisation..."
+            : isSubscriptionPaymentRequested
+            ? "Confirmer"
+            : "Continuer vers le paiement"}
           <RiArrowRightLine className="h-4 w-4" />
         </button>
       </div>

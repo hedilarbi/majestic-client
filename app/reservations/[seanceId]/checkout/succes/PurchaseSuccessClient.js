@@ -176,15 +176,15 @@ export default function PurchaseSuccessClient({ seanceId, bookingId }) {
   return (
     <main className="relative min-h-screen overflow-x-hidden bg-black px-4 py-10 text-white md:px-10 md:py-14">
       <div className="pointer-events-none absolute inset-0">
-        <div className="absolute -left-20 top-10 h-80 w-80 rounded-full bg-primary/20 blur-[120px]" />
+        <div className="absolute -left-20 top-10 h-80 w-80 rounded-full bg-accent/20 blur-[120px]" />
         <div className="absolute bottom-0 right-0 h-96 w-96 rounded-full bg-accent/20 blur-[140px]" />
       </div>
 
       <div className="relative mx-auto w-full max-w-6xl">
         <section className="mb-10 flex flex-col items-center text-center">
           <span className="relative inline-flex items-center justify-center">
-            <span className="absolute h-20 w-20 rounded-full bg-primary/30 blur-2xl" />
-            <span className="relative inline-flex h-20 w-20 items-center justify-center rounded-full border border-primary/40 bg-primary/20 text-accent">
+            <span className="absolute h-20 w-20 rounded-full bg-accent/30 blur-2xl" />
+            <span className="relative inline-flex h-20 w-20 items-center justify-center rounded-full border border-primary/40 bg-accent/20 text-accent">
               <RiCheckboxCircleFill className="h-10 w-10" />
             </span>
           </span>
@@ -239,7 +239,7 @@ export default function PurchaseSuccessClient({ seanceId, bookingId }) {
               </div>
             </div>
 
-            <div className="mt-6 rounded-2xl border border-primary/30 bg-primary/10 p-4">
+            <div className="mt-6 rounded-2xl border border-primary/30 bg-accent/10 p-4">
               <p className="text-xs font-semibold uppercase tracking-[0.22em] text-accent/80">
                 Code booking
               </p>
@@ -268,7 +268,7 @@ export default function PurchaseSuccessClient({ seanceId, bookingId }) {
 
           <article className="rounded-3xl border border-accent/30 bg-accent/5 p-6 shadow-2xl">
             {isSubscriptionPayment ? (
-              <div className="mb-5 rounded-2xl border border-primary/30 bg-primary/10 p-4">
+              <div className="mb-5 rounded-2xl border border-primary/30 bg-accent/10 p-4">
                 <div className="flex items-start justify-between gap-4">
                   <div>
                     <p className="text-xs font-semibold uppercase tracking-[0.2em] text-accent/80">
@@ -301,7 +301,7 @@ export default function PurchaseSuccessClient({ seanceId, bookingId }) {
                       </p>
                     ) : null}
                   </div>
-                  <span className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/15 text-accent">
+                  <span className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-accent/15 text-accent">
                     <RiVipCrown2Line className="h-6 w-6" />
                   </span>
                 </div>

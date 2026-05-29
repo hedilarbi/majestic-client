@@ -1,7 +1,7 @@
 export const ACTUALITE_TYPE_META = {
   article: {
     label: "Article",
-    accentClass: "bg-primary/15 text-accent border-primary/30",
+    accentClass: "bg-accent/15 text-accent border-primary/30",
   },
   trailer: {
     label: "Bande-annonce",

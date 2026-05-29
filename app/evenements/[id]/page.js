@@ -4,6 +4,7 @@ import EventTrailer from "../../components/EventTrailer";
 import SessionSelector from "../../components/SessionSelector";
 import { getEventSessions } from "../../lib/event-api";
 import { MdInfoOutline, MdSchedule } from "react-icons/md";
+import { RiArrowLeftLine } from "react-icons/ri";
 
 export const dynamic = "force-dynamic";
 
@@ -71,22 +72,16 @@ export default async function EvenementPage({ params }) {
         <div className="mx-auto px-10 py-3 sm:px-12 lg:px-20">
           <nav
             aria-label="Fil d'ariane"
-            className="flex flex-wrap gap-2 text-sm font-body"
+            className="flex flex-wrap items-center gap-2 text-sm font-body"
           >
             <Link
-              className="text-accent transition-colors hover:text-white"
-              href="/"
+              href={event.type === "show" ? "/evenements?type=show" : "/evenements?type=movie"}
+              className="inline-flex items-center gap-1.5 font-semibold text-white/55 transition hover:text-accent"
             >
-              Accueil
+              <RiArrowLeftLine className="h-4 w-4" />
+              {event.type === "show" ? "Spectacles" : "Films"}
             </Link>
-            <span className="text-white/30">/</span>
-            <Link
-              className="text-accent transition-colors hover:text-white"
-              href="/evenements"
-            >
-              Films
-            </Link>
-            <span className="text-white/30">/</span>
+            <span className="text-white/20">/</span>
             <span className="text-white/80">{event.name}</span>
           </nav>
         </div>
@@ -100,7 +95,7 @@ export default async function EvenementPage({ params }) {
               className="absolute inset-0 h-full w-full bg-cover bg-center blur-3xl opacity-30 scale-110"
               style={{ backgroundImage: `url('${event.backdrop}')` }}
             /> */}
-            <div className="absolute top-0 right-0 h-125 w-125 -translate-y-1/2 translate-x-1/2 rounded-full bg-primary/20 blur-[100px]" />
+            <div className="absolute top-0 right-0 h-125 w-125 -translate-y-1/2 translate-x-1/2 rounded-full bg-accent/20 blur-[100px]" />
             <div className="absolute bottom-0 left-0 h-125 w-125 translate-y-1/2 -translate-x-1/2 rounded-full bg-accent/10 blur-[100px]" />
           </div>
           <div className="relative z-10 mx-auto px-10 py-10 sm:px-12 lg:px-20 md:py-16">
@@ -121,7 +116,7 @@ export default async function EvenementPage({ params }) {
                         {ageRestrictionLabel}
                       </span>
                     ) : null}
-                    <span className="rounded border border-primary/20 bg-primary/20 px-3 py-1 text-xs text-accent">
+                    <span className="rounded border border-primary/20 bg-accent/20 px-3 py-1 text-xs text-accent">
                       {genreLabel}
                     </span>
                     {durationLabel ? (

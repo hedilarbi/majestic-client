@@ -166,6 +166,22 @@ const toUpcoming = (items = []) =>
     };
   });
 
+const toSingleSpectacle = (item) => {
+  if (!item) return null;
+  const genreLabel = isNonEmptyArray(item.genres) ? item.genres[0] : "Spectacle";
+  const durationLabel = formatDuration(item.duration);
+  const versionsLabel = buildVersionsLabel(item.availableVersions);
+  const meta = [durationLabel, versionsLabel].filter(Boolean).join(" • ");
+  return {
+    id: item._id,
+    title: item.name || "Spectacle",
+    genre: genreLabel,
+    meta: meta || "Durée à confirmer",
+    image: item.poster || FALLBACK_POSTER,
+    imageAlt: item.name ? `Affiche du spectacle ${item.name}` : "Affiche du spectacle",
+  };
+};
+
 export const normalizeHomeData = (
   payload = {},
   { limitNowShowing = true, limitUpcoming = true } = {}
@@ -178,12 +194,14 @@ export const normalizeHomeData = (
   const spectacles = toSpectacles(payload.spectacles || []);
   const upcomingRaw = toUpcoming(payload.prochainement || []);
   const upcoming = limitUpcoming ? upcomingRaw.slice(0, 3) : upcomingRaw;
+  const lastExpiredShow = toSingleSpectacle(payload.lastExpiredShow || null);
 
   return {
     heroSlides,
     nowShowing,
     spectacles,
     upcoming,
+    lastExpiredShow,
   };
 };
 

@@ -1,4 +1,5 @@
 import { RiPriceTag3Line } from "react-icons/ri";
+import PromoCodeSuggestions from "./PromoCodeSuggestions";
 
 export default function PromoCodeCard({
   promoCodeInput,
@@ -15,7 +16,15 @@ export default function PromoCodeCard({
   promoReductionLabel,
   promoDiscountAmount,
   formatPrice,
+  userRole,
 }) {
+  const isAuthenticated = userRole === "customer";
+
+  const handleSelectSuggestion = (code) => {
+    if (isSubmitting || isSuccess || isSubscriptionPaymentRequested) return;
+    onPromoCodeChange({ target: { value: code } });
+  };
+
   return (
     <div className="rounded-2xl border border-white/10 bg-[#161e22]/70 px-5 py-4">
       <div className="flex items-center gap-2">
@@ -37,6 +46,12 @@ export default function PromoCodeCard({
           }`}
         />
       </label>
+      {!isPromoApplied && !isSubscriptionPaymentRequested ? (
+        <PromoCodeSuggestions
+          onSelect={handleSelectSuggestion}
+          isAuthenticated={isAuthenticated}
+        />
+      ) : null}
       <div className="mt-3 flex flex-wrap gap-3">
         <button
           type="button"

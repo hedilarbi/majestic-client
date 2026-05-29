@@ -50,14 +50,7 @@ const buildPromoLabel = (promoCode) => {
 
 const buildPromoDetail = (promoCode) => {
   const expiresAt = formatDate(promoCode?.expiresAt);
-  const totalUsage = Number.isFinite(promoCode?.totalUsageLimit)
-    ? `Limite totale: ${promoCode.totalUsageLimit}`
-    : "Limite totale: illimitee";
-  const userUsage = Number.isFinite(promoCode?.userUsageLimit)
-    ? `Par client: ${promoCode.userUsageLimit}`
-    : "Par client: illimite";
-
-  return `Expiré le ${expiresAt} • ${totalUsage} • ${userUsage}`;
+  return expiresAt ? `Expiré le ${expiresAt}` : "";
 };
 
 export default function OffresClient({
@@ -128,7 +121,7 @@ export default function OffresClient({
   return (
     <main className="relative min-h-screen w-full px-10 pb-24 pt-10 text-white sm:px-12 lg:px-20">
       <div className="pointer-events-none absolute inset-0 -z-10">
-        <div className="absolute left-1/2 top-10 h-[45vh] w-[75vw] -translate-x-1/2 rounded-full bg-primary/20 blur-[140px] opacity-70" />
+        <div className="absolute left-1/2 top-10 h-[45vh] w-[75vw] -translate-x-1/2 rounded-full bg-accent/20 blur-[140px] opacity-70" />
         <div className="absolute bottom-0 left-0 h-[40vh] w-[50vw] rounded-full bg-accent/10 blur-[120px] opacity-60" />
       </div>
 
@@ -187,7 +180,7 @@ export default function OffresClient({
                 className="group relative overflow-hidden rounded-3xl border border-white/10 bg-white/5 p-8 shadow-[0_20px_60px_rgba(0,0,0,0.35)] backdrop-blur-xl transition-all duration-300 hover:bg-white/10"
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
-                <div className="pointer-events-none absolute -right-20 -top-20 h-48 w-48 rounded-full bg-primary/20 blur-[100px] opacity-60" />
+                <div className="pointer-events-none absolute -right-20 -top-20 h-48 w-48 rounded-full bg-accent/20 blur-[100px] opacity-60" />
                 <div className="flex items-center justify-between">
                   <span className="rounded-full border border-accent/30 bg-accent/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.3em] text-accent font-display">
                     {offer.accent}
@@ -231,7 +224,7 @@ export default function OffresClient({
 
       <section id="codes" className="mb-12">
         <div className="mb-8 flex items-center gap-4">
-          <span className="h-10 w-1 rounded-full bg-primary" />
+          <span className="h-10 w-1 rounded-full bg-accent" />
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.3em] text-white/70 font-display">
               Vos codes promo
@@ -251,15 +244,17 @@ export default function OffresClient({
                 style={{ animationDelay: `${(index + 1) * 0.1}s` }}
               >
                 <div>
-                  <p className="text-xs font-semibold uppercase tracking-[0.3em] text-accent font-display">
+                  <p className="text-3xl font-extrabold text-accent font-display sm:text-4xl">
                     {code.label}
                   </p>
-                  <p className="mt-2 text-2xl font-semibold text-white font-display">
+                  <p className="mt-2 font-mono text-lg font-semibold tracking-[0.25em] text-white/70">
                     {code.code}
                   </p>
-                  <p className="mt-1 text-sm text-white/40 font-body">
-                    {code.detail}
-                  </p>
+                  {code.detail ? (
+                    <p className="mt-1 text-sm text-white/40 font-body">
+                      {code.detail}
+                    </p>
+                  ) : null}
                 </div>
                 <button
                   type="button"

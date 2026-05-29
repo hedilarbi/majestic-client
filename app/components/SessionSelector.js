@@ -233,7 +233,7 @@ export default function SessionSelector({ sessions = [] }) {
           </div>
           <div className="space-y-8">
             <div className="relative overflow-hidden rounded-xl border border-primary/30 bg-black/40 p-5">
-              <div className="absolute left-0 top-0 h-full w-1 bg-primary" />
+              <div className="absolute left-0 top-0 h-full w-1 bg-accent" />
               {/* <div className="mb-4 flex items-center gap-3 text-sm text-white/60 font-display">
                 Salle 1 • Grand Écran
               </div> */}

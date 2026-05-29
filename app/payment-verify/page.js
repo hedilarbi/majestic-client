@@ -20,12 +20,10 @@ function PaymentVerifyContent() {
     const verifyPayment = async () => {
       setHasVerified(true);
       try {
-        const token = localStorage.getItem("token");
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/payments/verify`, {
+        const response = await fetch("/api/payments/verify", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            ...(token ? { "Authorization": `Bearer ${token}` } : {})
           },
           body: JSON.stringify({ orderId }),
         });
@@ -69,7 +67,7 @@ function PaymentVerifyContent() {
         {status === "verifying" && (
           <div>
             <div className="w-16 h-16 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin mx-auto mb-6"></div>
-            <h1 className="text-2xl font-bold mb-2">Vérification du paiement de test...</h1>
+            <h1 className="text-2xl font-bold mb-2">Vérification du paiement...</h1>
             <p className="text-zinc-400">Veuillez ne pas fermer cette page.</p>
           </div>
         )}

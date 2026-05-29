@@ -19,7 +19,7 @@ export default async function ProfilLayout({ children }) {
 
   return (
     <div className="relative min-h-screen overflow-x-hidden text-white">
-      <div className="pointer-events-none absolute -left-[15%] top-[-10%] h-[45vh] w-[45vh] rounded-full bg-primary/20 blur-[140px] opacity-80" />
+      <div className="pointer-events-none absolute -left-[15%] top-[-10%] h-[45vh] w-[45vh] rounded-full bg-accent/20 blur-[140px] opacity-80" />
       <div className="pointer-events-none absolute -right-[15%] bottom-[-10%] h-[45vh] w-[45vh] rounded-full bg-accent/15 blur-[160px] opacity-70" />
 
       <main className="flex w-full flex-1 flex-col gap-10 px-6 py-8 lg:h-[calc(100vh-8rem)] lg:flex-row lg:overflow-hidden lg:px-20">

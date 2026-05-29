@@ -1,9 +1,10 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
-import { RiArrowRightLine, RiSendPlaneLine } from "react-icons/ri";
+import { RiArrowRightLine, RiCheckboxCircleLine, RiSendPlaneLine } from "react-icons/ri";
 
 import { formatActualiteDate, getActualiteSummary } from "@/app/lib/actualites-utils";
 
@@ -28,7 +29,7 @@ export default function ActualiteFormCard({
   );
   const [answers, setAnswers] = useState(initialAnswers);
   const [errorMessage, setErrorMessage] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
+  const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const isAuthenticated = currentUser?.role === "customer";
@@ -73,7 +74,6 @@ export default function ActualiteFormCard({
     }
 
     setErrorMessage("");
-    setSuccessMessage("");
     setIsSubmitting(true);
 
     try {
@@ -103,7 +103,7 @@ export default function ActualiteFormCard({
       }
 
       setAnswers(normalizeAnswersForReset(item?.questions));
-      setSuccessMessage("Votre formulaire a bien ete envoyé.");
+      setIsSubmitted(true);
     } catch (error) {
       setErrorMessage(
         error?.message || "Le formulaire n'a pas pu être envoyé.",
@@ -113,8 +113,46 @@ export default function ActualiteFormCard({
     }
   };
 
+  if (isSubmitted) {
+    return (
+      <article className="rounded-[2rem] border border-emerald-500/25 bg-white/5 p-10 shadow-[0_30px_90px_rgba(0,0,0,0.28)] backdrop-blur-2xl text-center">
+        <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full border border-emerald-500/30 bg-emerald-500/10">
+          <RiCheckboxCircleLine className="h-8 w-8 text-emerald-400" />
+        </div>
+        <h2 className="text-2xl font-semibold text-white font-display">Réponse envoyée !</h2>
+        <p className="mt-3 text-sm leading-7 text-white/60">
+          Votre réponse a bien été enregistrée. Merci pour votre participation.
+        </p>
+        <Link
+          href="/actualite"
+          className="mt-8 inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.22em] text-accent transition hover:brightness-110"
+        >
+          Retour aux actualités
+          <RiArrowRightLine className="h-4 w-4" />
+        </Link>
+      </article>
+    );
+  }
+
+  const coverImage = item.image || "";
+
   return (
-    <article className="rounded-[2rem] border border-white/10 bg-white/5 p-6 shadow-[0_30px_90px_rgba(0,0,0,0.28)] backdrop-blur-2xl sm:p-8">
+    <article className="overflow-hidden rounded-[2rem] border border-white/10 bg-white/5 shadow-[0_30px_90px_rgba(0,0,0,0.28)] backdrop-blur-2xl">
+      {coverImage ? (
+        <div className="relative h-56 w-full sm:h-72 lg:h-96 bg-black/40">
+          <Image
+            src={coverImage}
+            alt={item.title || "Formulaire"}
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover"
+          />
+          <div className="absolute inset-0 bg-linear-to-t from-black/60 via-black/10 to-transparent" />
+        </div>
+      ) : null}
+
+      <div className="p-6 sm:p-8">
       <div className="flex flex-wrap items-center gap-3">
         <ActualiteTypeBadge type={item.type} />
         <span className="text-xs font-semibold uppercase tracking-[0.25em] text-white/45">
@@ -172,12 +210,6 @@ export default function ActualiteFormCard({
           </div>
         ) : null}
 
-        {successMessage ? (
-          <div className="rounded-2xl border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-100">
-            {successMessage}
-          </div>
-        ) : null}
-
         <button
           type="submit"
           disabled={isSubmitting}
@@ -187,6 +219,7 @@ export default function ActualiteFormCard({
           {isSubmitting ? "Envoi..." : "Envoyer le formulaire"}
         </button>
       </form>
+      </div>
     </article>
   );
 }

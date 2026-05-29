@@ -30,7 +30,7 @@ export default async function EvenementsPage({ searchParams }) {
     typeof resolvedParams?.genre === "string"
       ? resolvedParams.genre
       : undefined;
-  const [{ events, aLaffiche, showTypes, prochainement }, allEventsResponse] =
+  const [{ events, aLaffiche, showTypes, prochainement, expiredShows }, allEventsResponse] =
     await Promise.all([
       getEventsWithALaffiche({ type, genre, noCache: true }),
       genre
@@ -41,6 +41,7 @@ export default async function EvenementsPage({ searchParams }) {
   const allShowTypes = allEventsResponse?.showTypes ?? showTypes ?? [];
   const upcomingEvents =
     allEventsResponse?.prochainement ?? prochainement ?? [];
+  const allExpiredShows = allEventsResponse?.expiredShows ?? expiredShows ?? [];
   const heroEntry = aLaffiche?.[0];
   const heroEvent = heroEntry?.event || events?.[0];
   const heroImageDesktop = heroEntry?.poster || heroEvent?.image;
@@ -144,6 +145,11 @@ export default async function EvenementsPage({ searchParams }) {
       </section>
 
       <section className="w-full px-10 py-8 sm:px-14 lg:px-20">
+        {type === "show" && events.length === 0 ? (
+          <div className="rounded-2xl border border-white/10 bg-white/5 px-5 py-4 text-sm text-white/60 backdrop-blur-sm">
+            Pas de spectacles à l&apos;affiche en ce moment.
+          </div>
+        ) : null}
         <div className="grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
           {events.map((movie) => (
             <Link
@@ -178,6 +184,48 @@ export default async function EvenementsPage({ searchParams }) {
           ))}
         </div>
       </section>
+
+      {type === "show" && allExpiredShows.length ? (
+        <section className="w-full px-10 py-8 sm:px-14 lg:px-20">
+          <div className="mb-8 flex items-center gap-3">
+            <span className="h-8 w-1 rounded-full bg-white/30" />
+            <h2 className="text-2xl font-semibold text-white/60 sm:text-3xl font-display">
+              Expiré
+            </h2>
+          </div>
+          <div className="grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+            {allExpiredShows.map((show) => (
+              <Link
+                key={show.id ?? show.title}
+                href={`/evenements/${show.id}`}
+                className="group relative flex flex-col gap-3 rounded-xl border border-white/5 bg-white/5 opacity-60 transition-all duration-300 hover:opacity-80"
+              >
+                <div className="relative aspect-2/3 w-full overflow-hidden rounded-t-xl">
+                  <Image
+                    src={show.image}
+                    alt={show.imageAlt}
+                    fill
+                    sizes="(min-width: 1280px) 18vw, (min-width: 1024px) 22vw, (min-width: 768px) 30vw, 45vw"
+                    className="object-cover grayscale transition-transform duration-500 group-hover:scale-110"
+                  />
+                  <div className="absolute inset-0 bg-linear-to-t from-black/90 via-transparent to-transparent opacity-80" />
+                  <span className="absolute left-3 top-3 rounded-full bg-white/15 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-white backdrop-blur-sm">
+                    Expiré
+                  </span>
+                  <div className="absolute bottom-0 left-0 w-full translate-y-2 p-4 transition-transform duration-300 group-hover:translate-y-0">
+                    <h3 className="text-lg font-semibold leading-tight text-white/80 drop-shadow-md font-display">
+                      {show.title}
+                    </h3>
+                    <div className="mt-1 text-xs text-white/55 font-body">
+                      {show.meta}
+                    </div>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+      ) : null}
 
       {upcomingEvents.length ? (
         <section className="w-full px-10 py-8 sm:px-14 lg:px-20 mb-20">

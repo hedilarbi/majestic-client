@@ -94,7 +94,7 @@ export default function HeroSection({ slides = [] }) {
                         <MdConfirmationNumber className="h-5 w-5" />
                       </span>
                     </Link>
-                    {/* <button className="neon-border flex items-center gap-2 rounded-lg border border-white/20 bg-transparent px-8 py-4 text-white transition-all hover:border-accent hover:bg-primary/10 hover:text-accent font-display">
+                    {/* <button className="neon-border flex items-center gap-2 rounded-lg border border-white/20 bg-transparent px-8 py-4 text-white transition-all hover:border-accent hover:bg-accent/10 hover:text-accent font-display">
                       {heroCtas.secondary}
                       <MdSchedule className="h-5 w-5" />
                     </button> */}

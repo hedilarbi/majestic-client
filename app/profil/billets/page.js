@@ -141,7 +141,7 @@ export default async function BilletsPage() {
               <div className="flex flex-1 flex-col justify-between gap-6 p-6">
                 <div className="flex flex-wrap items-start justify-between gap-4">
                   <div>
-                    <span className="rounded bg-primary/30 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-accent">
+                    <span className="rounded bg-accent/30 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-accent">
                       Ticket
                     </span>
                     <h2 className="mt-2 text-2xl font-black uppercase tracking-tight text-white">
@@ -182,7 +182,7 @@ export default async function BilletsPage() {
                   </div>
                 </div>
                 <div className="flex flex-wrap items-center justify-between gap-3 border-t border-white/10 pt-4">
-                  <div className="rounded-xl border border-primary/30 bg-primary/10 px-4 py-2.5 text-sm font-semibold text-white">
+                  <div className="rounded-xl border border-primary/30 bg-accent/10 px-4 py-2.5 text-sm font-semibold text-white">
                     Tarif {ticket.pricingName || "-"} •{" "}
                     {Number.isFinite(ticket.price) ? `${ticket.price} DT` : "-"}
                   </div>

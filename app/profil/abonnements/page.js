@@ -44,7 +44,7 @@ const resolveSaleState = (sale) => {
 
   return {
     label: "Actif",
-    tone: "bg-primary text-white",
+    tone: "bg-accent text-white",
     card: "bg-black/60",
   };
 };
@@ -106,12 +106,17 @@ export default async function AbonnementsPage() {
             key={sale.id}
             className={`relative overflow-hidden rounded-2xl border border-white/10 p-8 shadow-[0_30px_100px_rgba(0,0,0,0.45)] backdrop-blur-2xl transition hover:border-primary/50 ${state.card}`}
           >
-            <div className="pointer-events-none absolute -top-12 -right-12 h-48 w-48 rounded-full bg-primary/25 blur-[90px]" />
+            <div className="pointer-events-none absolute -top-12 -right-12 h-48 w-48 rounded-full bg-accent/25 blur-[90px]" />
             <div className="relative z-10 flex items-start justify-between gap-6">
               <div>
                 <h2 className="text-3xl font-bold uppercase tracking-tight text-white font-display">
                   {sale?.subscription?.name || "Abonnement"}
                 </h2>
+                {sale?.subscription?.description ? (
+                  <p className="mt-2 max-w-sm text-sm leading-6 text-white/55 font-body">
+                    {sale.subscription.description}
+                  </p>
+                ) : null}
                 <p className="mt-2 text-xs uppercase tracking-[0.25em] text-white/40">
                   {formatPrice(sale.price)}
                 </p>
@@ -133,7 +138,7 @@ export default async function AbonnementsPage() {
               </div>
               <div className="h-3 w-full rounded-full border border-white/10 bg-white/5">
                 <div
-                  className="h-full rounded-full bg-primary shadow-[0_0_20px_rgba(16,52,166,0.5)]"
+                  className="h-full rounded-full bg-accent shadow-[0_0_20px_rgba(16,52,166,0.5)]"
                   style={{
                     width: `${Math.max(
                       Math.min(
@@ -153,7 +158,7 @@ export default async function AbonnementsPage() {
 
             <div className="relative z-10 mt-6 flex items-center gap-2 border-t border-white/10 pt-6 text-sm text-white/50">
               <MdCalendarMonth className="h-4 w-4 text-white/30" />
-              Achat le {formatDate(sale.createdAt)} • Expiré le{" "}
+              Achat le {formatDate(sale.createdAt)} • L'offre expire le{" "}
               {formatDate(sale?.subscription?.expirationDate)}
             </div>
             {sale?.subscriptionCode ? (
@@ -179,6 +184,11 @@ export default async function AbonnementsPage() {
                 <h2 className="text-3xl font-bold uppercase tracking-tight text-white font-display">
                   {sale?.subscription?.name || "Abonnement"}
                 </h2>
+                {sale?.subscription?.description ? (
+                  <p className="mt-2 max-w-sm text-sm leading-6 text-white/55 font-body">
+                    {sale.subscription.description}
+                  </p>
+                ) : null}
                 <p className="mt-2 text-xs uppercase tracking-[0.25em] text-white/40">
                   {formatPrice(sale.price)}
                 </p>
@@ -220,7 +230,7 @@ export default async function AbonnementsPage() {
 
             <div className="relative z-10 mt-6 flex items-center gap-2 border-t border-white/10 pt-6 text-sm text-white/50">
               <MdCalendarMonth className="h-4 w-4 text-white/30" />
-              Achat le {formatDate(sale.createdAt)} • Expiré le{" "}
+              Achat le {formatDate(sale.createdAt)} • L'offre expire le{" "}
               {formatDate(sale?.subscription?.expirationDate)}
             </div>
             {sale?.subscriptionCode ? (

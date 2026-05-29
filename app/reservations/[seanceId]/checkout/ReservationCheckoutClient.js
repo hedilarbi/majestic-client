@@ -34,11 +34,12 @@ import {
   resolveRedirectPath,
   resolveSeatOverride,
   resolveSeanceInfo,
-  toNumber } from
-"./checkout-utils";
+  toNumber
+} from
+  "./checkout-utils";
 
 const normalizePricingLookupToken = (value) =>
-String(value || "").trim().toLowerCase();
+  String(value || "").trim().toLowerCase();
 
 const buildPricingLookupKey = (name, price) => {
   const normalizedName = normalizePricingLookupToken(name);
@@ -52,7 +53,7 @@ const buildPricingLookupKey = (name, price) => {
 };
 
 const resolvePricingItemKey = (item, index) =>
-String(item?.id ?? item?.name ?? index);
+  String(item?.id ?? item?.name ?? index);
 
 export default function ReservationCheckoutClient({ seanceId, socketUrl }) {
   const router = useRouter();
@@ -99,6 +100,8 @@ export default function ReservationCheckoutClient({ seanceId, socketUrl }) {
     promo: null,
     pricing: null
   });
+  const [mySubscriptions, setMySubscriptions] = useState([]);
+  const [selectedSubId, setSelectedSubId] = useState("");
   const reservationRef = useRef(null);
   const reservationSeatKeysRef = useRef(new Set());
   const autoFinalizeAttemptedRef = useRef(false);
@@ -262,8 +265,8 @@ export default function ReservationCheckoutClient({ seanceId, socketUrl }) {
 
   useEffect(() => {
     const currentSeats = Array.isArray(seats) ?
-    seats.filter((seat) => seat && seat.row !== undefined && seat.col !== undefined) :
-    [];
+      seats.filter((seat) => seat && seat.row !== undefined && seat.col !== undefined) :
+      [];
 
     reservationSeatKeysRef.current = new Set(
       currentSeats.map((seat) => seatKey(seat.row, seat.col))
@@ -295,7 +298,8 @@ export default function ReservationCheckoutClient({ seanceId, socketUrl }) {
       } catch (_error) {
 
         // noop
-      }};
+      }
+    };
 
     loadUser();
 
@@ -303,6 +307,28 @@ export default function ReservationCheckoutClient({ seanceId, socketUrl }) {
       active = false;
     };
   }, []);
+
+  useEffect(() => {
+    let active = true;
+    if (userId && userRole === "customer") {
+      const loadSubscriptions = async () => {
+        try {
+          const response = await fetch("/api/subscription-sales/me", { cache: "no-store" });
+          if (!response.ok) return;
+          const data = await response.json();
+          if (active) {
+            setMySubscriptions(Array.isArray(data?.items) ? data.items : []);
+          }
+        } catch (e) {
+          console.error("Failed to load subscriptions", e);
+        }
+      };
+      loadSubscriptions();
+    } else {
+      setMySubscriptions([]);
+    }
+    return () => { active = false; };
+  }, [userId, userRole]);
 
   useEffect(() => {
     let active = true;
@@ -361,11 +387,11 @@ export default function ReservationCheckoutClient({ seanceId, socketUrl }) {
     hasRedirectedForMissingReservationRef.current = true;
     redirectToPreviousOrHome();
   }, [
-  errorMessage,
-  isLoading,
-  redirectToPreviousOrHome,
-  reservation?.reservationId,
-  reservation?.seats?.length]
+    errorMessage,
+    isLoading,
+    redirectToPreviousOrHome,
+    reservation?.reservationId,
+    reservation?.seats?.length]
   );
 
   useEffect(() => {
@@ -470,11 +496,11 @@ export default function ReservationCheckoutClient({ seanceId, socketUrl }) {
         payloadUserId && userId && payloadUserId === String(userId)
       );
       const payloadReservationId = payload?.reservationId ?
-      String(payload.reservationId) :
-      "";
+        String(payload.reservationId) :
+        "";
       const currentReservationId = reservationRef.current?.reservationId ?
-      String(reservationRef.current.reservationId) :
-      "";
+        String(reservationRef.current.reservationId) :
+        "";
       const sameReservation = Boolean(
         payloadReservationId &&
         currentReservationId &&
@@ -505,26 +531,26 @@ export default function ReservationCheckoutClient({ seanceId, socketUrl }) {
       socket.disconnect();
     };
   }, [
-  markReservationExpired,
-  refreshCheckout,
-  seanceId,
-  socketUrl,
-  userId]
+    markReservationExpired,
+    refreshCheckout,
+    seanceId,
+    socketUrl,
+    userId]
   );
 
   const safeSeats = useMemo(
     () =>
-    Array.isArray(seats) ?
-    seats.filter((seat) => seat && seat.row !== undefined && seat.col !== undefined) :
-    [],
+      Array.isArray(seats) ?
+        seats.filter((seat) => seat && seat.row !== undefined && seat.col !== undefined) :
+        [],
     [seats]
   );
 
   const availablePricingItems = useMemo(
     () =>
-    Array.isArray(pricingItems) ?
-    pricingItems.filter((item) => item && item.name && item.isAvailable !== false) :
-    [],
+      Array.isArray(pricingItems) ?
+        pricingItems.filter((item) => item && item.name && item.isAvailable !== false) :
+        [],
     [pricingItems]
   );
 
@@ -535,7 +561,7 @@ export default function ReservationCheckoutClient({ seanceId, socketUrl }) {
 
   const fixedSeats = useMemo(
     () =>
-    safeSeats.filter((seat) => Boolean(resolveSeatOverride(seat, overrideMap, seatKey))),
+      safeSeats.filter((seat) => Boolean(resolveSeatOverride(seat, overrideMap, seatKey))),
     [overrideMap, safeSeats]
   );
 
@@ -567,43 +593,42 @@ export default function ReservationCheckoutClient({ seanceId, socketUrl }) {
 
   const safePricingItems = useMemo(
     () =>
-    availablePricingItems.
-    map((item) => {
-      const id = item?.id ? String(item.id) : "";
-      const lookupKey = buildPricingLookupKey(item?.name, item?.price);
-      const parsedRemaining = Number.parseInt(item?.remainingTickets, 10);
-      const hasRemainingLimit = Number.isFinite(parsedRemaining);
-      const remainingTickets = hasRemainingLimit ?
-      Math.max(parsedRemaining, 0) :
-      null;
+      availablePricingItems.
+        map((item) => {
+          const id = item?.id ? String(item.id) : "";
+          const lookupKey = buildPricingLookupKey(item?.name, item?.price);
+          const parsedRemaining = Number.parseInt(item?.remainingTickets, 10);
+          const hasRemainingLimit = Number.isFinite(parsedRemaining);
+          const remainingTickets = hasRemainingLimit ?
+            Math.max(parsedRemaining, 0) :
+            null;
 
-      let variableRemainingTickets = remainingTickets;
-      if (hasRemainingLimit) {
-        const fixedSeatsCount =
-        (id && fixedPricingUsage.byId.has(id) ?
-        fixedPricingUsage.byId.get(id) :
-        lookupKey ?
-        fixedPricingUsage.byKey.get(lookupKey) || 0 :
-        0) || 0;
-        variableRemainingTickets = Math.max(
-          remainingTickets - fixedSeatsCount,
-          0
-        );
-      }
+          let variableRemainingTickets = remainingTickets;
+          if (hasRemainingLimit) {
+            const fixedSeatsCount =
+              (id && fixedPricingUsage.byId.has(id) ?
+                fixedPricingUsage.byId.get(id) :
+                lookupKey ?
+                  fixedPricingUsage.byKey.get(lookupKey) || 0 :
+                  0) || 0;
+            variableRemainingTickets = Math.max(
+              remainingTickets - fixedSeatsCount,
+              0
+            );
+          }
 
-      if (
-      variableRemainingTickets !== null &&
-      variableRemainingTickets <= 0)
-      {
-        return null;
-      }
+          if (
+            variableRemainingTickets !== null &&
+            variableRemainingTickets <= 0) {
+            return null;
+          }
 
-      return {
-        ...item,
-        variableRemainingTickets
-      };
-    }).
-    filter(Boolean),
+          return {
+            ...item,
+            variableRemainingTickets
+          };
+        }).
+        filter(Boolean),
     [availablePricingItems, fixedPricingUsage]
   );
 
@@ -647,19 +672,19 @@ export default function ReservationCheckoutClient({ seanceId, socketUrl }) {
 
   const fixedTotal = useMemo(
     () =>
-    fixedPricingGroups.reduce(
-      (sum, group) => sum + toNumber(group.price) * group.seats.length,
-      0
-    ),
+      fixedPricingGroups.reduce(
+        (sum, group) => sum + toNumber(group.price) * group.seats.length,
+        0
+      ),
     [fixedPricingGroups]
   );
 
   const assignedCount = useMemo(
     () =>
-    safePricingItems.reduce((sum, item, index) => {
-      const itemKey = resolvePricingItemKey(item, index);
-      return sum + (Number.isFinite(quantities[itemKey]) ? quantities[itemKey] : 0);
-    }, 0),
+      safePricingItems.reduce((sum, item, index) => {
+        const itemKey = resolvePricingItemKey(item, index);
+        return sum + (Number.isFinite(quantities[itemKey]) ? quantities[itemKey] : 0);
+      }, 0),
     [quantities, safePricingItems]
   );
 
@@ -678,10 +703,10 @@ export default function ReservationCheckoutClient({ seanceId, socketUrl }) {
         }
 
         const maxForItem = Number.isFinite(item?.variableRemainingTickets) ?
-        Math.max(item.variableRemainingTickets, 0) :
-        null;
+          Math.max(item.variableRemainingTickets, 0) :
+          null;
         const safeValue =
-        maxForItem === null ? rawValue : Math.min(rawValue, maxForItem);
+          maxForItem === null ? rawValue : Math.min(rawValue, maxForItem);
 
         if (safeValue > 0) {
           next[itemKey] = safeValue;
@@ -724,11 +749,11 @@ export default function ReservationCheckoutClient({ seanceId, socketUrl }) {
 
   const variableTotal = useMemo(
     () =>
-    safePricingItems.reduce((sum, item, index) => {
-      const itemKey = resolvePricingItemKey(item, index);
-      const quantity = quantities[itemKey] || 0;
-      return sum + quantity * toNumber(item?.price);
-    }, 0),
+      safePricingItems.reduce((sum, item, index) => {
+        const itemKey = resolvePricingItemKey(item, index);
+        const quantity = quantities[itemKey] || 0;
+        return sum + quantity * toNumber(item?.price);
+      }, 0),
     [quantities, safePricingItems]
   );
 
@@ -742,45 +767,85 @@ export default function ReservationCheckoutClient({ seanceId, socketUrl }) {
     [promoCodeInput]
   );
   const isSubscriptionPaymentRequested =
-  userRole === "customer" && Boolean(normalizedSubscriptionCode);
+    (userRole === "customer" && Boolean(normalizedSubscriptionCode)) || Boolean(selectedSubId);
   const isPromoApplied =
-  promoState.status === "applied" && Boolean(promoState?.promo?.code);
+    promoState.status === "applied" && Boolean(promoState?.promo?.code);
   const appliedPromoCode = isPromoApplied ? String(promoState.promo.code) : "";
   const promoDiscountAmount = isPromoApplied ?
-  toNumber(promoState?.pricing?.discountAmount) :
-  0;
+    toNumber(promoState?.pricing?.discountAmount) :
+    0;
   const promoReductionLabel = isPromoApplied ?
-  promoState?.promo?.reductionType === "percent" ?
-  `${toNumber(promoState?.promo?.reductionValue)}%` :
-  formatPrice(promoState?.promo?.reductionValue) :
-  "";
+    promoState?.promo?.reductionType === "percent" ?
+      `${toNumber(promoState?.promo?.reductionValue)}%` :
+      formatPrice(promoState?.promo?.reductionValue) :
+    "";
   const creditsToUseWithSubscription = safeSeats.length;
-  const payableTotal = isSubscriptionPaymentRequested ?
-  0 :
-  Math.max(totalPrice - promoDiscountAmount, 0);
+
+  const selectedSub = useMemo(() => {
+    if (!selectedSubId) return null;
+    return mySubscriptions.find(s => String(s.id || s._id) === String(selectedSubId));
+  }, [selectedSubId, mySubscriptions]);
+
+  // Client-side subscription validation — runs instantly on selection
+  const subscriptionValidationError = useMemo(() => {
+    if (!selectedSub || !safeSeats.length) return null;
+
+    const allowedSeatType = selectedSub.allowedSeatType || "normale";
+    const maxSeatsPerSession = Number.isFinite(Number(selectedSub.maxSeatsPerSession))
+      ? Number(selectedSub.maxSeatsPerSession)
+      : 1;
+    const remainingCredits = Number.isFinite(Number(selectedSub.remainingCredits))
+      ? Number(selectedSub.remainingCredits)
+      : 0;
+    const totalSeats = safeSeats.length;
+    const hasFixedSeats = fixedSeats.length > 0;
+    const hasVariableSeats = assignableSeatsCount > 0;
+
+    // 1. Check remaining credits
+    if (remainingCredits < totalSeats) {
+      return `Crédits insuffisants : il vous reste ${remainingCredits} crédit${remainingCredits > 1 ? "s" : ""} mais vous avez sélectionné ${totalSeats} siège${totalSeats > 1 ? "s" : ""}.`;
+    }
+
+    // 2. Check max seats per session
+    if (totalSeats > maxSeatsPerSession) {
+      return `Cet abonnement est limité à ${maxSeatsPerSession} siège${maxSeatsPerSession > 1 ? "s" : ""} par séance. Vous avez sélectionné ${totalSeats} siège${totalSeats > 1 ? "s" : ""}.`;
+    }
+
+    // 3. Seat type: VIP sub can book everything, normal sub cannot book VIP seats
+    if (allowedSeatType === "normale" && hasFixedSeats) {
+      return "Cet abonnement ne permet pas de réserver des sièges VIP ou à tarif fixe.";
+    }
+
+    return null;
+  }, [selectedSub, safeSeats.length, fixedSeats.length, assignableSeatsCount]);
+
+  const payableTotal = (isSubscriptionPaymentRequested || selectedSub) ?
+    0 :
+    Math.max(totalPrice - promoDiscountAmount, 0);
   const isSubmitting = submitState.status === "loading";
   const isSuccess = submitState.status === "success";
   const requiresEmailVerification =
-  userRole === "customer" && userEmailVerified === false;
+    userRole === "customer" && userEmailVerified === false;
   const canValidatePromo =
-  !isSubmitting &&
-  !isSuccess &&
-  !isSubscriptionPaymentRequested &&
-  safeSeats.length > 0 &&
-  remainingToAssign === 0 &&
-  Boolean(normalizedPromoCode);
+    !isSubmitting &&
+    !isSuccess &&
+    !isSubscriptionPaymentRequested &&
+    !selectedSub &&
+    safeSeats.length > 0 &&
+    remainingToAssign === 0 &&
+    Boolean(normalizedPromoCode);
 
   const canAdjust =
-  Boolean(reservation) &&
-  assignableSeatsCount > 0 &&
-  !isSubmitting &&
-  !isSuccess;
+    Boolean(reservation) &&
+    assignableSeatsCount > 0 &&
+    !isSubmitting &&
+    !isSuccess;
   const canContinue =
-  Boolean(reservation) &&
-  safeSeats.length > 0 &&
-  remainingToAssign === 0 &&
-  !isSubmitting &&
-  !isSuccess;
+    Boolean(reservation) &&
+    safeSeats.length > 0 &&
+    (selectedSubId ? !subscriptionValidationError : remainingToAssign === 0) &&
+    !isSubmitting &&
+    !isSuccess;
 
   const seatLabels = useMemo(
     () => safeSeats.map(formatSeatLabel).filter(Boolean),
@@ -809,8 +874,8 @@ export default function ReservationCheckoutClient({ seanceId, socketUrl }) {
 
         const currentValue = prev[itemKey] || 0;
         const maxForItem = Number.isFinite(targetPricing?.variableRemainingTickets) ?
-        Math.max(targetPricing.variableRemainingTickets, 0) :
-        null;
+          Math.max(targetPricing.variableRemainingTickets, 0) :
+          null;
         if (maxForItem !== null && currentValue >= maxForItem) {
           return prev;
         }
@@ -841,31 +906,31 @@ export default function ReservationCheckoutClient({ seanceId, socketUrl }) {
 
   const buildPricingSelectionsFromQuantities = useCallback(
     (sourceQuantities = quantities) =>
-    safePricingItems.
-    map((item, index) => {
-      const itemKey = resolvePricingItemKey(item, index);
-      const quantity = sourceQuantities[itemKey] || 0;
-      if (!quantity) {
-        return null;
-      }
+      safePricingItems.
+        map((item, index) => {
+          const itemKey = resolvePricingItemKey(item, index);
+          const quantity = sourceQuantities[itemKey] || 0;
+          if (!quantity) {
+            return null;
+          }
 
-      return {
-        pricingId: item?.id ?? null,
-        name: item?.name || "",
-        price: item?.price,
-        quantity
-      };
-    }).
-    filter(Boolean),
+          return {
+            pricingId: item?.id ?? null,
+            name: item?.name || "",
+            price: item?.price,
+            quantity
+          };
+        }).
+        filter(Boolean),
     [quantities, safePricingItems]
   );
 
   const totalSelectionCount = useCallback(
     (selections = []) =>
-    (Array.isArray(selections) ? selections : []).reduce((sum, selection) => {
-      const quantity = Number.parseInt(selection?.quantity ?? 0, 10);
-      return sum + (Number.isFinite(quantity) ? quantity : 0);
-    }, 0),
+      (Array.isArray(selections) ? selections : []).reduce((sum, selection) => {
+        const quantity = Number.parseInt(selection?.quantity ?? 0, 10);
+        return sum + (Number.isFinite(quantity) ? quantity : 0);
+      }, 0),
     []
   );
 
@@ -892,7 +957,8 @@ export default function ReservationCheckoutClient({ seanceId, socketUrl }) {
       } catch (_error) {
 
         // noop
-      }},
+      }
+    },
     [reservation?.reservationId, seanceId]
   );
 
@@ -925,7 +991,8 @@ export default function ReservationCheckoutClient({ seanceId, socketUrl }) {
     } catch (_error) {
 
       // noop
-    }}, []);
+    }
+  }, []);
 
   const persistSuccessBooking = useCallback(
     ({ booking, selections, customerContact, subscriptionCode, promoCode } = {}) => {
@@ -938,15 +1005,15 @@ export default function ReservationCheckoutClient({ seanceId, socketUrl }) {
         seanceId: String(seanceId || ""),
         seanceInfo: seanceInfo || null,
         seats: safeSeats.
-        filter((seat) => seat && seat.row !== undefined && seat.col !== undefined).
-        map((seat) => ({
-          row: String(seat.row),
-          col: Number(seat.col)
-        })),
+          filter((seat) => seat && seat.row !== undefined && seat.col !== undefined).
+          map((seat) => ({
+            row: String(seat.row),
+            col: Number(seat.col)
+          })),
         pricingSelections: Array.isArray(selections) ? selections : [],
         totalAmount: Number.isFinite(toNumber(booking?.totalAmount)) ?
-        toNumber(booking?.totalAmount) :
-        totalPrice,
+          toNumber(booking?.totalAmount) :
+          totalPrice,
         customerContact: customerContact || null,
         subscriptionCode: normalizeSubscriptionCode(
           booking?.subscriptionTransaction?.subscriptionCode || subscriptionCode || ""
@@ -967,7 +1034,8 @@ export default function ReservationCheckoutClient({ seanceId, socketUrl }) {
       } catch (_error) {
 
         // noop
-      }},
+      }
+    },
     [safeSeats, seanceId, seanceInfo, totalPrice, userRole]
   );
 
@@ -1004,10 +1072,10 @@ export default function ReservationCheckoutClient({ seanceId, socketUrl }) {
           const selectionPrice = toNumber(selection?.price);
 
           const matched =
-          itemName &&
-          selectionName &&
-          itemName === selectionName &&
-          itemPrice === selectionPrice;
+            itemName &&
+            selectionName &&
+            itemName === selectionName &&
+            itemPrice === selectionPrice;
 
           if (matched) {
             matchedIndex = index;
@@ -1038,27 +1106,26 @@ export default function ReservationCheckoutClient({ seanceId, socketUrl }) {
       silent = false
     } = {}) => {
       if (
-      isSubmitting ||
-      !reservation?.reservationId ||
-      !seanceId ||
-      !safeSeats.length)
-      {
+        isSubmitting ||
+        !reservation?.reservationId ||
+        !seanceId ||
+        !safeSeats.length) {
         return false;
       }
 
       const selections = Array.isArray(selectionsOverride) ?
-      selectionsOverride.filter(Boolean) :
-      buildPricingSelectionsFromQuantities();
+        selectionsOverride.filter(Boolean) :
+        buildPricingSelectionsFromQuantities();
       const resolvedSubscriptionCode =
-      typeof subscriptionCodeOverride === "string" ?
-      normalizeSubscriptionCode(subscriptionCodeOverride) :
-      normalizedSubscriptionCode;
+        typeof subscriptionCodeOverride === "string" ?
+          normalizeSubscriptionCode(subscriptionCodeOverride) :
+          normalizedSubscriptionCode;
       const resolvedPromoCode =
-      typeof promoCodeOverride === "string" ?
-      normalizePromoCode(promoCodeOverride) :
-      appliedPromoCode;
+        typeof promoCodeOverride === "string" ?
+          normalizePromoCode(promoCodeOverride) :
+          appliedPromoCode;
 
-      if (totalSelectionCount(selections) !== assignableSeatsCount) {
+      if (!selectedSub && totalSelectionCount(selections) !== assignableSeatsCount) {
         if (!silent) {
           setSubmitState({
             status: "error",
@@ -1080,9 +1147,13 @@ export default function ReservationCheckoutClient({ seanceId, socketUrl }) {
           body: JSON.stringify({
             sessionId: seanceId,
             reservationId: reservation.reservationId,
-            pricingSelections: selections,
+            pricingSelections: selectedSub ? [{
+              name: "Abonnement",
+              price: 0,
+              quantity: assignableSeatsCount
+            }] : selections,
             customerContact: customerContact || undefined,
-            subscriptionCode: resolvedSubscriptionCode || undefined,
+            subscriptionCode: selectedSub ? selectedSub.subscriptionCode : (resolvedSubscriptionCode || undefined),
             promoCode: resolvedPromoCode || undefined
           })
         });
@@ -1120,7 +1191,7 @@ export default function ReservationCheckoutClient({ seanceId, socketUrl }) {
           subscriptionCode: resolvedSubscriptionCode,
           promoCode: resolvedPromoCode
         });
-        
+
         if (data?.paymentFormUrl) {
           window.location.href = data.paymentFormUrl;
           return true;
@@ -1132,16 +1203,16 @@ export default function ReservationCheckoutClient({ seanceId, socketUrl }) {
         });
 
         const bookingIdQuery =
-        createdBooking?.id || createdBooking?._id ?
-        `?bookingId=${encodeURIComponent(
-          String(createdBooking?.id || createdBooking?._id)
-        )}` :
-        "";
+          createdBooking?.id || createdBooking?._id ?
+            `?bookingId=${encodeURIComponent(
+              String(createdBooking?.id || createdBooking?._id)
+            )}` :
+            "";
         router.replace(`/reservations/${seanceId}/checkout/succes${bookingIdQuery}`);
         return true;
       } catch (error) {
         const message =
-        error?.message || "Erreur lors de la finalisation de la réservation.";
+          error?.message || "Erreur lors de la finalisation de la réservation.";
         setSubmitState({
           status: "error",
           message,
@@ -1154,19 +1225,19 @@ export default function ReservationCheckoutClient({ seanceId, socketUrl }) {
       }
     },
     [
-    assignableSeatsCount,
-    buildPricingSelectionsFromQuantities,
-    clearCheckoutIntent,
-    isSubmitting,
-    normalizedSubscriptionCode,
-    appliedPromoCode,
-    persistSuccessBooking,
-    reservation?.reservationId,
-    redirectToVerifyEmail,
-    router,
-    safeSeats.length,
-    seanceId,
-    totalSelectionCount]
+      assignableSeatsCount,
+      buildPricingSelectionsFromQuantities,
+      clearCheckoutIntent,
+      isSubmitting,
+      normalizedSubscriptionCode,
+      appliedPromoCode,
+      persistSuccessBooking,
+      reservation?.reservationId,
+      redirectToVerifyEmail,
+      router,
+      safeSeats.length,
+      seanceId,
+      totalSelectionCount]
 
   );
 
@@ -1189,12 +1260,12 @@ export default function ReservationCheckoutClient({ seanceId, socketUrl }) {
       );
     },
     [
-    buildPricingSelectionsFromQuantities,
-    appliedPromoCode,
-    normalizedSubscriptionCode,
-    persistCheckoutIntent,
-    router,
-    seanceId]
+      buildPricingSelectionsFromQuantities,
+      appliedPromoCode,
+      normalizedSubscriptionCode,
+      persistCheckoutIntent,
+      router,
+      seanceId]
 
   );
 
@@ -1270,9 +1341,9 @@ export default function ReservationCheckoutClient({ seanceId, socketUrl }) {
           code: normalizedPromoCode,
           subtotalAmount: totalPrice,
           customerContact:
-          userRole === "guest" && guestContact?.email ?
-          { email: String(guestContact.email).trim().toLowerCase() } :
-          undefined
+            userRole === "guest" && guestContact?.email ?
+              { email: String(guestContact.email).trim().toLowerCase() } :
+              undefined
         })
       });
 
@@ -1300,12 +1371,12 @@ export default function ReservationCheckoutClient({ seanceId, socketUrl }) {
       });
     }
   }, [
-  canValidatePromo,
-  guestContact?.email,
-  normalizedPromoCode,
-  safeSeats.length,
-  totalPrice,
-  userRole]
+    canValidatePromo,
+    guestContact?.email,
+    normalizedPromoCode,
+    safeSeats.length,
+    totalPrice,
+    userRole]
   );
 
   const handleCancelPromo = useCallback(() => {
@@ -1321,10 +1392,10 @@ export default function ReservationCheckoutClient({ seanceId, socketUrl }) {
 
     const context = promoValidationContextRef.current || {};
     const shouldClear =
-    isSubscriptionPaymentRequested ||
-    remainingToAssign !== 0 ||
-    context.subtotal !== totalPrice ||
-    context.seatsCount !== safeSeats.length;
+      isSubscriptionPaymentRequested ||
+      remainingToAssign !== 0 ||
+      context.subtotal !== totalPrice ||
+      context.seatsCount !== safeSeats.length;
 
     if (!shouldClear) {
       return;
@@ -1333,18 +1404,18 @@ export default function ReservationCheckoutClient({ seanceId, socketUrl }) {
     setPromoState({
       status: "idle",
       message:
-      isSubscriptionPaymentRequested ?
-      "Le code promo n'est pas applicable avec un paiement abonnement." :
-      "Le panier a change. Merci de revalider le code promo.",
+        isSubscriptionPaymentRequested ?
+          "Le code promo n'est pas applicable avec un paiement abonnement." :
+          "Le panier a change. Merci de revalider le code promo.",
       promo: null,
       pricing: null
     });
   }, [
-  isSubscriptionPaymentRequested,
-  promoState.status,
-  remainingToAssign,
-  safeSeats.length,
-  totalPrice]
+    isSubscriptionPaymentRequested,
+    promoState.status,
+    remainingToAssign,
+    safeSeats.length,
+    totalPrice]
   );
 
   const handleContinue = useCallback(async () => {
@@ -1415,9 +1486,8 @@ export default function ReservationCheckoutClient({ seanceId, socketUrl }) {
     }
 
     if (
-    intent.reservationId &&
-    String(intent.reservationId) !== String(reservation.reservationId))
-    {
+      intent.reservationId &&
+      String(intent.reservationId) !== String(reservation.reservationId)) {
       clearCheckoutIntent();
       autoFinalizeAttemptedRef.current = true;
       return;
@@ -1433,7 +1503,7 @@ export default function ReservationCheckoutClient({ seanceId, socketUrl }) {
     }
     autoFinalizeAttemptedRef.current = true;
     const restoredSelections =
-    buildPricingSelectionsFromQuantities(restoredQuantities);
+      buildPricingSelectionsFromQuantities(restoredQuantities);
 
     finalizeBooking({
       selectionsOverride: restoredSelections,
@@ -1442,18 +1512,18 @@ export default function ReservationCheckoutClient({ seanceId, socketUrl }) {
       silent: true
     });
   }, [
-  buildPricingSelectionsFromQuantities,
-  clearCheckoutIntent,
-  finalizeBooking,
-  readCheckoutIntent,
-  reservation?.reservationId,
-  redirectToVerifyEmail,
-  restoreQuantitiesFromSelections,
-  safePricingItems.length,
-  searchParams,
-  seanceId,
-  userEmailVerified,
-  userRole]
+    buildPricingSelectionsFromQuantities,
+    clearCheckoutIntent,
+    finalizeBooking,
+    readCheckoutIntent,
+    reservation?.reservationId,
+    redirectToVerifyEmail,
+    restoreQuantitiesFromSelections,
+    safePricingItems.length,
+    searchParams,
+    seanceId,
+    userEmailVerified,
+    userRole]
   );
 
   if (isLoading) {
@@ -1465,7 +1535,7 @@ export default function ReservationCheckoutClient({ seanceId, socketUrl }) {
       <div className="mb-6">
         <Link
           href={`/reservations/${seanceId}`}
-          className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white/80 transition hover:border-accent/70 hover:text-accent"
+          className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-accent text-black/80 transition hover:border-accent/70 hover:text-accent"
           aria-label="Retour a la selection des sièges">
 
           <RiArrowLeftSLine className="h-5 w-5" />
@@ -1517,22 +1587,65 @@ export default function ReservationCheckoutClient({ seanceId, socketUrl }) {
             </div>
           </div>
 
-          <PricingQuantityList
-            safePricingItems={safePricingItems}
-            quantities={quantities}
-            canAdjust={canAdjust}
-            assignedCount={assignedCount}
-            assignableSeatsCount={assignableSeatsCount}
-            onIncrement={handleIncrement}
-            onDecrement={handleDecrement}
-            formatPrice={formatPrice} />
+          {mySubscriptions.length > 0 && (
+            <div className="flex flex-col gap-4 rounded-2xl border border-accent/20 bg-accent/5 p-5 shadow-sm">
+              <div className="flex items-center gap-2">
+                <RiTicketLine className="h-5 w-5 text-accent" />
+                <h3 className="text-lg font-bold text-white">Utiliser un abonnement</h3>
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label htmlFor="subscription-select" className="text-xs font-semibold uppercase tracking-wider text-white/50">
+                  Abonnements disponibles
+                </label>
+                <select
+                  id="subscription-select"
+                  value={selectedSubId}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    setSelectedSubId(val);
+                    if (val) setQuantities({});
+                  }}
+                  className="w-full rounded-xl border border-white/10 bg-white/5 p-3.5 text-sm text-white transition focus:border-accent/50 focus:bg-white/10 focus:outline-none"
+                >
+                  <option value="">Aucun abonnement (Paiement classique)</option>
+                  {mySubscriptions.map(sub => (
+                    <option key={sub.id || sub._id} value={sub.id || sub._id} className="bg-[#161e22]">
+                      {sub.subscriptionCode} — {sub.remainingCredits} crédits ({sub.allowedSeatType === 'normale' ? 'Sièges Standards' : 'Sièges VIP'})
+                    </option>
+                  ))}
+                </select>
+              </div>
+              {selectedSub && (
+                subscriptionValidationError ? (
+                  <div className="rounded-lg border border-rose-500/30 bg-rose-500/10 p-3 text-xs font-semibold text-rose-300">
+                    <p>{subscriptionValidationError}</p>
+                  </div>
+                ) : (
+                  <div className="rounded-lg border border-emerald-500/20 bg-emerald-500/10 p-3 text-xs font-semibold text-emerald-300">
+                    <p>✓ Abonnement valide — {safeSeats.length} crédit{safeSeats.length > 1 ? "s" : ""} seront débités. Aucun tarif à choisir.</p>
+                  </div>
+                )
+              )}
+            </div>
+          )}
 
+          {!selectedSub && (
+            <PricingQuantityList
+              safePricingItems={safePricingItems}
+              quantities={quantities}
+              canAdjust={canAdjust}
+              assignedCount={assignedCount}
+              assignableSeatsCount={assignableSeatsCount}
+              onIncrement={handleIncrement}
+              onDecrement={handleDecrement}
+              formatPrice={formatPrice} />
+          )}
 
           <FixedPricingCard
             fixedPricingGroups={fixedPricingGroups}
             formatPrice={formatPrice} />
 
-
+          {/* 
           <SubscriptionPaymentCard
             subscriptionCodeInput={subscriptionCodeInput}
             onSubscriptionCodeChange={handleSubscriptionCodeChange}
@@ -1540,24 +1653,27 @@ export default function ReservationCheckoutClient({ seanceId, socketUrl }) {
             isSuccess={isSuccess}
             userRole={userRole}
             isSubscriptionPaymentRequested={isSubscriptionPaymentRequested}
-            creditsToUseWithSubscription={creditsToUseWithSubscription} />
+            creditsToUseWithSubscription={creditsToUseWithSubscription} /> */}
 
 
-          <PromoCodeCard
-            promoCodeInput={promoCodeInput}
-            onPromoCodeChange={handlePromoCodeChange}
-            isSubmitting={isSubmitting}
-            isSuccess={isSuccess}
-            isSubscriptionPaymentRequested={isSubscriptionPaymentRequested}
-            onValidatePromo={handleValidatePromo}
-            onCancelPromo={handleCancelPromo}
-            canValidatePromo={canValidatePromo}
-            promoState={promoState}
-            isPromoApplied={isPromoApplied}
-            appliedPromoCode={appliedPromoCode}
-            promoReductionLabel={promoReductionLabel}
-            promoDiscountAmount={promoDiscountAmount}
-            formatPrice={formatPrice} />
+          {!selectedSub && (
+            <PromoCodeCard
+              promoCodeInput={promoCodeInput}
+              onPromoCodeChange={handlePromoCodeChange}
+              isSubmitting={isSubmitting}
+              isSuccess={isSuccess}
+              isSubscriptionPaymentRequested={isSubscriptionPaymentRequested}
+              onValidatePromo={handleValidatePromo}
+              onCancelPromo={handleCancelPromo}
+              canValidatePromo={canValidatePromo}
+              promoState={promoState}
+              isPromoApplied={isPromoApplied}
+              appliedPromoCode={appliedPromoCode}
+              promoReductionLabel={promoReductionLabel}
+              promoDiscountAmount={promoDiscountAmount}
+              formatPrice={formatPrice}
+              userRole={userRole} />
+          )}
 
 
           <CheckoutTotalCard

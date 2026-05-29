@@ -43,7 +43,7 @@ export default function ActualiteFormQuestionField({
       <div className="flex flex-wrap items-center gap-2">
         <label className="text-sm font-semibold text-white">{label}</label>
         {question?.required ? (
-          <span className="rounded-full bg-primary/10 px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-accent">
+          <span className="rounded-full bg-accent/10 px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-accent">
             Obligatoire
           </span>
         ) : null}

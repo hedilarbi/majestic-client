@@ -94,7 +94,7 @@ export default async function PaiementsPage() {
         <div className="overflow-x-auto">
           <table className="w-full min-w-[720px] text-left">
             <thead>
-              <tr className="bg-primary/10 text-xs font-bold uppercase tracking-wider text-white/70">
+              <tr className="bg-accent/10 text-xs font-bold uppercase tracking-wider text-white/70">
                 <th className="px-6 py-5">Date</th>
                 <th className="px-6 py-5">Libelle</th>
                 <th className="px-6 py-5">Montant</th>

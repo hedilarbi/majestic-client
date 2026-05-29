@@ -10,7 +10,7 @@ export default function ConnexionPage() {
   return (
     <main className="relative flex min-h-screen items-center justify-center px-6 pb-20 pt-12 text-white sm:px-10 lg:px-20">
       <div className="pointer-events-none absolute inset-0 -z-10">
-        <div className="absolute left-1/2 top-0 h-[50vh] w-[70vw] -translate-x-1/2 rounded-full bg-primary/20 blur-[140px] opacity-70" />
+        <div className="absolute left-1/2 top-0 h-[50vh] w-[70vw] -translate-x-1/2 rounded-full bg-accent/20 blur-[140px] opacity-70" />
         <div className="absolute bottom-0 left-0 h-[40vh] w-[45vw] rounded-full bg-accent/10 blur-[120px] opacity-60" />
       </div>
 

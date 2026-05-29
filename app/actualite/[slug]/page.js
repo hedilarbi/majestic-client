@@ -14,12 +14,32 @@ export async function generateMetadata({ params }) {
   if (!item) {
     return {
       title: "Actualité | Majestic",
+      description: "Découvrez toute l'actualité du Majestic.",
     };
   }
 
+  const seoTitle = item.seoTitle?.trim() || `${item.title} | Actualité | Majestic`;
+  const seoDescription =
+    item.seoDescription?.trim() ||
+    item.excerpt?.trim() ||
+    item.formDescription?.trim() ||
+    "Actualité Majestic";
+
   return {
-    title: `${item.title} | Actualité | Majestic`,
-    description: item.excerpt || item.formDescription || "Actualité Majestic",
+    title: seoTitle,
+    description: seoDescription,
+    openGraph: {
+      title: item.seoTitle?.trim() || item.title,
+      description: seoDescription,
+      type: item.type === "article" ? "article" : "website",
+      images: item.image ? [{ url: item.image, alt: item.title }] : [],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: item.seoTitle?.trim() || item.title,
+      description: seoDescription,
+      images: item.image ? [item.image] : [],
+    },
   };
 }
 

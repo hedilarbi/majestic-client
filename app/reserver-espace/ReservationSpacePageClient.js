@@ -1,7 +1,9 @@
 "use client";
 
+import Link from "next/link";
 import { useMemo, useState } from "react";
 import {
+  RiArrowLeftLine,
   RiBuildingLine,
   RiCalendarScheduleLine,
   RiCheckboxCircleLine,
@@ -24,6 +26,7 @@ const buildInitialState = () => ({
   lastName: "",
   phone: "",
   email: "",
+  organisationName: "",
   establishmentType: "association",
   reservationDateTime: "",
   description: "",
@@ -128,7 +131,16 @@ export default function ReservationSpacePageClient() {
   return (
     <div className="relative overflow-hidden">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(116,208,241,0.18),_transparent_40%),radial-gradient(circle_at_bottom,_rgba(14,165,233,0.14),_transparent_32%)]" />
-      <div className="relative mx-auto flex max-w-6xl flex-col gap-8 px-4 py-10 sm:px-6 lg:flex-row lg:px-8 lg:py-14">
+      <div className="relative mx-auto max-w-6xl px-4 pt-6 sm:px-6 lg:px-8">
+        <Link
+          href="/"
+          className="inline-flex items-center gap-2 text-sm font-semibold text-white/55 transition hover:text-accent"
+        >
+          <RiArrowLeftLine className="h-4 w-4" />
+          Retour à l&apos;accueil
+        </Link>
+      </div>
+      <div className="relative mx-auto flex max-w-6xl flex-col gap-8 px-4 py-6 sm:px-6 lg:flex-row lg:px-8 lg:py-10">
         <section className="lg:w-[38%]">
           <div className="rounded-[2rem] border border-white/10 bg-white/5 p-6 shadow-[0_35px_80px_-50px_rgba(56,189,248,0.45)] backdrop-blur-xl">
             <p className="text-sm font-semibold uppercase tracking-[0.35em] text-accent/80">
@@ -209,6 +221,17 @@ export default function ReservationSpacePageClient() {
                   onChange={handleChange}
                   className={INPUT_CLASSES}
                   placeholder="nom@domaine.com"
+                />
+              </Field>
+
+              <Field icon={RiBuildingLine} label="Nom de l'organisation">
+                <input
+                  name="organisationName"
+                  type="text"
+                  value={formState.organisationName}
+                  onChange={handleChange}
+                  className={INPUT_CLASSES}
+                  placeholder="Ex: Association Culturelle Al Wafa"
                 />
               </Field>
 
