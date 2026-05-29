@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { RiArrowRightLine, RiCheckboxCircleLine, RiSendPlaneLine } from "react-icons/ri";
 
@@ -17,12 +16,7 @@ const normalizeAnswersForReset = (questions = []) =>
     return accumulator;
   }, {});
 
-export default function ActualiteFormCard({
-  item,
-  currentUser,
-  redirectPath = "/actualite",
-}) {
-  const router = useRouter();
+export default function ActualiteFormCard({ item }) {
   const initialAnswers = useMemo(
     () => normalizeAnswersForReset(item?.questions),
     [item?.questions],
@@ -31,12 +25,6 @@ export default function ActualiteFormCard({
   const [errorMessage, setErrorMessage] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const isAuthenticated = currentUser?.role === "customer";
-  const customerName = [currentUser?.firstName, currentUser?.lastName]
-    .filter(Boolean)
-    .join(" ")
-    .trim();
 
   const handleFieldChange = (questionId, nextValue, isCheckbox = false) => {
     setAnswers((current) => {
@@ -64,14 +52,7 @@ export default function ActualiteFormCard({
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    if (!isAuthenticated) {
-      router.push(`/connexion?redirect=${encodeURIComponent(redirectPath)}`);
-      return;
-    }
-
-    if (isSubmitting) {
-      return;
-    }
+    if (isSubmitting) return;
 
     setErrorMessage("");
     setIsSubmitting(true);
@@ -92,11 +73,6 @@ export default function ActualiteFormCard({
       const data = await response.json().catch(() => ({}));
 
       if (!response.ok) {
-        if (response.status === 401) {
-          router.push(`/connexion?redirect=${encodeURIComponent(redirectPath)}`);
-          return;
-        }
-
         throw new Error(
           data?.message || "Le formulaire n'a pas pu être envoyé.",
         );
@@ -167,28 +143,6 @@ export default function ActualiteFormCard({
       <p className="mt-4 max-w-3xl text-sm leading-7 text-white/65 sm:text-base">
         {getActualiteSummary(item)}
       </p>
-
-      <div className="mt-6 rounded-[1.6rem] border border-white/10 bg-black/25 px-5 py-4 text-sm text-white/65">
-        {isAuthenticated ? (
-          <span>
-            Connecté en tant que{" "}
-            <span className="font-semibold text-white">
-              {customerName || currentUser?.email || "Client"}
-            </span>
-          </span>
-        ) : (
-          <span>
-            Seuls les utilisateurs connectés peuvent postuler.{" "}
-            <Link
-              href={`/connexion?redirect=${encodeURIComponent(redirectPath)}`}
-              className="inline-flex items-center gap-1 font-semibold text-accent underline"
-            >
-              Se connecter
-              <RiArrowRightLine className="h-4 w-4" />
-            </Link>
-          </span>
-        )}
-      </div>
 
       <form className="mt-8 space-y-4" onSubmit={handleSubmit}>
         {Array.isArray(item.questions)

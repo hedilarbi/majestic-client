@@ -2,7 +2,6 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import ActualiteDetailContent from "@/app/components/actualite/ActualiteDetailContent";
-import { getCurrentCustomerUser } from "@/app/lib/auth-server";
 import { getPublishedActualiteBySlug } from "@/app/lib/actualites-api";
 
 export const dynamic = "force-dynamic";
@@ -13,17 +12,17 @@ export async function generateMetadata({ params }) {
 
   if (!item) {
     return {
-      title: "Actualité | Majestic",
-      description: "Découvrez toute l'actualité du Majestic.",
+      title: "Actualités | Majestic",
+      description: "Découvrez toute l'actualités du Majestic.",
     };
   }
 
-  const seoTitle = item.seoTitle?.trim() || `${item.title} | Actualité | Majestic`;
+  const seoTitle = item.seoTitle?.trim() || `${item.title} | Actualités | Majestic`;
   const seoDescription =
     item.seoDescription?.trim() ||
     item.excerpt?.trim() ||
     item.formDescription?.trim() ||
-    "Actualité Majestic";
+    "Actualités Majestic";
 
   return {
     title: seoTitle,
@@ -51,9 +50,6 @@ export default async function ActualiteDetailPage({ params }) {
     notFound();
   }
 
-  const currentUser =
-    item.type === "form" ? await getCurrentCustomerUser() : null;
-
   return (
     <main className="px-6 pb-16 pt-10 text-white sm:px-10 lg:px-20">
       <div className="mx-auto max-w-7xl">
@@ -67,8 +63,6 @@ export default async function ActualiteDetailPage({ params }) {
         <section className="mt-6">
           <ActualiteDetailContent
             item={item}
-            currentUser={currentUser}
-            redirectPath={`/actualite/${item.slug || item.id}`}
           />
         </section>
       </div>

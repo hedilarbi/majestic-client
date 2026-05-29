@@ -21,15 +21,16 @@ const safeJson = async (response) => {
 export async function POST(request, { params }) {
   const token = request.cookies.get("token")?.value || "";
 
-  if (!token) {
-    return NextResponse.json(
-      { message: "Vous devez être connecté pour envoyer ce formulaire." },
-      { status: 401 },
-    );
-  }
-
   const { formId } = await params;
   const payload = await request.json().catch(() => ({}));
+
+  const headers = {
+    Accept: "application/json",
+    "Content-Type": "application/json",
+  };
+  if (token) {
+    headers.Authorization = `Bearer ${token}`;
+  }
 
   const response = await fetch(
     `${resolveApiBaseUrl()}/blog-form-submissions/forms/${encodeURIComponent(
@@ -37,11 +38,7 @@ export async function POST(request, { params }) {
     )}`,
     {
       method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
+      headers,
       body: JSON.stringify({ answers: payload?.answers || {} }),
       cache: "no-store",
     },

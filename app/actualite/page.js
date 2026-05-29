@@ -5,7 +5,7 @@ import { getPublishedActualites } from "@/app/lib/actualites-api";
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: "Actualité | Majestic",
+  title: "Actualités| Majestic",
   description:
     "Retrouvez les derniers articles, bandes-annonces et formulaires publiés par Le Majestic.",
 };

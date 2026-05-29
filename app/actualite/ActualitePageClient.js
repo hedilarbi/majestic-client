@@ -8,7 +8,7 @@ export default function ActualitePageClient({ items = [] }) {
       <div className="mx-auto max-w-7xl">
         <section className="py-8 sm:py-10">
           <h1 className="text-center text-4xl font-semibold tracking-tight text-white sm:text-5xl font-display">
-            Actualité
+            Actualités
           </h1>
         </section>
 
