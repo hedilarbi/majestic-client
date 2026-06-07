@@ -1,16 +1,27 @@
 import Image from "next/image";
 
-const PARTENAIRES = [
-  { id: 1, nom: "Partenaire 1", logo: "/images/partenaires/partenaire-1.png" },
-  { id: 2, nom: "Partenaire 2", logo: "/images/partenaires/partenaire-2.png" },
-  { id: 3, nom: "Partenaire 3", logo: "/images/partenaires/partenaire-3.png" },
-  { id: 4, nom: "Partenaire 4", logo: "/images/partenaires/partenaire-4.png" },
-  { id: 5, nom: "Partenaire 5", logo: "/images/partenaires/partenaire-5.png" },
-  { id: 6, nom: "Partenaire 6", logo: "/images/partenaires/partenaire-6.png" },
-];
+const resolveImageAspect = (value) =>
+  value === "vertical" ? "vertical" : "horizontal";
 
-export default function PartenairesSection({ items = PARTENAIRES }) {
-  if (!items.length) return null;
+const getImageAspectRatio = (value) =>
+  resolveImageAspect(value) === "vertical" ? "1 / 2" : "2 / 1";
+
+const getPartnerCardClass = (value) =>
+  resolveImageAspect(value) === "vertical"
+    ? "mx-auto max-w-28 p-4"
+    : "w-full p-6";
+
+export default function PartenairesSection({ items = [] }) {
+  const partnersWithLogo = items
+    .map((partenaire) => ({
+      id: partenaire._id || partenaire.id || partenaire.name || partenaire.nom,
+      name: partenaire.name || partenaire.nom || "Partenaire",
+      logo: partenaire.image || partenaire.logo || "",
+      imageAspect: resolveImageAspect(partenaire.imageAspect),
+    }))
+    .filter((partenaire) => partenaire.logo);
+
+  if (!partnersWithLogo.length) return null;
 
   return (
     <section className="relative w-full border-t border-white/5 py-14">
@@ -26,26 +37,25 @@ export default function PartenairesSection({ items = PARTENAIRES }) {
           </p>
         </div>
 
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
-          {items.map((partenaire) => (
-            <div
-              key={partenaire.id}
-              className="group flex flex-col items-center justify-center gap-3 rounded-[1.8rem] border border-white/10 bg-white/5 p-6 shadow-[0_20px_60px_rgba(0,0,0,0.25)] backdrop-blur-xl transition hover:border-primary/30 hover:bg-white/[0.07]"
-            >
-              <div className="relative h-14 w-full">
-                <Image
-                  src={partenaire.logo}
-                  alt={partenaire.nom}
-                  fill
-                  sizes="(min-width: 1024px) 14vw, (min-width: 640px) 30vw, 45vw"
-                  className="object-contain brightness-75 grayscale transition duration-300 group-hover:brightness-100 group-hover:grayscale-0"
-                />
+        <div className="grid grid-cols-2 items-start gap-4 sm:grid-cols-3 lg:grid-cols-6">
+          {partnersWithLogo.map((partenaire) => {
+            return (
+              <div key={partenaire.id} className="flex justify-center">
+                <div
+                  className={`group relative overflow-hidden rounded-[1.8rem] border border-white/10 bg-white/5 shadow-[0_20px_60px_rgba(0,0,0,0.25)] backdrop-blur-xl transition hover:border-primary/30 hover:bg-white/[0.07] ${getPartnerCardClass(partenaire.imageAspect)}`}
+                  style={{ aspectRatio: getImageAspectRatio(partenaire.imageAspect) }}
+                >
+                  <Image
+                    src={partenaire.logo}
+                    alt={partenaire.name}
+                    fill
+                    sizes="(min-width: 1024px) 14vw, (min-width: 640px) 30vw, 45vw"
+                    className="object-contain p-4 brightness-75 grayscale transition duration-300 group-hover:brightness-100 group-hover:grayscale-0"
+                  />
+                </div>
               </div>
-              <span className="text-center text-xs font-semibold uppercase tracking-[0.18em] text-white/40 transition group-hover:text-white/70">
-                {partenaire.nom}
-              </span>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>

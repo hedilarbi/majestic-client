@@ -32,9 +32,13 @@ const resolveSaleState = (sale) => {
     : null;
   const hasExpiration = expiration && !Number.isNaN(expiration.getTime());
   const isExpiredByDate = hasExpiration && expiration.getTime() < Date.now();
+
+  const saleExpiration = sale?.expiresAt ? new Date(sale.expiresAt) : null;
+  const isSaleExpired = saleExpiration && !Number.isNaN(saleExpiration.getTime()) && saleExpiration.getTime() < Date.now();
+
   const isCancelled = String(sale?.status || "").toLowerCase() === "cancelled";
 
-  if (isCancelled || isExpiredByDate) {
+  if (isCancelled || isExpiredByDate || isSaleExpired) {
     return {
       label: "Expiré",
       tone: "border border-white/15 text-white/60",
@@ -159,16 +163,26 @@ export default async function AbonnementsPage() {
             <div className="relative z-10 mt-6 flex items-center gap-2 border-t border-white/10 pt-6 text-sm text-white/50">
               <MdCalendarMonth className="h-4 w-4 text-white/30" />
               Achat le {formatDate(sale.createdAt)} • L'offre expire le{" "}
-              {formatDate(sale?.subscription?.expirationDate)}
+              {formatDate(sale?.expiresAt || sale?.subscription?.expirationDate)}
             </div>
             {sale?.subscriptionCode ? (
-              <div className="relative z-10 mt-3 rounded-xl border border-white/15 bg-white/5 px-3 py-2">
-                <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/45">
-                  Code abonnement
-                </p>
-                <p className="mt-1 font-mono text-sm font-semibold text-white">
-                  {sale.subscriptionCode}
-                </p>
+              <div className="relative z-10 mt-3 rounded-xl border border-white/15 bg-white/5 px-3 py-2 flex items-center justify-between gap-4">
+                <div>
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/45">
+                    Code abonnement
+                  </p>
+                  <p className="mt-1 font-mono text-sm font-semibold text-white">
+                    {sale.subscriptionCode}
+                  </p>
+                </div>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={`https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=${encodeURIComponent(sale.subscriptionCode)}`}
+                  alt={`QR ${sale.subscriptionCode}`}
+                  width={80}
+                  height={80}
+                  className="rounded-lg bg-white p-1"
+                />
               </div>
             ) : null}
           </article>
@@ -231,16 +245,26 @@ export default async function AbonnementsPage() {
             <div className="relative z-10 mt-6 flex items-center gap-2 border-t border-white/10 pt-6 text-sm text-white/50">
               <MdCalendarMonth className="h-4 w-4 text-white/30" />
               Achat le {formatDate(sale.createdAt)} • L'offre expire le{" "}
-              {formatDate(sale?.subscription?.expirationDate)}
+              {formatDate(sale?.expiresAt || sale?.subscription?.expirationDate)}
             </div>
             {sale?.subscriptionCode ? (
-              <div className="relative z-10 mt-3 rounded-xl border border-white/15 bg-white/5 px-3 py-2">
-                <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/45">
-                  Code abonnement
-                </p>
-                <p className="mt-1 font-mono text-sm font-semibold text-white">
-                  {sale.subscriptionCode}
-                </p>
+              <div className="relative z-10 mt-3 rounded-xl border border-white/15 bg-white/5 px-3 py-2 flex items-center justify-between gap-4">
+                <div>
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/45">
+                    Code abonnement
+                  </p>
+                  <p className="mt-1 font-mono text-sm font-semibold text-white">
+                    {sale.subscriptionCode}
+                  </p>
+                </div>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={`https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=${encodeURIComponent(sale.subscriptionCode)}`}
+                  alt={`QR ${sale.subscriptionCode}`}
+                  width={80}
+                  height={80}
+                  className="rounded-lg bg-white p-1"
+                />
               </div>
             ) : null}
           </article>

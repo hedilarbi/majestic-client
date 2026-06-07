@@ -5,7 +5,11 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import { RiArrowRightLine, RiCheckboxCircleLine, RiSendPlaneLine } from "react-icons/ri";
 
-import { formatActualiteDate, getActualiteSummary } from "@/app/lib/actualites-utils";
+import {
+  formatActualiteDate,
+  getActualiteDetailImage,
+  getActualiteSummary,
+} from "@/app/lib/actualites-utils";
 
 import ActualiteTypeBadge from "./ActualiteTypeBadge";
 import ActualiteFormQuestionField from "./ActualiteFormQuestionField";
@@ -110,7 +114,7 @@ export default function ActualiteFormCard({ item }) {
     );
   }
 
-  const coverImage = item.image || "";
+  const coverImage = getActualiteDetailImage(item);
 
   return (
     <article className="overflow-hidden rounded-[2rem] border border-white/10 bg-white/5 shadow-[0_30px_90px_rgba(0,0,0,0.28)] backdrop-blur-2xl">

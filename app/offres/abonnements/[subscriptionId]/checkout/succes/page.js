@@ -50,6 +50,15 @@ const formatPaymentMethod = (value) => {
   return value || "-";
 };
 
+const buildSubscriptionQrSrc = (code) => {
+  const value = typeof code === "string" ? code.trim() : "";
+  if (!value) {
+    return "";
+  }
+
+  return `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(value)}`;
+};
+
 export default async function SubscriptionCheckoutSuccessPage({
   params,
   searchParams,
@@ -68,6 +77,7 @@ export default async function SubscriptionCheckoutSuccessPage({
   const remainingCredits = Number.isFinite(sale?.remainingCredits)
     ? sale.remainingCredits
     : totalCredits;
+  const subscriptionQrSrc = buildSubscriptionQrSrc(sale?.subscriptionCode);
 
   return (
     <main className="mx-auto flex w-full max-w-4xl flex-col gap-8 px-4 py-8 md:px-8 md:py-12">
@@ -132,6 +142,18 @@ export default async function SubscriptionCheckoutSuccessPage({
               <p className="break-all rounded-xl border border-white/15 bg-black/25 px-3 py-2 font-mono text-sm font-bold text-white">
                 {sale.subscriptionCode || "-"}
               </p>
+              {subscriptionQrSrc ? (
+                <div className="mt-4 flex justify-center rounded-2xl border border-white/10 bg-white p-3">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={subscriptionQrSrc}
+                    alt={`QR abonnement ${sale.subscriptionCode}`}
+                    width={148}
+                    height={148}
+                    className="h-[148px] w-[148px] object-contain"
+                  />
+                </div>
+              ) : null}
               <div className="mt-4 space-y-2 text-sm text-white/75">
                 <p className="flex items-center gap-2">
                   <RiPriceTag3Line className="h-4 w-4 text-accent" />

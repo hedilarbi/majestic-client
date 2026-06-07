@@ -4,7 +4,7 @@ export const ACTUALITE_TYPE_META = {
     accentClass: "bg-accent/15 text-accent border-primary/30",
   },
   trailer: {
-    label: "Bande-annonce",
+    label: "Vidéo",
     accentClass: "bg-accent/20 text-accent border-accent/30",
   },
   form: {
@@ -45,7 +45,7 @@ export const getActualiteSummary = (item) => {
   }
 
   if (item?.type === "trailer") {
-    return "Découvrez la nouvelle bande-annonce publiée par Le Majestic.";
+    return "Découvrez la nouvelle vidéo publiée par Le Majestic.";
   }
 
   if (item?.type === "form") {
@@ -55,8 +55,11 @@ export const getActualiteSummary = (item) => {
   return "";
 };
 
-export const getActualiteCoverImage = (item) =>
-  item?.image || item?.thumbnail || "/images/logo.png";
+export const getActualiteCardImage = (item) =>
+  item?.thumbnail || item?.image || "/images/logo.png";
+
+export const getActualiteDetailImage = (item) =>
+  item?.image || item?.thumbnail || "";
 
 export const getActualiteHref = (item) => {
   const slug = typeof item?.slug === "string" ? item.slug.trim() : "";

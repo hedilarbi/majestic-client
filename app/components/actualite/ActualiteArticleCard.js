@@ -2,14 +2,14 @@ import Image from "next/image";
 
 import {
   formatActualiteDate,
-  getActualiteCoverImage,
+  getActualiteDetailImage,
   getActualiteSummary,
 } from "@/app/lib/actualites-utils";
 
 import ActualiteTypeBadge from "./ActualiteTypeBadge";
 
 export default function ActualiteArticleCard({ item }) {
-  const coverImage = getActualiteCoverImage(item);
+  const coverImage = getActualiteDetailImage(item);
   const summary = getActualiteSummary(item);
   const hasAlbum = Array.isArray(item.images) && item.images.length > 0;
 

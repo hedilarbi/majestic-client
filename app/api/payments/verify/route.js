@@ -14,7 +14,7 @@ export async function POST(req) {
 
     // Forward the auth token if present (optional — server route is public)
     const cookieStore = await cookies();
-    const token = cookieStore.get("auth_token")?.value;
+    const token = cookieStore.get("token")?.value;
 
     const response = await fetch(`${getBaseUrl()}/payments/verify`, {
       method: "POST",

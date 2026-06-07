@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -8,6 +8,7 @@ import { createPortal } from "react-dom";
 import { FaFacebookF, FaInstagram } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 import { MdClose, MdMenu } from "react-icons/md";
+import { RiSearchLine } from "react-icons/ri";
 import { navLinks } from "../lib/site-data";
 
 const resolveType = (value) => (value === "show" ? "show" : "movie");
@@ -22,6 +23,12 @@ export default function SiteHeader() {
   const [currentUser, setCurrentUser] = useState(null);
   const [authChecked, setAuthChecked] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState({ events: [], articles: [] });
+  const [isSearching, setIsSearching] = useState(false);
+  const searchInputRef = useRef(null);
+  const searchDebounceRef = useRef(null);
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const currentType = resolveType(searchParams.get("type"));
@@ -51,6 +58,52 @@ export default function SiteHeader() {
       document.body.style.overflow = previousOverflow;
     };
   }, [isMenuOpen]);
+
+  // Focus input when search modal opens
+  useEffect(() => {
+    if (isSearchOpen && searchInputRef.current) {
+      setTimeout(() => searchInputRef.current?.focus(), 50);
+    }
+    if (!isSearchOpen) {
+      setSearchQuery("");
+      setSearchResults({ events: [], articles: [] });
+    }
+  }, [isSearchOpen]);
+
+  // Close search on Escape
+  useEffect(() => {
+    if (!isSearchOpen) return;
+    const handler = (e) => { if (e.key === "Escape") setIsSearchOpen(false); };
+    document.addEventListener("keydown", handler);
+    return () => document.removeEventListener("keydown", handler);
+  }, [isSearchOpen]);
+
+  // Debounced search
+  useEffect(() => {
+    if (searchDebounceRef.current) clearTimeout(searchDebounceRef.current);
+    const q = searchQuery.trim();
+    if (!q || q.length < 2) {
+      setSearchResults({ events: [], articles: [] });
+      setIsSearching(false);
+      return;
+    }
+    setIsSearching(true);
+    searchDebounceRef.current = setTimeout(async () => {
+      try {
+        const res = await fetch(`/api/search?q=${encodeURIComponent(q)}`);
+        const data = await res.json().catch(() => ({}));
+        setSearchResults({
+          events: Array.isArray(data?.events) ? data.events : [],
+          articles: Array.isArray(data?.articles) ? data.articles : [],
+        });
+      } catch {
+        setSearchResults({ events: [], articles: [] });
+      } finally {
+        setIsSearching(false);
+      }
+    }, 300);
+    return () => clearTimeout(searchDebounceRef.current);
+  }, [searchQuery]);
 
   useEffect(() => {
     let isMounted = true;
@@ -155,6 +208,15 @@ export default function SiteHeader() {
           </div>
         </div>
         <div className="flex items-center gap-4">
+          {/* Search button */}
+          <button
+            type="button"
+            onClick={() => setIsSearchOpen(true)}
+            className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/15 text-white/70 transition hover:border-accent/50 hover:text-accent"
+            aria-label="Rechercher"
+          >
+            <RiSearchLine className="h-5 w-5" />
+          </button>
           {isAuthenticated ? (
             <>
               <Link
@@ -315,6 +377,119 @@ export default function SiteHeader() {
                     </a>
                   </div>
                 </div>
+              </div>
+            </div>,
+            document.body,
+          )
+        : null}
+
+      {/* Search modal */}
+      {isSearchOpen
+        ? createPortal(
+            <div
+              className="fixed inset-0 z-9999 flex flex-col items-center bg-black/85 backdrop-blur-sm"
+              onClick={(e) => { if (e.target === e.currentTarget) setIsSearchOpen(false); }}
+            >
+              {/* Search bar at top */}
+              <div className="w-full max-w-2xl px-4 pt-16 sm:pt-20">
+                <div className="relative flex items-center gap-3 rounded-2xl border border-white/15 bg-white/5 px-4 py-3 backdrop-blur-xl">
+                  <RiSearchLine className="h-5 w-5 shrink-0 text-white/50" />
+                  <input
+                    ref={searchInputRef}
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Rechercher un film, spectacle, article…"
+                    className="flex-1 bg-transparent text-sm text-white placeholder:text-white/35 focus:outline-none"
+                  />
+                  {searchQuery ? (
+                    <button
+                      type="button"
+                      onClick={() => setSearchQuery("")}
+                      className="shrink-0 text-white/40 hover:text-white"
+                    >
+                      <MdClose className="h-4 w-4" />
+                    </button>
+                  ) : null}
+                  <button
+                    type="button"
+                    onClick={() => setIsSearchOpen(false)}
+                    className="shrink-0 rounded-lg border border-white/15 px-2 py-1 text-[10px] font-semibold text-white/45 transition hover:text-white"
+                  >
+                    ESC
+                  </button>
+                </div>
+
+                {/* Suggestions */}
+                {isSearching ? (
+                  <div className="mt-3 px-2 text-sm text-white/40">Recherche…</div>
+                ) : (searchResults.events.length > 0 || searchResults.articles.length > 0) ? (
+                  <div className="mt-2 overflow-hidden rounded-2xl border border-white/10 bg-black/70 backdrop-blur-xl">
+                    {searchResults.events.length > 0 ? (
+                      <div className="px-4 pb-2 pt-3">
+                        <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.25em] text-white/40">
+                          Événements
+                        </p>
+                        {searchResults.events.map((ev) => (
+                          <Link
+                            key={ev._id}
+                            href={`/evenements/${ev._id}`}
+                            onClick={() => setIsSearchOpen(false)}
+                            className="flex items-center gap-3 rounded-xl px-3 py-2 transition hover:bg-white/5"
+                          >
+                            {ev.poster ? (
+                              <Image
+                                src={ev.poster}
+                                alt={ev.name}
+                                width={32}
+                                height={48}
+                                className="h-12 w-8 rounded object-cover"
+                              />
+                            ) : (
+                              <div className="h-12 w-8 rounded bg-white/10" />
+                            )}
+                            <div>
+                              <p className="text-sm font-semibold text-white">{ev.name}</p>
+                              {ev.genres?.length ? (
+                                <p className="text-xs text-white/45">{ev.genres[0]}</p>
+                              ) : null}
+                            </div>
+                          </Link>
+                        ))}
+                      </div>
+                    ) : null}
+                    {searchResults.articles.length > 0 ? (
+                      <div className={`px-4 pb-3 ${searchResults.events.length > 0 ? "border-t border-white/10 pt-3" : "pt-3"}`}>
+                        <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.25em] text-white/40">
+                          Actualités
+                        </p>
+                        {searchResults.articles.map((art) => (
+                          <Link
+                            key={art._id}
+                            href={`/actualite/${art.slug || art._id}`}
+                            onClick={() => setIsSearchOpen(false)}
+                            className="flex items-center gap-3 rounded-xl px-3 py-2 transition hover:bg-white/5"
+                          >
+                            {(art.thumbnail || art.image) ? (
+                              <Image
+                                src={art.thumbnail || art.image}
+                                alt={art.title}
+                                width={48}
+                                height={32}
+                                className="h-8 w-12 rounded object-cover"
+                              />
+                            ) : (
+                              <div className="h-8 w-12 rounded bg-white/10" />
+                            )}
+                            <p className="text-sm font-semibold text-white line-clamp-1">{art.title}</p>
+                          </Link>
+                        ))}
+                      </div>
+                    ) : null}
+                  </div>
+                ) : searchQuery.trim().length >= 2 ? (
+                  <div className="mt-3 px-2 text-sm text-white/40">Aucun résultat pour &laquo; {searchQuery} &raquo;</div>
+                ) : null}
               </div>
             </div>,
             document.body,

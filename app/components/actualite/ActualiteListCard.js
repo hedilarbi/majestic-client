@@ -4,7 +4,7 @@ import { RiArrowRightLine } from "react-icons/ri";
 
 import {
   formatActualiteDate,
-  getActualiteCoverImage,
+  getActualiteCardImage,
   getActualiteHref,
   getActualiteSummary,
 } from "@/app/lib/actualites-utils";
@@ -29,7 +29,7 @@ export default function ActualiteListCard({ item }) {
       <article>
         <div className="relative aspect-[16/10] overflow-hidden bg-black/40">
           <Image
-            src={getActualiteCoverImage(item)}
+            src={getActualiteCardImage(item)}
             alt={item?.title || "Actualité"}
             fill
             sizes="(min-width: 1024px) 30vw, (min-width: 640px) 45vw, 100vw"

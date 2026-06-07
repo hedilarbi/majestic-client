@@ -4,7 +4,7 @@ import { RiPlayCircleLine } from "react-icons/ri";
 
 import {
   formatActualiteDate,
-  getActualiteCoverImage,
+  getActualiteDetailImage,
   getActualiteSummary,
   getVideoEmbedUrl,
 } from "@/app/lib/actualites-utils";
@@ -13,7 +13,7 @@ import ActualiteTypeBadge from "./ActualiteTypeBadge";
 
 export default function ActualiteTrailerCard({ item }) {
   const embedUrl = getVideoEmbedUrl(item.videoUrl);
-  const coverImage = getActualiteCoverImage(item);
+  const coverImage = getActualiteDetailImage(item);
 
   return (
     <article className="overflow-hidden rounded-[2rem] border border-white/10 bg-white/5 shadow-[0_30px_90px_rgba(0,0,0,0.28)] backdrop-blur-2xl">
@@ -39,7 +39,7 @@ export default function ActualiteTrailerCard({ item }) {
                 <div className="aspect-video">
                   <iframe
                     src={embedUrl}
-                    title={item.title || "Bande-annonce"}
+                    title={item.title || "Vidéo"}
                     className="h-full w-full"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowFullScreen
@@ -65,16 +65,18 @@ export default function ActualiteTrailerCard({ item }) {
             ) : null}
           </div>
 
-          <div className="relative min-h-[240px] overflow-hidden rounded-[1.6rem] border border-white/10 bg-black/40">
-            <Image
-              src={coverImage}
-              alt={item.title || "Bande-annonce"}
-              fill
-              sizes="(min-width: 1024px) 320px, 100vw"
-              className="object-cover"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
-          </div>
+          {coverImage ? (
+            <div className="relative aspect-2/3 w-full overflow-hidden rounded-[1.6rem] border border-white/10 bg-black/40">
+              <Image
+                src={coverImage}
+                alt={item.title || "Vidéo"}
+                fill
+                sizes="(min-width: 1024px) 320px, 100vw"
+                className="object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
+            </div>
+          ) : null}
         </div>
       </div>
     </article>

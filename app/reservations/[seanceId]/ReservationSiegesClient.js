@@ -503,7 +503,11 @@ export default function ReservationSiegesClient({ seanceId, socketUrl }) {
           return;
         }
 
-        row.cells[colIndex] = { ...cell, status };
+        row.cells[colIndex] = {
+          ...cell,
+          status,
+          isBookable: status === "available"
+        };
       });
 
       return nextRows;
@@ -777,7 +781,8 @@ export default function ReservationSiegesClient({ seanceId, socketUrl }) {
         return;
       }
 
-      const reservation = normalizeReservationResponse(payload);
+      // Use payload.reservation to get the authoritative seat state from the server
+      const reservation = normalizeReservationResponse({ reservation: payload?.reservation });
       if (!reservation.reservationId || reservation.seats.length === 0) {
         return;
       }
@@ -822,7 +827,8 @@ export default function ReservationSiegesClient({ seanceId, socketUrl }) {
         updateSeatStatuses(payloadSeats, "available");
       }
 
-      const reservation = normalizeReservationResponse(payload);
+      // Use payload.reservation (remaining seats after release) — NOT payload.seats (released seats)
+      const reservation = normalizeReservationResponse({ reservation: payload?.reservation });
       if (reservation.reservationId && reservation.seats.length > 0) {
         setMyReservation({
           reservationId: reservation.reservationId,
@@ -833,21 +839,14 @@ export default function ReservationSiegesClient({ seanceId, socketUrl }) {
         return;
       }
 
+      // No remaining reservation — clear everything
+      removeSelectedSeats(payloadSeats);
+      setMyReservation(null);
+      setSelectedSeats([]);
+      selectedSeatsRef.current = [];
+      selectedSeatKeysRef.current = new Set();
       if (payloadSeats.length) {
-        removeSelectedSeats(payloadSeats);
-        if (
-          selectedSeatsRef.current.length === 0 &&
-          pendingSeatActionsRef.current.size === 0) {
-          setMyReservation(null);
-        }
-        return;
-      }
-
-      if (pendingSeatActionsRef.current.size === 0) {
-        setMyReservation(null);
-        setSelectedSeats([]);
-        selectedSeatsRef.current = [];
-        selectedSeatKeysRef.current = new Set();
+        updateSeatStatuses(payloadSeats, "available", { keepSelected: false });
       }
     };
 
@@ -1006,6 +1005,10 @@ export default function ReservationSiegesClient({ seanceId, socketUrl }) {
           setSelectedSeats([]);
           selectedSeatsRef.current = [];
           selectedSeatKeysRef.current = new Set();
+          // Explicitly mark the released seat as available so it can be re-selected
+          if (action === "release") {
+            updateSeatStatuses([toggledSeat], "available", { keepSelected: false });
+          }
         } else {
           setMyReservation({
             reservationId: reservation.reservationId,

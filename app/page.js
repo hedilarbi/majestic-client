@@ -7,14 +7,16 @@ import PartenairesSection from "./components/PartenairesSection";
 import UpcomingSection from "./components/UpcomingSection";
 import { getPublishedActualites } from "./lib/actualites-api";
 import { getHomeData } from "./lib/home-api";
+import { getPublicPartners } from "./lib/partners-api";
 
 export const dynamic = "force-dynamic";
 
 export default async function Home() {
-  const [{ heroSlides, nowShowing, spectacles, upcoming, lastExpiredShow }, actualites] =
+  const [{ heroSlides, nowShowing, spectacles, upcoming, lastExpiredShow }, actualites, partners] =
     await Promise.all([
       getHomeData({ noCache: true }),
       getPublishedActualites({ noCache: true, limit: 3 }),
+      getPublicPartners({ noCache: true }),
     ]);
 
   return (
@@ -25,7 +27,7 @@ export default async function Home() {
         <SpectacleSection items={spectacles} lastExpiredItem={lastExpiredShow} />
         <UpcomingSection items={upcoming} />
         <ActualiteHomeSection items={actualites} />
-        <PartenairesSection />
+        <PartenairesSection items={partners} />
       </main>
     </div>
   );

@@ -4,7 +4,7 @@ import { RiArrowRightLine } from "react-icons/ri";
 
 import {
   formatActualiteDate,
-  getActualiteCoverImage,
+  getActualiteCardImage,
   getActualiteHref,
   getActualiteSummary,
 } from "@/app/lib/actualites-utils";
@@ -48,7 +48,7 @@ export default function ActualiteHomeSection({ items = [] }) {
               <article>
                 <div className="relative aspect-[16/10]">
                   <Image
-                    src={getActualiteCoverImage(item)}
+                    src={getActualiteCardImage(item)}
                     alt={item.title || "Actualité"}
                     fill
                     sizes="(min-width: 1024px) 30vw, 100vw"

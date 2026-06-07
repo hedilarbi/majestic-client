@@ -55,6 +55,9 @@ const buildPricingLookupKey = (name, price) => {
 const resolvePricingItemKey = (item, index) =>
   String(item?.id ?? item?.name ?? index);
 
+const isGuestTechnicalEmail = (value) =>
+  /^guest\.[a-f0-9]{24}@guest\.local$/i.test(String(value || "").trim());
+
 export default function ReservationCheckoutClient({ seanceId, socketUrl }) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -286,15 +289,29 @@ export default function ReservationCheckoutClient({ seanceId, socketUrl }) {
         if (!active) {
           return;
         }
-        const resolvedUserId = data?.user?._id || data?.user?.id || "";
-        const resolvedRole = data?.user?.role || "guest";
+        const user = data?.user || {};
+        const resolvedUserId = user?._id || user?.id || "";
+        const resolvedRole = user?.role || "guest";
         setUserId(String(resolvedUserId || ""));
         setUserRole(String(resolvedRole || "guest"));
         setUserEmailVerified(
-          typeof data?.user?.emailVerified === "boolean"
-            ? data.user.emailVerified
+          typeof user?.emailVerified === "boolean"
+            ? user.emailVerified
             : null,
         );
+
+        if (resolvedRole === "guest") {
+          const contact = user?.guestContact || {};
+          const email = contact.email || (
+            isGuestTechnicalEmail(user.email) ? "" : user.email
+          );
+
+          setGuestContact((current) => ({
+            firstName: current.firstName || user.firstName || contact.firstName || "",
+            lastName: current.lastName || user.lastName || contact.lastName || "",
+            email: current.email || email || "",
+          }));
+        }
       } catch (_error) {
 
         // noop
@@ -317,7 +334,12 @@ export default function ReservationCheckoutClient({ seanceId, socketUrl }) {
           if (!response.ok) return;
           const data = await response.json();
           if (active) {
-            setMySubscriptions(Array.isArray(data?.items) ? data.items : []);
+            const now = Date.now();
+            const validSubs = (Array.isArray(data?.items) ? data.items : []).filter((s) => {
+              if (!s.expiresAt) return true;
+              return new Date(s.expiresAt).getTime() >= now;
+            });
+            setMySubscriptions(validSubs);
           }
         } catch (e) {
           console.error("Failed to load subscriptions", e);
@@ -1610,7 +1632,7 @@ export default function ReservationCheckoutClient({ seanceId, socketUrl }) {
                   <option value="">Aucun abonnement (Paiement classique)</option>
                   {mySubscriptions.map(sub => (
                     <option key={sub.id || sub._id} value={sub.id || sub._id} className="bg-[#161e22]">
-                      {sub.subscriptionCode} — {sub.remainingCredits} crédits ({sub.allowedSeatType === 'normale' ? 'Sièges Standards' : 'Sièges VIP'})
+                      {sub.subscription?.name ? `${sub.subscription.name} — ` : ""}{sub.subscriptionCode} — {sub.remainingCredits} crédits ({sub.allowedSeatType === 'normale' ? 'Sièges Standards' : 'Sièges VIP'})
                     </option>
                   ))}
                 </select>

@@ -33,10 +33,31 @@ const TOKEN_COOKIE_OPTIONS = {
   path: "/",
 };
 
-const createGuestToken = async () => {
+const normalizeGuestContact = (value) => {
+  if (!value || typeof value !== "object") {
+    return null;
+  }
+
+  const firstName = typeof value.firstName === "string" ? value.firstName.trim() : "";
+  const lastName = typeof value.lastName === "string" ? value.lastName.trim() : "";
+  const email = typeof value.email === "string" ? value.email.trim().toLowerCase() : "";
+
+  if (!firstName && !lastName && !email) {
+    return null;
+  }
+
+  return { firstName, lastName, email };
+};
+
+const createGuestToken = async (contact) => {
+  const guestContact = normalizeGuestContact(contact);
   const response = await fetch(new URL("/guests", resolveApiBaseUrl()), {
     method: "POST",
-    headers: { Accept: "application/json" },
+    headers: {
+      Accept: "application/json",
+      ...(guestContact ? { "Content-Type": "application/json" } : {}),
+    },
+    body: guestContact ? JSON.stringify(guestContact) : undefined,
     cache: "no-store",
   });
   const data = await safeJson(response);
@@ -75,7 +96,7 @@ export async function POST(request) {
   let createdGuestToken = false;
 
   if (!token) {
-    token = await createGuestToken();
+    token = await createGuestToken(payload?.customerContact);
     createdGuestToken = Boolean(token);
   }
 
@@ -87,7 +108,7 @@ export async function POST(request) {
   let data = await safeJson(response);
 
   if (response.status === 401) {
-    const fallbackToken = await createGuestToken();
+    const fallbackToken = await createGuestToken(payload?.customerContact);
     if (fallbackToken) {
       token = fallbackToken;
       createdGuestToken = true;
