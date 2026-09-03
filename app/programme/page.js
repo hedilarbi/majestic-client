@@ -1,7 +1,9 @@
-import { getSessionsByDate } from "../lib/cinema-api";
+import {
+  getAvailableProgrammeDates,
+  getSessionsByDate,
+} from "../lib/cinema-api";
 import ProgrammePageClient from "./ProgrammePageClient";
 
-const DAYS_TO_SHOW = 10;
 const WEEKDAY_FORMATTER = new Intl.DateTimeFormat("fr-FR", {
   weekday: "short",
 });
@@ -38,33 +40,50 @@ const formatWeekday = (date) =>
 const formatMonth = (date) =>
   MONTH_FORMATTER.format(date).replace(".", "").toUpperCase();
 
-const buildDateOptions = (startDate, selectedKey) => {
-  const options = [];
-  for (let index = 0; index < DAYS_TO_SHOW; index += 1) {
-    const date = new Date(startDate);
-    date.setDate(startDate.getDate() + index);
-    const value = formatDateKey(date);
-    options.push({
-      value,
-      label: index === 0 ? "AUJ" : index === 1 ? "DEM" : formatWeekday(date),
-      day: String(date.getDate()),
-      month: formatMonth(date),
-      isActive: value === selectedKey,
-    });
+const buildDateOptions = (availableDateKeys, selectedKey, todayKey) => {
+  const tomorrow = parseDateParam(todayKey);
+  if (tomorrow) {
+    tomorrow.setDate(tomorrow.getDate() + 1);
   }
-  return options;
+  const tomorrowKey = tomorrow ? formatDateKey(tomorrow) : "";
+
+  return availableDateKeys.map((value) => {
+    const date = parseDateParam(value);
+
+    return {
+      value,
+      label:
+        value === todayKey
+          ? "AUJ"
+          : value === tomorrowKey
+            ? "DEM"
+            : date
+              ? formatWeekday(date)
+              : "",
+      day: date ? String(date.getDate()) : "",
+      month: date ? formatMonth(date) : "",
+      isActive: value === selectedKey,
+    };
+  });
 };
 
 export default async function CinemaPage({ searchParams }) {
   const resolvedParams = await searchParams;
   const today = new Date();
   const todayKey = formatDateKey(today);
+  const availableDateKeys = await getAvailableProgrammeDates(todayKey);
   const requestedDate = parseDateParam(resolvedParams?.date);
   const selectedDateKey = requestedDate
     ? formatDateKey(requestedDate)
     : todayKey;
-  const activeDateKey = selectedDateKey < todayKey ? todayKey : selectedDateKey;
-  const dateOptions = buildDateOptions(today, activeDateKey);
+  const requestedDateHasSessions = availableDateKeys.includes(selectedDateKey);
+  const activeDateKey =
+    requestedDateHasSessions || !availableDateKeys.length
+      ? selectedDateKey < todayKey
+        ? todayKey
+        : selectedDateKey
+      : availableDateKeys[0];
+  const dateOptions = buildDateOptions(availableDateKeys, activeDateKey, todayKey);
   const { events } = await getSessionsByDate(activeDateKey);
 
   return (
@@ -73,6 +92,7 @@ export default async function CinemaPage({ searchParams }) {
       events={events}
       activeDateKey={activeDateKey}
       todayKey={todayKey}
+      availableDateKeys={availableDateKeys}
     />
   );
 }

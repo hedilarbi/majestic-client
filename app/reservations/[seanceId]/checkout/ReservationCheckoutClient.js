@@ -394,7 +394,12 @@ export default function ReservationCheckoutClient({ seanceId, socketUrl }) {
   }, [refreshCheckout, seanceId]);
 
   useEffect(() => {
-    if (isLoading || errorMessage) {
+    if (
+      isLoading ||
+      errorMessage ||
+      submitState.status === "loading" ||
+      submitState.status === "success"
+    ) {
       return;
     }
 
@@ -413,7 +418,8 @@ export default function ReservationCheckoutClient({ seanceId, socketUrl }) {
     isLoading,
     redirectToPreviousOrHome,
     reservation?.reservationId,
-    reservation?.seats?.length]
+    reservation?.seats?.length,
+    submitState.status]
   );
 
   useEffect(() => {
@@ -506,6 +512,13 @@ export default function ReservationCheckoutClient({ seanceId, socketUrl }) {
     };
 
     const handleBooked = (payload) => {
+      const payloadUserId = payload?.userId ? String(payload.userId) : "";
+      const isCurrentUser = Boolean(
+        payloadUserId && userId && payloadUserId === String(userId)
+      );
+      if (isCurrentUser) {
+        return;
+      }
       if (!touchesCurrentReservation(payload)) {
         return;
       }
@@ -1258,6 +1271,7 @@ export default function ReservationCheckoutClient({ seanceId, socketUrl }) {
       redirectToVerifyEmail,
       router,
       safeSeats.length,
+      selectedSub,
       seanceId,
       totalSelectionCount]
 

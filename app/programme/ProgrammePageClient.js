@@ -58,6 +58,7 @@ export default function ProgrammePageClient({
   events = [],
   activeDateKey = "",
   todayKey = "",
+  availableDateKeys = [],
 }) {
   const router = useRouter();
   const [activeSession, setActiveSession] = useState(null);
@@ -136,7 +137,7 @@ export default function ProgrammePageClient({
           <div className="relative mb-6 flex flex-col items-end justify-between gap-4 md:mb-8 md:gap-6 md:flex-row">
             <div>
               <p className="mb-1 text-xs font-bold uppercase tracking-wider text-accent font-display md:mb-2 md:text-sm">
-                A l&apos;affiche cette semaine
+                A l&apos;affiche
               </p>
               <h3 className="text-2xl font-bold text-white drop-shadow-lg md:text-4xl lg:text-5xl font-display">
                 Selectionnez une date
@@ -146,48 +147,55 @@ export default function ProgrammePageClient({
               <CinemaCalendarButton
                 selectedDate={activeDateKey}
                 todayKey={todayKey}
+                availableDateKeys={availableDateKeys}
               />
             </div>
           </div>
           <div className="hide-scrollbar w-full overflow-x-auto pb-5 pt-3 md:pb-8 md:pt-4">
             <div className="flex min-w-max gap-3 px-1.5 md:gap-4 md:px-2">
-              {dateOptions.map((date) => (
-                <Link
-                  key={date.value}
-                  href={`/programme?date=${date.value}`}
-                  aria-current={date.isActive ? "date" : undefined}
-                  className={`group relative flex h-24 w-20 flex-col items-center justify-center rounded-2xl border transition-transform hover:-translate-y-1 md:h-32 md:w-24 ${
-                    date.isActive
-                      ? "border-accent bg-white/10 shadow-[0_0_15px_rgba(116,208,241,0.3)]"
-                      : "border-white/10 bg-white/5 hover:bg-white/10"
-                  }`}
-                >
-                  {date.isActive ? (
-                    <div className="absolute inset-0 -z-10 rounded-2xl bg-accent/10 blur-md" />
-                  ) : null}
-                  <span
-                    className={`mb-1 text-xs font-medium md:text-sm ${
+              {dateOptions.length ? (
+                dateOptions.map((date) => (
+                  <Link
+                    key={date.value}
+                    href={`/programme?date=${date.value}`}
+                    aria-current={date.isActive ? "date" : undefined}
+                    className={`group relative flex h-24 w-20 flex-col items-center justify-center rounded-2xl border transition-transform hover:-translate-y-1 md:h-32 md:w-24 ${
                       date.isActive
-                        ? "text-accent/80"
-                        : "text-white/40 group-hover:text-accent"
+                        ? "border-accent bg-white/10 shadow-[0_0_15px_rgba(116,208,241,0.3)]"
+                        : "border-white/10 bg-white/5 hover:bg-white/10"
                     }`}
                   >
-                    {date.label}
-                  </span>
-                  <span
-                    className={`mb-1 text-2xl font-bold md:text-3xl ${
-                      date.isActive
-                        ? "text-white"
-                        : "text-white/80 group-hover:text-white"
-                    }`}
-                  >
-                    {date.day}
-                  </span>
-                  <span className="text-[10px] font-medium text-white/40 md:text-xs">
-                    {date.month}
-                  </span>
-                </Link>
-              ))}
+                    {date.isActive ? (
+                      <div className="absolute inset-0 -z-10 rounded-2xl bg-accent/10 blur-md" />
+                    ) : null}
+                    <span
+                      className={`mb-1 text-xs font-medium md:text-sm ${
+                        date.isActive
+                          ? "text-accent/80"
+                          : "text-white/40 group-hover:text-accent"
+                      }`}
+                    >
+                      {date.label}
+                    </span>
+                    <span
+                      className={`mb-1 text-2xl font-bold md:text-3xl ${
+                        date.isActive
+                          ? "text-white"
+                          : "text-white/80 group-hover:text-white"
+                      }`}
+                    >
+                      {date.day}
+                    </span>
+                    <span className="text-[10px] font-medium text-white/40 md:text-xs">
+                      {date.month}
+                    </span>
+                  </Link>
+                ))
+              ) : (
+                <div className="rounded-2xl border border-white/10 bg-white/5 px-5 py-4 text-sm text-white/60 font-body">
+                  Aucune date avec séance disponible pour le moment.
+                </div>
+              )}
             </div>
           </div>
         </section>

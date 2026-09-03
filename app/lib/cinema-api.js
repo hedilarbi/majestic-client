@@ -5,6 +5,7 @@ const API_BASE_URL = RAW_API_BASE_URL.startsWith("http")
   ? RAW_API_BASE_URL
   : `http://${RAW_API_BASE_URL}`;
 const SESSIONS_BY_DATE_ENDPOINT = "/sessions/by-date";
+const SESSIONS_ENDPOINT = "/sessions";
 const FALLBACK_POSTER = "/images/logo.png";
 const REVALIDATE_SECONDS = 60;
 
@@ -62,6 +63,41 @@ const toMinutes = (time) => {
   const [hours, minutes] = time.split(":").map(Number);
   if (!Number.isFinite(hours) || !Number.isFinite(minutes)) return 0;
   return hours * 60 + minutes;
+};
+
+const getDateKey = (value) => {
+  if (!value) return "";
+
+  if (typeof value === "string") {
+    const match = value.match(/^(\d{4})-(\d{2})-(\d{2})/);
+    return match ? `${match[1]}-${match[2]}-${match[3]}` : "";
+  }
+
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "";
+
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+};
+
+const collectSessions = (payload) => {
+  const sessions = [];
+
+  if (Array.isArray(payload?.sessions)) {
+    sessions.push(...payload.sessions);
+  }
+
+  if (Array.isArray(payload?.data)) {
+    sessions.push(...payload.data);
+  }
+
+  if (Array.isArray(payload)) {
+    sessions.push(...payload);
+  }
+
+  return sessions;
 };
 
 const addSessionToEvent = (eventEntry, session, dateKey) => {
@@ -180,6 +216,45 @@ export async function getSessionsByDate(dateKey) {
   } catch (error) {
     console.error("Sessions by date fetch failed:", error);
     return { date: dateKey, events: [] };
+  } finally {
+    clearTimeout(timeoutId);
+  }
+}
+
+export async function getAvailableProgrammeDates(todayKey) {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 8000);
+
+  try {
+    const url = new URL(SESSIONS_ENDPOINT, API_BASE_URL);
+    const response = await fetch(url, {
+      method: "GET",
+      headers: { Accept: "application/json" },
+      next: { revalidate: REVALIDATE_SECONDS, tags: ["programme-dates"] },
+      signal: controller.signal,
+    });
+
+    if (!response.ok) {
+      throw new Error(`Sessions API error: ${response.status}`);
+    }
+
+    const payload = await response.json();
+    const dateKeys = new Set();
+
+    collectSessions(payload).forEach((session) => {
+      const status = String(session?.status || "").toLowerCase();
+      if (status && status !== "in_progress") return;
+
+      const dateKey = getDateKey(session?.date);
+      if (!dateKey || (todayKey && dateKey < todayKey)) return;
+
+      dateKeys.add(dateKey);
+    });
+
+    return Array.from(dateKeys).sort();
+  } catch (error) {
+    console.error("Programme dates fetch failed:", error);
+    return [];
   } finally {
     clearTimeout(timeoutId);
   }

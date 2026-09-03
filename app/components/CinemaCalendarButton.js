@@ -2,7 +2,11 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { MdCalendarMonth } from "react-icons/md";
+import {
+  MdCalendarMonth,
+  MdChevronLeft,
+  MdChevronRight,
+} from "react-icons/md";
 
 const WEEKDAY_LABELS = ["L", "M", "M", "J", "V", "S", "D"];
 
@@ -37,7 +41,24 @@ const formatMonthLabel = (date) => {
   return label.charAt(0).toUpperCase() + label.slice(1);
 };
 
-const buildCalendarDays = (baseDate, selectedKey, todayKey) => {
+const getMonthKey = (date) => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  return `${year}-${month}`;
+};
+
+const parseMonthKey = (monthKey) => {
+  const match = String(monthKey || "").match(/^(\d{4})-(\d{2})$/);
+  if (!match) return null;
+  return new Date(Number(match[1]), Number(match[2]) - 1, 1);
+};
+
+const buildCalendarDays = (
+  baseDate,
+  selectedKey,
+  todayKey,
+  availableDateSet,
+) => {
   const year = baseDate.getFullYear();
   const month = baseDate.getMonth();
   const firstDay = new Date(year, month, 1);
@@ -52,18 +73,25 @@ const buildCalendarDays = (baseDate, selectedKey, todayKey) => {
   for (let day = 1; day <= daysInMonth; day += 1) {
     const date = new Date(year, month, day);
     const key = toDateKey(date);
+    const isPast = todayKey ? key < todayKey : false;
+    const isAvailable = availableDateSet.has(key);
     days.push({
       day,
       key,
       isSelected: key === selectedKey,
-      isDisabled: todayKey ? key < todayKey : false,
+      isAvailable,
+      isDisabled: isPast || !isAvailable,
     });
   }
 
   return days;
 };
 
-export default function CinemaCalendarButton({ selectedDate, todayKey }) {
+export default function CinemaCalendarButton({
+  selectedDate,
+  todayKey,
+  availableDateKeys = [],
+}) {
   const router = useRouter();
   const containerRef = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
@@ -71,13 +99,56 @@ export default function CinemaCalendarButton({ selectedDate, todayKey }) {
     () => parseDateKey(selectedDate) || parseDateKey(todayKey) || new Date(),
     [selectedDate, todayKey],
   );
+  const [visibleMonthDate, setVisibleMonthDate] = useState(activeDate);
   const selectedKey = selectedDate || toDateKey(activeDate);
-  const monthLabel = formatMonthLabel(activeDate);
+  const monthLabel = formatMonthLabel(visibleMonthDate);
+  const availableDateSet = useMemo(
+    () =>
+      new Set(
+        (Array.isArray(availableDateKeys) ? availableDateKeys : []).filter(
+          (dateKey) => parseDateKey(dateKey),
+        ),
+      ),
+    [availableDateKeys],
+  );
+  const availableMonthKeys = useMemo(
+    () =>
+      Array.from(
+        new Set(
+          Array.from(availableDateSet)
+            .map((dateKey) => parseDateKey(dateKey))
+            .filter(Boolean)
+            .map(getMonthKey),
+        ),
+      ).sort(),
+    [availableDateSet],
+  );
+  const visibleMonthKey = getMonthKey(visibleMonthDate);
+  const visibleMonthIndex = availableMonthKeys.indexOf(visibleMonthKey);
+  const previousMonthKey =
+    visibleMonthIndex > 0
+      ? availableMonthKeys[visibleMonthIndex - 1]
+      : availableMonthKeys.filter((monthKey) => monthKey < visibleMonthKey).at(-1);
+  const nextMonthKey =
+    visibleMonthIndex >= 0 && visibleMonthIndex < availableMonthKeys.length - 1
+      ? availableMonthKeys[visibleMonthIndex + 1]
+      : availableMonthKeys.find((monthKey) => monthKey > visibleMonthKey);
+  const hasAvailableDates = availableDateSet.size > 0;
 
   const calendarDays = useMemo(
-    () => buildCalendarDays(activeDate, selectedKey, todayKey),
-    [activeDate, selectedKey, todayKey],
+    () =>
+      buildCalendarDays(
+        visibleMonthDate,
+        selectedKey,
+        todayKey,
+        availableDateSet,
+      ),
+    [availableDateSet, selectedKey, todayKey, visibleMonthDate],
   );
+
+  useEffect(() => {
+    setVisibleMonthDate(activeDate);
+  }, [activeDate]);
 
   useEffect(() => {
     if (!isOpen) return undefined;
@@ -98,8 +169,15 @@ export default function CinemaCalendarButton({ selectedDate, todayKey }) {
   }, [isOpen]);
 
   const handleSelect = (dateKey) => {
+    if (!availableDateSet.has(dateKey)) return;
     router.push(`/programme?date=${dateKey}`);
     setIsOpen(false);
+  };
+
+  const handleMonthChange = (monthKey) => {
+    const nextDate = parseMonthKey(monthKey);
+    if (!nextDate) return;
+    setVisibleMonthDate(nextDate);
   };
 
   return (
@@ -115,8 +193,28 @@ export default function CinemaCalendarButton({ selectedDate, todayKey }) {
       </button>
       {isOpen ? (
         <div className="absolute right-0 top-11 z-30 w-72 rounded-2xl border border-white/10 bg-black/90 p-4 shadow-2xl backdrop-blur-xl md:top-12 md:w-80 md:p-6">
-          <div className="mb-4 text-center text-base font-semibold text-white font-display md:text-lg">
-            {monthLabel}
+          <div className="mb-4 flex items-center justify-between gap-3">
+            <button
+              type="button"
+              disabled={!previousMonthKey}
+              onClick={() => handleMonthChange(previousMonthKey)}
+              className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/10 text-white/70 transition hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-30"
+              aria-label="Mois précédent avec séances"
+            >
+              <MdChevronLeft className="h-5 w-5" />
+            </button>
+            <div className="text-center text-base font-semibold text-white font-display md:text-lg">
+              {monthLabel}
+            </div>
+            <button
+              type="button"
+              disabled={!nextMonthKey}
+              onClick={() => handleMonthChange(nextMonthKey)}
+              className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/10 text-white/70 transition hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-30"
+              aria-label="Mois suivant avec séances"
+            >
+              <MdChevronRight className="h-5 w-5" />
+            </button>
           </div>
           <div className="grid grid-cols-7 gap-2 text-center text-xs font-semibold uppercase text-white/40 font-display">
             {WEEKDAY_LABELS.map((label, index) => (
@@ -137,7 +235,9 @@ export default function CinemaCalendarButton({ selectedDate, todayKey }) {
                   className={`flex h-9 w-9 items-center justify-center rounded-full text-sm font-semibold transition ${
                     day.isSelected
                       ? "bg-accent text-black"
-                      : "text-white/70 hover:bg-white/10"
+                      : day.isAvailable
+                        ? "text-white/80 hover:bg-white/10"
+                        : "text-white/25"
                   } ${day.isDisabled ? "cursor-not-allowed opacity-40" : ""}`}
                 >
                   {day.day}
@@ -145,6 +245,11 @@ export default function CinemaCalendarButton({ selectedDate, todayKey }) {
               );
             })}
           </div>
+          {!hasAvailableDates ? (
+            <p className="mt-4 text-center text-xs text-white/50 font-body">
+              Aucune date avec séance disponible.
+            </p>
+          ) : null}
         </div>
       ) : null}
     </div>
