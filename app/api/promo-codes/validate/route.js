@@ -30,7 +30,8 @@ const TOKEN_COOKIE_OPTIONS = {
   httpOnly: true,
   sameSite: "lax",
   secure: process.env.NODE_ENV === "production",
-  path: "/",
+  path: "/",,
+  maxAge: 60 * 60 * 24, // 24 hours
 };
 
 const createGuestToken = async () => {
