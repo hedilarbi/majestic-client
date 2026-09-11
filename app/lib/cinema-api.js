@@ -151,12 +151,18 @@ export async function getSessionsByDate(dateKey) {
     return { date: "", events: [] };
   }
 
+  const todayKey = getDateKey(new Date());
+  if (todayKey && dateKey < todayKey) {
+    return { date: dateKey, events: [] };
+  }
+
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), 8000);
 
   try {
     const url = new URL(SESSIONS_BY_DATE_ENDPOINT, API_BASE_URL);
     url.searchParams.set("date", dateKey);
+    url.searchParams.set("status", "in_progress");
     const response = await fetch(url, {
       method: "GET",
       headers: { Accept: "application/json" },

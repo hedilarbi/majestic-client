@@ -76,8 +76,8 @@ export default function HeroSection({ slides = [] }) {
                       {slide.titleHighlight}
                     </span>
                   </h1>
-                  <p className="max-w-lg text-base leading-relaxed text-white/80 sm:text-lg font-body line-clamp-2 sm:line-clamp-none">
-                    {slide.subtitle}
+                  <p className="line-clamp-3 max-w-lg text-base leading-relaxed text-white/80 sm:text-lg font-body">
+                    {slide.synopsis}
                   </p>
                   <div className="flex flex-wrap gap-4 pt-4">
                     <Link

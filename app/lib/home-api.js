@@ -9,7 +9,7 @@ const FALLBACK_POSTER = "/images/logo.png";
 const FALLBACK_HERO = {
   titleLead: "À LA UNE",
   titleHighlight: "EXPÉRIENCE CINÉMA",
-  subtitle:
+  synopsis:
     "Plongez dans les derniers blockbusters avec un son et une image de qualité supérieure. Vivez le cinéma comme jamais auparavant.",
   image:
     "https://lh3.googleusercontent.com/aida-public/AB6AXuBu1xY2sBF4hbn7uFPA6T-PAZeX0kYTpSgUCe9R7afddNmtMYYcyLraIYSGXNGvGbErCVjRkf7Mq5_8jGOr4hwF9uJRN-qhdXWD2iOW_kniXonNiLqvWTFHOkpdLuH4HzR1JTHD4d9RoI0CW1JW-hVbKcw7tulYYLz7TfqeBeYYPRfvAosp773eDm78Di5Y9YTh-aFPdkJASFoakwlqwtUuJyNOfg1WppifzLRn9OAVlKpak-AabL9FoIWTGYWYMz0yPqAHCNpopC8",
@@ -71,15 +71,14 @@ const toHeroSlides = (slides = []) => {
         (typeof slide.eventId === "string" ? slide.eventId : undefined);
       const title =
         slide.title || eventData?.name || FALLBACK_HERO.titleHighlight;
-      const subtitle =
-        slide.subtitle || eventData?.description || FALLBACK_HERO.subtitle;
+      const synopsis = eventData?.description || FALLBACK_HERO.synopsis;
       const image = slide.poster || FALLBACK_HERO.image;
       const mobileImage = eventData?.poster || image;
 
       return {
         id: slide._id,
         titleHighlight: title,
-        subtitle,
+        synopsis,
         image,
         mobileImage,
         imageAlt: title ? `Affiche de ${title}` : FALLBACK_HERO.imageAlt,
