@@ -162,7 +162,6 @@ export async function getSessionsByDate(dateKey) {
   try {
     const url = new URL(SESSIONS_BY_DATE_ENDPOINT, API_BASE_URL);
     url.searchParams.set("date", dateKey);
-    url.searchParams.set("status", "in_progress");
     const response = await fetch(url, {
       method: "GET",
       headers: { Accept: "application/json" },
@@ -249,7 +248,10 @@ export async function getAvailableProgrammeDates(todayKey) {
 
     collectSessions(payload).forEach((session) => {
       const status = String(session?.status || "").toLowerCase();
-      if (status && status !== "in_progress") return;
+      if (
+        status &&
+        !["pending", "scheduled", "in_progress"].includes(status)
+      ) return;
 
       const dateKey = getDateKey(session?.date);
       if (!dateKey || (todayKey && dateKey < todayKey)) return;
