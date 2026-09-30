@@ -34,25 +34,38 @@ const normalizeSubscriptions = (items) =>
     (item) => item && item.isActive !== false && isFutureDate(item.expirationDate),
   );
 
-const normalizePromoCodes = (items) =>
+const normalizePromoCodes = (items, { allowPrivate = false } = {}) =>
   (Array.isArray(items) ? items : []).filter(
     (item) =>
       item &&
       item.isActive !== false &&
-      item.availability !== "private" &&
+      (allowPrivate || item.availability !== "private") &&
       isFutureDate(item.expiresAt),
   );
 
-export const getPublicOffers = async () => {
+export const getPublicOffers = async ({ token = "" } = {}) => {
   const baseUrl = resolveApiBaseUrl();
 
-  const response = await fetch(`${baseUrl}/offers`, {
-    method: "GET",
-    headers: { Accept: "application/json" },
-    cache: "no-store",
-  });
+  const promoHeaders = { Accept: "application/json" };
+  if (token) {
+    promoHeaders.Authorization = `Bearer ${token}`;
+  }
+
+  const [response, promoResponse] = await Promise.all([
+    fetch(`${baseUrl}/offers`, {
+      method: "GET",
+      headers: { Accept: "application/json" },
+      cache: "no-store",
+    }),
+    fetch(`${baseUrl}/promo-codes/public`, {
+      method: "GET",
+      headers: promoHeaders,
+      cache: "no-store",
+    }),
+  ]);
 
   const data = await safeJson(response);
+  const promoData = await safeJson(promoResponse);
 
   if (!response.ok) {
     return {
@@ -64,7 +77,9 @@ export const getPublicOffers = async () => {
 
   return {
     subscriptions: normalizeSubscriptions(data?.subscriptions),
-    promoCodes: normalizePromoCodes(data?.promoCodes),
+    promoCodes: promoResponse.ok
+      ? normalizePromoCodes(promoData?.promoCodes, { allowPrivate: Boolean(token) })
+      : normalizePromoCodes(data?.promoCodes),
     error: "",
   };
 };

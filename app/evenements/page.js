@@ -43,7 +43,7 @@ export default async function EvenementsPage({ searchParams }) {
     allEventsResponse?.prochainement ?? prochainement ?? [];
   const allExpiredShows = allEventsResponse?.expiredShows ?? expiredShows ?? [];
   const heroEntry = aLaffiche?.[0];
-  const heroEvent = heroEntry?.event || events?.[0];
+  const heroEvent = heroEntry ? heroEntry.event : events?.[0];
   const heroImageDesktop = heroEntry?.poster || heroEvent?.image;
   const heroImageMobile =
     heroEntry?.eventPoster || heroEvent?.image || heroEntry?.poster;
@@ -106,16 +106,14 @@ export default async function EvenementsPage({ searchParams }) {
               {heroSubtitle}
             </p>
             <div className="mt-2 flex flex-wrap gap-3">
-              <Link
-                className="flex h-11 items-center gap-2 rounded-lg bg-accent px-4 text-sm font-semibold text-black shadow-[0_0_20px_rgba(116,208,241,0.4)] transition-all hover:-translate-y-0.5 hover:brightness-110 hover:shadow-[0_0_30px_rgba(116,208,241,0.6)] sm:h-12 sm:px-6 sm:text-base font-display"
-                href={
-                  heroEventId
-                    ? `/evenements/${heroEventId}`
-                    : `/evenements?type=${type}`
-                }
-              >
-                Réserver
-              </Link>
+              {heroEventId ? (
+                <Link
+                  className="flex h-11 items-center gap-2 rounded-lg bg-accent px-4 text-sm font-semibold text-black shadow-[0_0_20px_rgba(116,208,241,0.4)] transition-all hover:-translate-y-0.5 hover:brightness-110 hover:shadow-[0_0_30px_rgba(116,208,241,0.6)] sm:h-12 sm:px-6 sm:text-base font-display"
+                  href={`/evenements/${heroEventId}`}
+                >
+                  Réserver
+                </Link>
+              ) : null}
               <TrailerModalButton
                 trailerLink={heroTrailerLink}
                 title={heroTitle}
