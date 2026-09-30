@@ -96,6 +96,37 @@ body {
   background-attachment: fixed;
   color: var(--foreground);
   font-family: var(--font-secondary);
+  min-width: 320px;
+  overflow-x: hidden;
+}
+
+html {
+  overflow-x: hidden;
+}
+
+/* Tablet baseline: keep media, forms and long labels inside their containers. */
+img,
+video,
+iframe {
+  max-width: 100%;
+}
+
+input,
+select,
+textarea {
+  min-width: 0;
+  max-width: 100%;
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  body {
+    background-attachment: scroll;
+  }
+
+  button,
+  a {
+    -webkit-tap-highlight-color: transparent;
+  }
 }
 
 h1,

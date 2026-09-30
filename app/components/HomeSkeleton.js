@@ -9,7 +9,7 @@ export default function HomeSkeleton() {
         <div className="mx-auto flex h-16 items-center justify-between px-10 sm:px-12 lg:px-20">
           <div className="flex items-center gap-8">
             <div className="h-8 w-32 rounded-full bg-white/10 animate-pulse" />
-            <div className="hidden gap-6 md:flex">
+            <div className="hidden gap-6 lg:flex">
               <div className="h-3 w-16 rounded-full bg-white/10 animate-pulse" />
               <div className="h-3 w-20 rounded-full bg-white/10 animate-pulse" />
               <div className="h-3 w-24 rounded-full bg-white/10 animate-pulse" />
@@ -44,11 +44,11 @@ export default function HomeSkeleton() {
               <div className="h-6 w-48 rounded-full bg-white/10 animate-pulse" />
               <div className="h-4 w-64 rounded-full bg-white/10 animate-pulse" />
             </div>
-            <div className="grid grid-cols-2 gap-6 md:grid-cols-4 lg:grid-cols-5">
+            <div className="hide-scrollbar flex gap-6 overflow-hidden pb-8">
               {posterSlots.map((_, index) => (
                 <div
                   key={`poster-${index}`}
-                  className="aspect-[2/3] rounded-lg bg-white/10 animate-pulse"
+                  className="aspect-[2/3] w-[calc((100%_-_3rem)/2.25)] flex-none rounded-lg bg-white/10 animate-pulse md:w-[calc((100%_-_6rem)/4.25)] xl:w-[calc((100%_-_7.5rem)/5.2)]"
                 />
               ))}
             </div>
@@ -61,11 +61,11 @@ export default function HomeSkeleton() {
               <div className="h-6 w-40 rounded-full bg-white/10 animate-pulse" />
               <div className="h-4 w-56 rounded-full bg-white/10 animate-pulse" />
             </div>
-            <div className="hide-scrollbar flex gap-6 overflow-x-auto pb-8">
+            <div className="hide-scrollbar flex gap-6 overflow-hidden pb-8">
               {showSlots.map((_, index) => (
                 <div
                   key={`show-${index}`}
-                  className="h-[420px] w-[280px] flex-none rounded-xl bg-white/10 animate-pulse"
+                  className="aspect-[2/3] w-[calc((100%_-_3rem)/2.25)] flex-none rounded-xl bg-white/10 animate-pulse md:w-[calc((100%_-_6rem)/4.25)] xl:w-[calc((100%_-_7.5rem)/5.2)]"
                 />
               ))}
             </div>
@@ -75,11 +75,11 @@ export default function HomeSkeleton() {
         <section className="w-full py-4">
           <div className="mx-auto px-10 sm:px-12 lg:px-20">
             <div className="mb-8 h-6 w-44 rounded-full bg-white/10 animate-pulse" />
-            <div className="grid grid-cols-2 gap-6 md:grid-cols-4 lg:grid-cols-5">
+            <div className="hide-scrollbar flex gap-6 overflow-hidden pb-8">
               {upcomingSlots.map((_, index) => (
                 <div
                   key={`upcoming-${index}`}
-                  className="aspect-[2/3] rounded-xl bg-white/10 animate-pulse"
+                  className="aspect-[2/3] w-[calc((100%_-_3rem)/2.25)] flex-none rounded-xl bg-white/10 animate-pulse md:w-[calc((100%_-_6rem)/4.25)] xl:w-[calc((100%_-_7.5rem)/5.2)]"
                 />
               ))}
             </div>

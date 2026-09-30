@@ -1,6 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
-import { MdArrowBack, MdArrowForward } from "react-icons/md";
+import { MdArrowForward } from "react-icons/md";
+import HomeHorizontalCarousel from "./HomeHorizontalCarousel";
+
+const carouselItemClass =
+  "w-[calc((100%_-_3rem)/2.25)] flex-none snap-start md:w-[calc((100%_-_6rem)/4.25)] xl:w-[calc((100%_-_7.5rem)/5.2)]";
 
 export default function SpectacleSection({ items = [], lastExpiredItem = null }) {
   if (!items.length && !lastExpiredItem) return null;
@@ -17,20 +21,6 @@ export default function SpectacleSection({ items = [], lastExpiredItem = null })
             <p className="mt-2 text-white/60 font-body">
               Les spectacles incontournables du moment.
             </p>
-          </div>
-          <div className="hidden gap-2 sm:flex">
-            <button
-              aria-label="Voir la liste précédente"
-              className="rounded-full border border-white/10 p-2 text-white transition-colors hover:bg-white/5"
-            >
-              <MdArrowBack className="h-5 w-5" />
-            </button>
-            <button
-              aria-label="Voir la liste suivante"
-              className="rounded-full border border-white/10 p-2 text-white transition-colors hover:bg-white/5"
-            >
-              <MdArrowForward className="h-5 w-5" />
-            </button>
           </div>
         </div>
         {!items.length && lastExpiredItem ? (
@@ -61,12 +51,12 @@ export default function SpectacleSection({ items = [], lastExpiredItem = null })
             </div>
           </div>
         ) : (
-          <div className="hide-scrollbar flex snap-x snap-mandatory gap-6 overflow-x-auto pb-8">
+          <HomeHorizontalCarousel label="les spectacles">
             {items.map((show) => (
               <Link
                 key={show.id ?? show.title}
                 href={`/evenements/${show.id}`}
-                className="group relative flex-none w-[280px] snap-start overflow-hidden rounded-xl aspect-[2/3] cursor-pointer transition-all duration-300 hover:-translate-y-2"
+                className={`group relative overflow-hidden rounded-xl aspect-[2/3] cursor-pointer transition-all duration-300 hover:-translate-y-2 ${carouselItemClass}`}
                 aria-label={`Voir ${show.title}`}
               >
                 <Image
@@ -96,7 +86,7 @@ export default function SpectacleSection({ items = [], lastExpiredItem = null })
                 </div>
               </Link>
             ))}
-          </div>
+          </HomeHorizontalCarousel>
         )}
       </div>
     </section>

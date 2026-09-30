@@ -176,7 +176,7 @@ export default function SiteHeader() {
     <header className="sticky top-0 z-50 w-full border-b border-white/5 bg-black/80 backdrop-blur-md">
       <nav
         aria-label="Navigation principale"
-        className="mx-auto flex md:h-24 h-16 items-center justify-between px-10 sm:px-12 lg:px-20"
+        className="mx-auto flex h-16 items-center justify-between px-5 sm:px-8 xl:h-24 xl:px-20"
       >
         <div className="flex items-center gap-8">
           <Link className="flex items-center gap-2" href="/">
@@ -185,11 +185,11 @@ export default function SiteHeader() {
               alt="Lumière Cinéma"
               width={140}
               height={40}
-              className="md:h-14 w-auto h-10"
+              className="h-10 w-auto xl:h-14"
               priority
             />
           </Link>
-          <div className="hidden items-center gap-6 md:flex">
+          <div className="hidden items-center gap-6 xl:flex">
             {navLinks.map((link) => {
               const isActive = isLinkActive(link.href);
               return (
@@ -221,7 +221,7 @@ export default function SiteHeader() {
             <>
               <Link
                 href="/profil"
-                className="hidden items-center justify-center rounded-full border border-white/20 px-5 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-white/80 transition-all hover:border-accent hover:text-accent md:inline-flex"
+                className="hidden items-center justify-center rounded-full border border-white/20 px-5 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-white/80 transition-all hover:border-accent hover:text-accent xl:inline-flex"
                 aria-label="Mon compte"
               >
                 Mon compte
@@ -230,7 +230,7 @@ export default function SiteHeader() {
                 type="button"
                 onClick={handleLogout}
                 disabled={isLoggingOut}
-                className="hidden items-center justify-center rounded-full border border-red-500/40 bg-red-500/10 px-5 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-red-200 transition-all hover:border-red-400 hover:bg-red-500/15 hover:text-white md:inline-flex disabled:cursor-not-allowed disabled:opacity-60"
+                className="hidden items-center justify-center rounded-full border border-red-500/40 bg-red-500/10 px-5 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-red-200 transition-all hover:border-red-400 hover:bg-red-500/15 hover:text-white xl:inline-flex disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {isLoggingOut ? "Déconnexion..." : "Déconnexion"}
               </button>
@@ -239,20 +239,20 @@ export default function SiteHeader() {
             <>
               <Link
                 href="/inscription"
-                className="hidden rounded-full bg-accent px-6 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-black shadow-[0_0_20px_rgba(116,208,241,0.35)] transition-all hover:brightness-110 md:inline-flex"
+                className="hidden rounded-full bg-accent px-6 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-black shadow-[0_0_20px_rgba(116,208,241,0.35)] transition-all hover:brightness-110 xl:inline-flex"
               >
                 Inscription
               </Link>
               <Link
                 href="/connexion"
-                className="hidden rounded-full border border-white/20 px-6 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-white/80 transition-all hover:border-accent hover:text-accent hover:shadow-[0_0_15px_rgba(116,208,241,0.3)] md:inline-flex"
+                className="hidden rounded-full border border-white/20 px-6 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-white/80 transition-all hover:border-accent hover:text-accent hover:shadow-[0_0_15px_rgba(116,208,241,0.3)] xl:inline-flex"
               >
                 Connexion
               </Link>
             </>
           )}
           <button
-            className="inline-flex items-center justify-center rounded-full border border-white/20 p-2 text-white/80 transition-all hover:border-accent hover:text-accent md:hidden"
+            className="inline-flex items-center justify-center rounded-full border border-white/20 p-2 text-white/80 transition-all hover:border-accent hover:text-accent xl:hidden"
             type="button"
             aria-label="Ouvrir le menu"
             aria-expanded={isMenuOpen}
@@ -266,14 +266,14 @@ export default function SiteHeader() {
       {isMenuOpen && typeof document !== "undefined"
         ? createPortal(
             <div
-              className="fixed inset-0 z-50 md:hidden"
+              className="fixed inset-0 z-50 xl:hidden"
               role="dialog"
               aria-modal="true"
               onClick={() => setIsMenuOpen(false)}
             >
               <div className="fixed inset-0 bg-black/80" />
               <div
-                className="fixed right-0 top-0 flex h-screen w-[75vw] flex-col border-l border-white/10 bg-black p-6 shadow-2xl"
+                className="fixed right-0 top-0 flex h-dvh w-[min(88vw,430px)] flex-col overflow-y-auto border-l border-white/10 bg-black p-6 shadow-2xl sm:p-8"
                 onClick={(event) => event.stopPropagation()}
               >
                 <div className="mb-8 flex items-center justify-between">

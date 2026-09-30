@@ -25,14 +25,21 @@ export default function ActualiteTrailerCard({ item }) {
           </span>
         </div>
 
-        <div className="mt-5 flex flex-col gap-8 lg:grid lg:grid-cols-[minmax(0,1fr)_320px]">
-          <div>
-            <h2 className="text-2xl font-semibold text-white sm:text-3xl font-display">
+        <div className="mt-5 flex min-w-0 flex-col gap-8 lg:grid lg:grid-cols-[minmax(0,1fr)_320px]">
+          <div className="min-w-0 overflow-hidden">
+            <h2 className="wrap-break-word text-2xl font-semibold text-white sm:text-3xl font-display">
               {item.title}
             </h2>
-            <p className="mt-4 max-w-2xl text-sm leading-7 text-white/65 sm:text-base">
+            <p className="mt-4 max-w-2xl wrap-anywhere text-sm leading-7 text-white/65 sm:text-base">
               {getActualiteSummary(item)}
             </p>
+
+            {item.contentHtml ? (
+              <div
+                className="prose prose-invert mt-6 max-w-none wrap-anywhere text-sm leading-7 text-white/75 [&_a]:text-accent [&_a]:underline [&_h2]:mt-6 [&_h2]:text-2xl [&_h2]:font-semibold [&_h2]:text-white [&_h3]:mt-5 [&_h3]:text-xl [&_h3]:font-semibold [&_h3]:text-white [&_li]:ml-5 [&_li]:list-disc [&_p]:text-white/75 sm:text-base"
+                dangerouslySetInnerHTML={{ __html: item.contentHtml }}
+              />
+            ) : null}
 
             {embedUrl ? (
               <div className="mt-8 overflow-hidden rounded-[1.6rem] border border-white/10 bg-black/50">

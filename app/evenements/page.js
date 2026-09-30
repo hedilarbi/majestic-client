@@ -102,7 +102,7 @@ export default async function EvenementsPage({ searchParams }) {
             <div className="text-sm text-white/70 sm:text-base font-body">
               {heroMeta}
             </div>
-            <p className="max-w-lg text-sm leading-relaxed text-white/70 sm:text-lg font-body line-clamp-4 sm:line-clamp-none">
+            <p className="line-clamp-3 max-w-lg text-sm leading-relaxed text-white/70 sm:text-lg font-body">
               {heroSubtitle}
             </p>
             <div className="mt-2 flex flex-wrap gap-3">

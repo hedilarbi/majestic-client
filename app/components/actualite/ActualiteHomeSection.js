@@ -43,9 +43,9 @@ export default function ActualiteHomeSection({ items = [] }) {
             <Link
               key={item.id}
               href={getActualiteHref(item)}
-              className="group block overflow-hidden rounded-[1.8rem] border border-white/10 bg-white/5 shadow-[0_20px_60px_rgba(0,0,0,0.25)] backdrop-blur-xl transition hover:border-primary/30 hover:bg-white/[0.07]"
+              className="group block h-full overflow-hidden rounded-[1.8rem] border border-white/10 bg-white/5 shadow-[0_20px_60px_rgba(0,0,0,0.25)] backdrop-blur-xl transition hover:border-primary/30 hover:bg-white/[0.07]"
             >
-              <article>
+              <article className="flex h-full flex-col">
                 <div className="relative aspect-[16/10]">
                   <Image
                     src={getActualiteCardImage(item)}
@@ -56,17 +56,17 @@ export default function ActualiteHomeSection({ items = [] }) {
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
                 </div>
-                <div className="space-y-4 p-6">
-                  <div className="flex flex-wrap items-center gap-3">
+                <div className="flex h-64 flex-col gap-4 p-6">
+                  <div className="flex h-7 shrink-0 items-center gap-3 overflow-hidden">
                     <ActualiteTypeBadge type={item.type} />
-                    <span className="text-[11px] font-semibold uppercase tracking-[0.22em] text-white/40">
+                    <span className="truncate whitespace-nowrap text-[11px] font-semibold uppercase tracking-[0.22em] text-white/40">
                       {formatActualiteDate(item.createdAt)}
                     </span>
                   </div>
-                  <h3 className="text-xl font-semibold text-white font-display transition group-hover:text-accent">
+                  <h3 className="line-clamp-2 min-h-12 text-xl font-semibold text-white font-display transition group-hover:text-accent">
                     {item.title}
                   </h3>
-                  <p className="line-clamp-4 text-sm leading-7 text-white/60">
+                  <p className="line-clamp-3 text-sm leading-7 text-white/60">
                     {getActualiteSummary(item)}
                   </p>
                 </div>

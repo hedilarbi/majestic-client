@@ -62,7 +62,7 @@ export default function ActualiteFormQuestionField({
         />
       ) : null}
 
-      {question?.type === "text" || question?.type === "email" || question?.type === "number" ? (
+      {question?.type === "text" || question?.type === "email" || question?.type === "number" || question?.type === "date" ? (
         <input
           type={question.type}
           value={typeof value === "string" ? value : ""}

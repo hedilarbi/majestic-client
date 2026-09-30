@@ -5,7 +5,7 @@ export default function ActualiteTypeBadge({ type }) {
 
   return (
     <span
-      className={`inline-flex rounded-full border px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.28em] ${meta.accentClass}`}
+      className={`inline-flex shrink-0 whitespace-nowrap rounded-full border px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.28em] ${meta.accentClass}`}
     >
       {meta.label}
     </span>

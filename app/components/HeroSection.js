@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -15,6 +15,11 @@ const AUTOPLAY_DELAY = 7000;
 
 export default function HeroSection({ slides = [] }) {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [dragOffset, setDragOffset] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const sliderRef = useRef(null);
+  const gestureRef = useRef(null);
+  const didSwipeRef = useRef(false);
   const slideCount = slides.length;
   const safeIndex = slideCount > 0 ? Math.min(activeIndex, slideCount - 1) : 0;
 
@@ -35,12 +40,92 @@ export default function HeroSection({ slides = [] }) {
     setActiveIndex((current) => (current + 1) % slideCount);
   };
 
+  const resetGesture = () => {
+    gestureRef.current = null;
+    setDragOffset(0);
+    setIsDragging(false);
+  };
+
+  const handlePointerDown = (event) => {
+    if (
+      slideCount <= 1 ||
+      event.pointerType === "mouse" ||
+      !window.matchMedia("(max-width: 1279px)").matches
+    ) {
+      return;
+    }
+
+    gestureRef.current = {
+      pointerId: event.pointerId,
+      startX: event.clientX,
+      startY: event.clientY,
+      horizontal: false,
+    };
+    didSwipeRef.current = false;
+    event.currentTarget.setPointerCapture(event.pointerId);
+  };
+
+  const handlePointerMove = (event) => {
+    const gesture = gestureRef.current;
+    if (!gesture || gesture.pointerId !== event.pointerId) return;
+
+    const deltaX = event.clientX - gesture.startX;
+    const deltaY = event.clientY - gesture.startY;
+
+    if (!gesture.horizontal) {
+      if (Math.abs(deltaY) > Math.abs(deltaX) && Math.abs(deltaY) > 8) {
+        resetGesture();
+        return;
+      }
+      if (Math.abs(deltaX) < 8) return;
+      gesture.horizontal = true;
+      setIsDragging(true);
+    }
+
+    setDragOffset(deltaX);
+  };
+
+  const handlePointerEnd = (event) => {
+    const gesture = gestureRef.current;
+    if (!gesture || gesture.pointerId !== event.pointerId) return;
+
+    const deltaX = event.clientX - gesture.startX;
+    const threshold = Math.min(100, (sliderRef.current?.clientWidth || 320) * 0.15);
+
+    if (gesture.horizontal && Math.abs(deltaX) >= threshold) {
+      didSwipeRef.current = true;
+      if (deltaX < 0) handleNext();
+      else handlePrev();
+    }
+
+    resetGesture();
+  };
+
+  const preventClickAfterSwipe = (event) => {
+    if (!didSwipeRef.current) return;
+    event.preventDefault();
+    event.stopPropagation();
+    didSwipeRef.current = false;
+  };
+
   return (
     <section className="relative w-full">
-      <div className="relative h-[85vh] overflow-hidden">
+      <div
+        ref={sliderRef}
+        className="relative h-[85vh] touch-pan-y overflow-hidden select-none xl:select-auto"
+        onClickCapture={preventClickAfterSwipe}
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerEnd}
+        onPointerCancel={resetGesture}
+      >
         <div
-          className="flex h-full transition-transform duration-700 ease-[cubic-bezier(0.4,0,0.2,1)]"
-          style={{ transform: `translateX(-${safeIndex * 100}%)` }}
+          className={`flex h-full ease-[cubic-bezier(0.4,0,0.2,1)] ${
+            isDragging ? "transition-none" : "transition-transform duration-700"
+          }`}
+          style={{
+            transform: `translateX(calc(-${safeIndex * 100}% + ${dragOffset}px))`,
+          }}
         >
           {slides.map((slide, index) => (
             <article

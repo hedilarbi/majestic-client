@@ -13,7 +13,7 @@ import ActualiteTypeBadge from "./ActualiteTypeBadge";
 
 const CTA_LABELS = {
   article: "Lire l'article",
-  trailer: "Voir la bande-annonce",
+  trailer: "Voir la vidéo",
   form: "Ouvrir le formulaire",
 };
 
@@ -23,10 +23,10 @@ export default function ActualiteListCard({ item }) {
   return (
     <Link
       href={href}
-      className="group block overflow-hidden rounded-[2rem] border border-white/10 bg-white/5 shadow-[0_30px_90px_rgba(0,0,0,0.28)] backdrop-blur-2xl transition hover:border-primary/30 hover:bg-white/[0.07]"
+      className="group block h-full overflow-hidden rounded-[2rem] border border-white/10 bg-white/5 shadow-[0_30px_90px_rgba(0,0,0,0.28)] backdrop-blur-2xl transition hover:border-primary/30 hover:bg-white/[0.07]"
       aria-label={item?.title ? `Ouvrir ${item.title}` : "Ouvrir l'actualité"}
     >
-      <article>
+      <article className="flex h-full flex-col">
         <div className="relative aspect-[16/10] overflow-hidden bg-black/40">
           <Image
             src={getActualiteCardImage(item)}
@@ -38,23 +38,23 @@ export default function ActualiteListCard({ item }) {
           <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
         </div>
 
-        <div className="space-y-4 p-6">
-          <div className="flex flex-wrap items-center gap-3">
+        <div className="flex h-72 flex-col gap-4 p-6">
+          <div className="flex h-7 shrink-0 items-center gap-3 overflow-hidden">
             <ActualiteTypeBadge type={item?.type} />
-            <span className="text-[11px] font-semibold uppercase tracking-[0.22em] text-white/40">
+            <span className="truncate whitespace-nowrap text-[11px] font-semibold uppercase tracking-[0.22em] text-white/40">
               {formatActualiteDate(item?.createdAt)}
             </span>
           </div>
 
-          <h2 className="text-2xl font-semibold text-white font-display transition group-hover:text-accent">
+          <h2 className="line-clamp-2 min-h-15 text-2xl font-semibold text-white font-display transition group-hover:text-accent">
             {item?.title || "Actualité"}
           </h2>
 
-          <p className="line-clamp-4 text-sm leading-7 text-white/60">
+          <p className="line-clamp-3 text-sm leading-7 text-white/60">
             {getActualiteSummary(item)}
           </p>
 
-          <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.22em] text-accent">
+          <div className="mt-auto inline-flex items-center gap-2 truncate text-xs font-semibold uppercase tracking-[0.22em] text-accent">
             {CTA_LABELS[item?.type] || "Voir le détail"}
             <RiArrowRightLine className="h-4 w-4 transition group-hover:translate-x-1" />
           </div>

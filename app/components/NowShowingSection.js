@@ -1,6 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import { MdArrowForward } from "react-icons/md";
+import HomeHorizontalCarousel from "./HomeHorizontalCarousel";
+
+const carouselItemClass =
+  "w-[calc((100%_-_3rem)/2.25)] flex-none snap-start md:w-[calc((100%_-_6rem)/4.25)] xl:w-[calc((100%_-_7.5rem)/5.2)]";
 
 const badgeStyles = {
   primary: "bg-accent text-white",
@@ -26,13 +30,8 @@ export default function NowShowingSection({ items = [], showCta = true }) {
               Ne manquez pas les plus grands succès de la saison
             </p>
           </div>
-          <div className="flex gap-2">
-            <button className="rounded-full border border-accent/40 bg-accent px-4 py-1.5 text-sm font-semibold text-black transition-colors hover:brightness-110 font-display">
-              Tous
-            </button>
-          </div>
         </div>
-        <div className="grid grid-cols-2 gap-6 md:grid-cols-4 lg:grid-cols-5">
+        <HomeHorizontalCarousel label="les films à l'affiche">
           {items.map((movie) => {
             const badgeClass =
               badgeStyles[movie.badgeTone] ?? badgeStyles.primary;
@@ -40,7 +39,7 @@ export default function NowShowingSection({ items = [], showCta = true }) {
             return (
               <Link
                 key={movie.id ?? movie.title}
-                className="group relative block"
+                className={`group relative block ${carouselItemClass}`}
                 href={`/evenements/${movie.id}`}
                 aria-label={`Voir ${movie.title}`}
               >
@@ -81,11 +80,11 @@ export default function NowShowingSection({ items = [], showCta = true }) {
               </Link>
             );
           })}
-        </div>
+        </HomeHorizontalCarousel>
         {showCta ? (
-          <div className="mt-10 flex justify-center">
+          <div className="mt-8 flex justify-center">
             <Link
-              className="group flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.2em] text-white/50 transition-colors hover:text-white font-display"
+              className="group inline-flex items-center justify-center gap-2 rounded-full bg-accent px-6 py-3 text-sm font-semibold uppercase tracking-[0.16em] text-black shadow-[0_0_22px_rgba(116,208,241,0.32)] transition-all hover:-translate-y-0.5 hover:brightness-110 hover:shadow-[0_0_30px_rgba(116,208,241,0.5)] active:translate-y-0 font-display"
               href="/programme"
             >
               Voir tout le programme

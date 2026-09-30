@@ -411,7 +411,7 @@ export default function ProgrammePageClient({
             onClick={closeSessionModal}
             className="absolute inset-0 bg-black/70 backdrop-blur-[1px]"
           />
-          <aside className="absolute right-0 top-0 h-screen w-full overflow-y-auto border-l border-white/10 bg-[#0a0f17] shadow-2xl md:w-[33vw]">
+          <aside className="absolute right-0 top-0 h-dvh w-full overflow-y-auto border-l border-white/10 bg-[#0a0f17] shadow-2xl sm:w-[min(72vw,560px)] lg:w-[min(40vw,620px)]">
             <div className="relative flex h-full flex-col">
               <div className="absolute inset-0">
                 <Image

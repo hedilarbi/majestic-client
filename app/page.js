@@ -14,7 +14,11 @@ export const dynamic = "force-dynamic";
 export default async function Home() {
   const [{ heroSlides, nowShowing, spectacles, upcoming, lastExpiredShow }, actualites, partners] =
     await Promise.all([
-      getHomeData({ noCache: true }),
+      getHomeData({
+        noCache: true,
+        limitNowShowing: false,
+        limitUpcoming: false,
+      }),
       getPublishedActualites({ noCache: true, limit: 3 }),
       getPublicPartners({ noCache: true }),
     ]);

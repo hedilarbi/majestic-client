@@ -1,5 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
+import HomeHorizontalCarousel from "./HomeHorizontalCarousel";
+
+const carouselItemClass =
+  "w-[calc((100%_-_3rem)/2.25)] flex-none snap-start md:w-[calc((100%_-_6rem)/4.25)] xl:w-[calc((100%_-_7.5rem)/5.2)]";
 
 export default function UpcomingSection({ items = [] }) {
   if (!items.length) return null;
@@ -11,12 +15,12 @@ export default function UpcomingSection({ items = [] }) {
           <span className="block h-8 w-1 rounded-full bg-accent" />
           Prochainement
         </h2>
-        <div className="grid grid-cols-2 gap-6 md:grid-cols-4 lg:grid-cols-5">
+        <HomeHorizontalCarousel label="les films prochainement disponibles">
           {items.map((movie) => (
             <Link
               key={movie.id ?? movie.title}
               href={`/evenements/${movie.id}`}
-              className="group relative block"
+              className={`group relative block ${carouselItemClass}`}
               aria-label={`Voir ${movie.title}`}
             >
               <article className="cursor-pointer">
@@ -41,7 +45,7 @@ export default function UpcomingSection({ items = [] }) {
               </article>
             </Link>
           ))}
-        </div>
+        </HomeHorizontalCarousel>
       </div>
     </section>
   );
