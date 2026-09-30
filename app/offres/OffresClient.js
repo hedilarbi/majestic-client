@@ -119,7 +119,7 @@ export default function OffresClient({
   );
 
   return (
-    <main className="relative min-h-screen w-full px-10 pb-24 pt-10 text-white sm:px-12 lg:px-20">
+    <main className="relative min-h-screen w-full px-4 pb-24 pt-10 text-white sm:px-8 lg:px-20">
       <div className="pointer-events-none absolute inset-0 -z-10">
         <div className="absolute left-1/2 top-10 h-[45vh] w-[75vw] -translate-x-1/2 rounded-full bg-accent/20 blur-[140px] opacity-70" />
         <div className="absolute bottom-0 left-0 h-[40vh] w-[50vw] rounded-full bg-accent/10 blur-[120px] opacity-60" />

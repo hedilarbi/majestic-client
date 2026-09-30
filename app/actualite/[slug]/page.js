@@ -51,7 +51,7 @@ export default async function ActualiteDetailPage({ params }) {
   }
 
   return (
-    <main className="px-6 pb-16 pt-10 text-white sm:px-10 lg:px-20">
+    <main className="px-4 pb-16 pt-10 text-white sm:px-8 lg:px-20">
       <div className="mx-auto max-w-7xl">
         <Link
           href="/actualite"

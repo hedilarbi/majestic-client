@@ -25,7 +25,7 @@ export default function PartenairesSection({ items = [] }) {
 
   return (
     <section className="relative w-full border-t border-white/5 py-14">
-      <div className="mx-auto px-10 sm:px-12 lg:px-20">
+      <div className="mx-auto px-4 sm:px-8 lg:px-20">
         <div className="mb-10">
           <h2 className="flex items-center gap-3 text-2xl font-semibold uppercase tracking-wide text-white md:text-3xl font-display">
             <span className="block h-8 w-1 rounded-full bg-accent" />

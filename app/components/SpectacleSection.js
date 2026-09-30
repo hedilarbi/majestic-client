@@ -11,7 +11,7 @@ export default function SpectacleSection({ items = [], lastExpiredItem = null })
 
   return (
     <section id="spectacles" className="w-full bg-transparent py-16">
-      <div className="mx-auto px-10 sm:px-12 lg:px-20">
+      <div className="mx-auto px-4 sm:px-8 lg:px-20">
         <div className="mb-8 flex items-end justify-between">
           <div>
             <h2 className="flex items-center gap-3 text-3xl font-semibold tracking-tight text-white font-display">
@@ -72,7 +72,7 @@ export default function SpectacleSection({ items = [], lastExpiredItem = null })
                     <span className="mb-1 block text-xs font-semibold uppercase tracking-wider text-accent font-display">
                       {show.genre}
                     </span>
-                    <h3 className="text-xl font-semibold leading-tight text-white font-display">
+                    <h3 className="text-base font-semibold leading-tight text-white sm:text-xl font-display">
                       {show.title}
                     </h3>
                     <p className="mt-1 text-sm text-white/60 font-body">

@@ -176,7 +176,7 @@ export default function SessionSelector({ sessions = [] }) {
   };
 
   return (
-    <section className="relative z-20 mx-auto mt-12 px-10 pb-20 sm:px-12 lg:px-20">
+    <section className="relative z-20 mx-auto mt-12 px-4 pb-20 sm:px-8 lg:px-20">
       <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-white/5 shadow-2xl">
         <div className="absolute left-0 right-0 top-0 h-px bg-linear-to-r from-primary to-accent opacity-50" />
         <div className="p-6 md:p-8">

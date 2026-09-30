@@ -7,6 +7,7 @@ import {
 } from "@/app/lib/actualites-utils";
 
 import ActualiteTypeBadge from "./ActualiteTypeBadge";
+import ActualiteArticleGallery from "./ActualiteArticleGallery";
 
 export default function ActualiteArticleCard({ item }) {
   const coverImage = getActualiteDetailImage(item);
@@ -50,9 +51,9 @@ export default function ActualiteArticleCard({ item }) {
       </div>
 
       {/* Contenu */}
-      <div className="px-6 pb-10 pt-8 sm:px-10 sm:pb-12">
+      <div className={`grid gap-10 px-6 pb-10 pt-8 sm:px-10 sm:pb-12 ${hasAlbum ? "lg:grid-cols-[minmax(0,1fr)_minmax(320px,420px)]" : ""}`}>
         <div
-          className="prose prose-invert max-w-none text-sm leading-7 text-white/75 [&_a]:text-accent [&_a]:underline [&_h2]:mt-8 [&_h2]:text-2xl [&_h2]:font-semibold [&_h2]:text-white [&_h3]:mt-6 [&_h3]:text-xl [&_h3]:font-semibold [&_h3]:text-white [&_li]:ml-5 [&_li]:list-disc [&_p]:text-white/75 [&_strong]:text-white sm:text-base"
+          className="prose prose-invert min-w-0 max-w-none wrap-anywhere text-sm leading-7 text-white/75 [&_a]:text-accent [&_a]:underline [&_h2]:mt-8 [&_h2]:text-2xl [&_h2]:font-semibold [&_h2]:text-white [&_h3]:mt-6 [&_h3]:text-xl [&_h3]:font-semibold [&_h3]:text-white [&_li]:ml-5 [&_li]:list-disc [&_p]:text-white/75 [&_strong]:text-white sm:text-base"
           dangerouslySetInnerHTML={{
             __html:
               item.contentHtml ||
@@ -60,34 +61,8 @@ export default function ActualiteArticleCard({ item }) {
           }}
         />
 
-        {/* Album photos */}
         {hasAlbum ? (
-          <div className="mt-12 border-t border-white/10 pt-10">
-            <p className="mb-5 text-xs font-semibold uppercase tracking-[0.25em] text-white/40">
-              Photos
-            </p>
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-              {item.images.map((src, index) => (
-                <a
-                  key={src}
-                  href={src}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group relative aspect-square overflow-hidden rounded-xl border border-white/10"
-                  aria-label={`Photo ${index + 1}`}
-                >
-                  <Image
-                    src={src}
-                    alt={`Photo ${index + 1}`}
-                    fill
-                    sizes="(min-width: 1024px) 22vw, (min-width: 640px) 30vw, 45vw"
-                    className="object-cover transition-transform duration-300 group-hover:scale-110"
-                  />
-                  <div className="absolute inset-0 bg-black/0 transition-colors duration-300 group-hover:bg-black/25" />
-                </a>
-              ))}
-            </div>
-          </div>
+          <ActualiteArticleGallery images={item.images} title={item.title} />
         ) : null}
       </div>
     </article>

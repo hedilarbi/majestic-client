@@ -20,7 +20,7 @@ export default function NowShowingSection({ items = [], showCta = true }) {
       className="relative w-full border-b border-white/5 bg-transparent py-12"
     >
       <div className="absolute left-0 top-0 h-px w-full bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
-      <div className="mx-auto px-10 sm:px-12 lg:px-20">
+      <div className="mx-auto px-4 sm:px-8 lg:px-20">
         <div className="mb-10 flex flex-col items-center justify-between gap-6 md:flex-row">
           <div>
             <h2 className="text-2xl font-semibold uppercase tracking-wide text-white md:text-3xl font-display">
@@ -69,7 +69,7 @@ export default function NowShowingSection({ items = [], showCta = true }) {
                     ) : null}
                   </div>
                   <div className="mt-3">
-                    <h3 className="text-lg font-semibold leading-tight text-white transition-colors group-hover:text-accent font-display">
+                    <h3 className="text-sm font-semibold leading-tight text-white transition-colors group-hover:text-accent sm:text-lg font-display">
                       {movie.title}
                     </h3>
                     <p className="mt-1 text-xs text-white/50 font-body">

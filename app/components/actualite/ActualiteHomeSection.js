@@ -18,7 +18,7 @@ export default function ActualiteHomeSection({ items = [] }) {
 
   return (
     <section className="relative w-full border-t border-white/5 py-14">
-      <div className="mx-auto px-10 sm:px-12 lg:px-20">
+      <div className="mx-auto px-4 sm:px-8 lg:px-20">
         <div className="mb-10 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <div>
             <h2 className="text-2xl font-semibold uppercase tracking-wide text-white md:text-3xl font-display">

@@ -69,7 +69,7 @@ export default async function EvenementPage({ params }) {
   return (
     <div className="min-h-screen bg-black text-white">
       <div className="w-full border-b border-white/5 bg-black/70">
-        <div className="mx-auto px-10 py-3 sm:px-12 lg:px-20">
+        <div className="mx-auto px-4 py-3 sm:px-8 lg:px-20">
           <nav
             aria-label="Fil d'ariane"
             className="flex flex-wrap items-center gap-2 text-sm font-body"
@@ -98,7 +98,7 @@ export default async function EvenementPage({ params }) {
             <div className="absolute top-0 right-0 h-125 w-125 -translate-y-1/2 translate-x-1/2 rounded-full bg-accent/20 blur-[100px]" />
             <div className="absolute bottom-0 left-0 h-125 w-125 translate-y-1/2 -translate-x-1/2 rounded-full bg-accent/10 blur-[100px]" />
           </div>
-          <div className="relative z-10 mx-auto px-10 py-10 sm:px-12 lg:px-20 md:py-16">
+          <div className="relative z-10 mx-auto px-4 py-10 sm:px-8 md:py-16 lg:px-20">
             <div className="flex flex-col items-start gap-10 lg:flex-row lg:gap-12">
               <div className="order-2 space-y-6 text-center lg:order-1 lg:w-[62%] lg:text-left">
                 <div>

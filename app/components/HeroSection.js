@@ -154,7 +154,7 @@ export default function HeroSection({ slides = [] }) {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-transparent" />
               <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/50 to-transparent" />
-              <div className="relative z-10 mx-auto flex h-full w-full items-center px-10 sm:px-12 lg:px-24">
+              <div className="relative z-10 mx-auto flex h-full w-full items-center px-4 sm:px-8 lg:px-24">
                 <div className="max-w-2xl space-y-6">
                   <h1 className="text-4xl font-semibold leading-[1.1] tracking-tight text-white sm:text-7xl font-display">
                     <span className="text-glow bg-gradient-to-r from-white via-white/90 to-accent bg-clip-text text-transparent">

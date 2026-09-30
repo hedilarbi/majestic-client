@@ -297,6 +297,16 @@ export const resolveSeanceInfo = (data) => {
 
 export const resolvePricingItems = (data) => {
   const session = data?.session || data?.seance || data || {};
+  const disabledPricingIds = new Set(
+    (Array.isArray(session?.disabledPricingIds)
+      ? session.disabledPricingIds
+      : Array.isArray(data?.disabledPricingIds)
+        ? data.disabledPricingIds
+        : [])
+      .map((item) => item?._id ?? item)
+      .filter(Boolean)
+      .map(String),
+  );
   const limits = Array.isArray(session?.pricingLimits)
     ? session.pricingLimits
     : Array.isArray(data?.pricingLimits)
@@ -336,6 +346,10 @@ export const resolvePricingItems = (data) => {
         limit?._id ??
         limit?.id ??
         name;
+
+      if (disabledPricingIds.has(String(id || ""))) {
+        return null;
+      }
 
       if (!name && price === null) {
         return null;

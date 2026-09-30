@@ -38,7 +38,7 @@ export default function SiteFooter() {
 
   return (
     <footer className="w-full border-t border-white/5 bg-black/90 py-12 text-sm">
-      <div className="mx-auto px-10 sm:px-12 lg:px-20">
+      <div className="mx-auto px-4 sm:px-8 lg:px-20">
         <div className="mb-12 grid grid-cols-1 gap-12 md:grid-cols-3">
           <div className="space-y-4">
             <Link className="flex items-center gap-2" href="/">

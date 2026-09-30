@@ -63,7 +63,7 @@ export default async function EvenementsPage({ searchParams }) {
 
   return (
     <main className="flex min-h-screen flex-col items-center bg-black text-white">
-      <section className="w-full px-10 py-6 sm:px-14 lg:px-20">
+      <section className="w-full px-4 py-6 sm:px-8 lg:px-20">
         <div className="group relative w-full overflow-hidden rounded-2xl border border-white/10 shadow-2xl">
           <div className="absolute inset-0 z-10 bg-linear-to-r from-black/90 via-black/40 to-transparent" />
           {heroImageDesktop || heroImageMobile ? (
@@ -92,7 +92,7 @@ export default async function EvenementsPage({ searchParams }) {
           ) : (
             <div className="absolute inset-0 bg-black" />
           )}
-          <div className="relative z-20 flex min-h-120 flex-col items-start justify-end gap-4 px-10 pb-12 sm:px-16 sm:pb-16 lg:px-20">
+          <div className="relative z-20 flex min-h-120 flex-col items-start justify-end gap-4 px-5 pb-12 sm:px-10 sm:pb-16 lg:px-20">
             {/* <span className="rounded border border-accent/40 bg-accent/10 px-2 py-1 text-xs font-semibold text-accent font-display">
               TENDANCE
             </span> */}
@@ -127,7 +127,7 @@ export default async function EvenementsPage({ searchParams }) {
         </div>
       </section>
 
-      <section className="w-full px-10 py-2 sm:px-14 lg:px-20">
+      <section className="w-full px-4 py-2 sm:px-8 lg:px-20">
         <div className="rounded-xl border border-white/10 bg-black/70 p-4 shadow-lg backdrop-blur-lg">
           <div className="mb-4 flex flex-col items-start justify-between gap-4 md:mb-0 md:flex-row md:items-center">
             <h2 className="text-xl font-semibold text-white font-display">
@@ -144,7 +144,7 @@ export default async function EvenementsPage({ searchParams }) {
         </div>
       </section>
 
-      <section className="w-full px-10 py-8 sm:px-14 lg:px-20">
+      <section className="w-full px-4 py-8 sm:px-8 lg:px-20">
         {type === "show" && events.length === 0 ? (
           <div className="rounded-2xl border border-white/10 bg-white/5 px-5 py-4 text-sm text-white/60 backdrop-blur-sm">
             Pas de spectacles à l&apos;affiche en ce moment.
@@ -186,7 +186,7 @@ export default async function EvenementsPage({ searchParams }) {
       </section>
 
       {type === "show" && allExpiredShows.length ? (
-        <section className="w-full px-10 py-8 sm:px-14 lg:px-20">
+        <section className="w-full px-4 py-8 sm:px-8 lg:px-20">
           <div className="mb-8 flex items-center gap-3">
             <span className="h-8 w-1 rounded-full bg-white/30" />
             <h2 className="text-2xl font-semibold text-white/60 sm:text-3xl font-display">
@@ -228,7 +228,7 @@ export default async function EvenementsPage({ searchParams }) {
       ) : null}
 
       {upcomingEvents.length ? (
-        <section className="w-full px-10 py-8 sm:px-14 lg:px-20 mb-20">
+        <section className="mb-20 w-full px-4 py-8 sm:px-8 lg:px-20">
           <div className="mb-8 flex items-center gap-3">
             <span className="h-8 w-1 rounded-full bg-accent" />
             <h2 className="text-2xl font-semibold text-white sm:text-3xl font-display">
