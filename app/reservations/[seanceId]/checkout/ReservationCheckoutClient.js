@@ -601,6 +601,8 @@ export default function ReservationCheckoutClient({ seanceId, socketUrl }) {
   );
 
   const assignableSeatsCount = Math.max(safeSeats.length - fixedSeats.length, 0);
+  const hasOnlyFixedSeats =
+    safeSeats.length > 0 && assignableSeatsCount === 0;
 
   const fixedPricingUsage = useMemo(() => {
     const byId = new Map();
@@ -1585,8 +1587,9 @@ export default function ReservationCheckoutClient({ seanceId, socketUrl }) {
               Configuration de vos billets
             </h1>
             <p className="max-w-2xl text-sm text-white/60 md:text-base">
-              Veuillez attribuer un tarif à chacune de vos places sélectionnées
-              pour finaliser votre réservation.
+              {hasOnlyFixedSeats
+                ? "Les tarifs fixes de vos places sont appliqués automatiquement."
+                : "Veuillez attribuer un tarif à chacune de vos places sélectionnées pour finaliser votre réservation."}
             </p>
           </div>
 
@@ -1604,6 +1607,7 @@ export default function ReservationCheckoutClient({ seanceId, socketUrl }) {
           ) : null}
 
 
+          {!hasOnlyFixedSeats ? (
           <div className="flex flex-wrap gap-4">
             <div className="flex min-w-[240px] flex-1 items-center justify-between rounded-2xl border border-white/10 bg-[#161e22]/90 p-5">
               <div className="flex flex-col gap-1">
@@ -1622,6 +1626,7 @@ export default function ReservationCheckoutClient({ seanceId, socketUrl }) {
               </div>
             </div>
           </div>
+          ) : null}
 
           {mySubscriptions.length > 0 && (
             <div className="flex flex-col gap-4 rounded-2xl border border-accent/20 bg-accent/5 p-5 shadow-sm">
@@ -1665,7 +1670,7 @@ export default function ReservationCheckoutClient({ seanceId, socketUrl }) {
             </div>
           )}
 
-          {!selectedSub && (
+          {!selectedSub && !hasOnlyFixedSeats && (
             <PricingQuantityList
               safePricingItems={safePricingItems}
               quantities={quantities}

@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 import { MdArrowBack, MdArrowForward } from "react-icons/md";
 
 const IMAGES_PER_PAGE = 4;
@@ -27,14 +26,9 @@ export default function ActualiteArticleGallery({ images = [], title = "Actualit
   return (
     <aside className="min-w-0 lg:sticky lg:top-28 lg:self-start">
       <div className="mb-4 flex items-center justify-between gap-4">
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.25em] text-white/40">
-            Photos
-          </p>
-          <p className="mt-1 text-xs text-white/45">
-            {safeImages.length} image{safeImages.length > 1 ? "s" : ""}
-          </p>
-        </div>
+        <p className="text-xs font-semibold uppercase tracking-[0.25em] text-white/40">
+          Photos
+        </p>
 
         {pages.length > 1 ? (
           <div className="flex items-center gap-2">
@@ -68,7 +62,7 @@ export default function ActualiteArticleGallery({ images = [], title = "Actualit
           {pages.map((page, pageIndex) => (
             <div
               key={`gallery-page-${pageIndex}`}
-              className={`grid min-w-full gap-3 ${page.length === 1 ? "grid-cols-1" : "grid-cols-2"}`}
+              className="flex min-w-full flex-wrap content-start items-start gap-3"
             >
               {page.map((src, imageIndex) => {
                 const absoluteIndex = pageIndex * IMAGES_PER_PAGE + imageIndex;
@@ -78,20 +72,18 @@ export default function ActualiteArticleGallery({ images = [], title = "Actualit
                     href={src}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="group relative aspect-square overflow-hidden rounded-xl border border-white/10 bg-black/30"
+                    className="group relative flex max-w-full shrink-0 overflow-hidden rounded-xl border border-white/10 bg-black/30"
                     aria-label={`Ouvrir la photo ${absoluteIndex + 1} de ${title}`}
                   >
-                    <Image
+                    {/* The browser keeps the source image's intrinsic aspect ratio. */}
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
                       src={src}
                       alt={`${title} — photo ${absoluteIndex + 1}`}
-                      fill
-                      sizes="(min-width: 1024px) 200px, 45vw"
-                      className="object-cover transition-transform duration-500 group-hover:scale-110"
+                      loading="lazy"
+                      className="block h-auto max-h-[360px] w-auto max-w-full object-contain transition-transform duration-500 group-hover:scale-[1.02] sm:max-h-[420px]"
                     />
                     <div className="absolute inset-0 bg-black/0 transition-colors group-hover:bg-black/20" />
-                    <span className="absolute bottom-2 right-2 rounded-full bg-black/60 px-2 py-1 text-[10px] font-semibold text-white/80 backdrop-blur-sm">
-                      {absoluteIndex + 1}
-                    </span>
                   </a>
                 );
               })}

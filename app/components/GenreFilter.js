@@ -40,16 +40,22 @@ export default function GenreFilter({ genres = [], currentGenre, type }) {
   return (
     <div className="relative">
       <select
-        className="h-9 appearance-none rounded-lg border border-transparent bg-white/5 px-4 pr-8 text-sm font-semibold text-white/80 transition-colors hover:border-white/20 hover:bg-white/10 focus:border-accent/60 focus:outline-none focus:ring-1 focus:ring-accent/30 font-display"
+        className="h-9 appearance-none rounded-lg border border-transparent bg-white/5 px-4 pr-8 text-sm font-semibold text-white/80 [color-scheme:dark] transition-colors hover:border-white/20 hover:bg-white/10 focus:border-accent/60 focus:outline-none focus:ring-1 focus:ring-accent/30 font-display"
         value={value}
         onChange={(event) => {
           const nextValue = event.target.value;
           router.push(buildHref(type, nextValue));
         }}
       >
-        <option value="">Genre : Tous</option>
+        <option value="" className="bg-neutral-950 text-white">
+          Genre : Tous
+        </option>
         {options.map((genre) => (
-          <option key={genre} value={genre}>
+          <option
+            key={genre}
+            value={genre}
+            className="bg-neutral-950 text-white"
+          >
             {`Genre : ${genre}`}
           </option>
         ))}

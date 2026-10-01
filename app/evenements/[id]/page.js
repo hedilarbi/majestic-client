@@ -166,7 +166,16 @@ export default async function EvenementPage({ params }) {
           </div>
         </section>
 
-        {isAvailableNow ? <SessionSelector sessions={sessions} /> : null}
+        {isAvailableNow ? (
+          <SessionSelector
+            sessions={sessions}
+            event={{
+              title: event.name,
+              poster: event.poster,
+              durationLabel,
+            }}
+          />
+        ) : null}
       </main>
     </div>
   );

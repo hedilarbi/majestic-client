@@ -1,8 +1,8 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
-import { MdArrowForward, MdCalendarMonth } from "react-icons/md";
+import { useCallback, useMemo, useState } from "react";
+import { MdCalendarMonth } from "react-icons/md";
+import SessionDetailModal from "./SessionDetailModal";
 
 const normalizeShortLabel = (value) =>
   value
@@ -99,8 +99,7 @@ const groupSessionsByDate = (sessions, now) => {
   };
 };
 
-export default function SessionSelector({ sessions = [] }) {
-  const router = useRouter();
+export default function SessionSelector({ sessions = [], event }) {
   const now = useMemo(() => new Date(), []);
   const todayKey = useMemo(() => getLocalDateKey(now), [now]);
   const { sessionsByDate, dateKeys } = useMemo(
@@ -110,7 +109,7 @@ export default function SessionSelector({ sessions = [] }) {
   const defaultDateKey =
     dateKeys.find((dateKey) => dateKey === todayKey) ?? dateKeys[0] ?? "";
   const [activeDateKey, setActiveDateKey] = useState(defaultDateKey);
-  const [selectedSessionId, setSelectedSessionId] = useState(null);
+  const [activeSession, setActiveSession] = useState(null);
   const safeActiveDateKey = dateKeys.includes(activeDateKey)
     ? activeDateKey
     : defaultDateKey;
@@ -122,21 +121,6 @@ export default function SessionSelector({ sessions = [] }) {
       .sort((a, b) => toMinutes(a.sessionTime) - toMinutes(b.sessionTime));
   }, [sessionsByDate, safeActiveDateKey]);
 
-  const fallbackSessionId =
-    resolveSessionId(
-      sessionsForDate.find((session) => session.availableSeats > 0)
-    ) ??
-    resolveSessionId(sessionsForDate[0]) ??
-    null;
-  const resolvedSessionId = sessionsForDate.some(
-    (session) => resolveSessionId(session) === selectedSessionId
-  )
-    ? selectedSessionId
-    : fallbackSessionId;
-  const selectedSession =
-    sessionsForDate.find(
-      (session) => resolveSessionId(session) === resolvedSessionId
-    ) ?? null;
   const selectedDateLabel = safeActiveDateKey
     ? formatShortDate(safeActiveDateKey)
     : "";
@@ -166,16 +150,13 @@ export default function SessionSelector({ sessions = [] }) {
 
   const handleDateChange = (dateKey) => {
     setActiveDateKey(dateKey);
-    setSelectedSessionId(null);
+    setActiveSession(null);
   };
 
-  const handleConfirm = () => {
-    const sessionId = resolveSessionId(selectedSession);
-    if (!sessionId) return;
-    router.push(`/reservations/${sessionId}`);
-  };
+  const closeSessionModal = useCallback(() => setActiveSession(null), []);
 
   return (
+    <>
     <section className="relative z-20 mx-auto mt-12 px-4 pb-20 sm:px-8 lg:px-20">
       <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-white/5 shadow-2xl">
         <div className="absolute left-0 right-0 top-0 h-px bg-linear-to-r from-primary to-accent opacity-50" />
@@ -241,37 +222,34 @@ export default function SessionSelector({ sessions = [] }) {
                 {sessionsForDate.length ? (
                   sessionsForDate.map((session) => {
                     const sessionId = resolveSessionId(session);
-                    const isActive = sessionId === resolvedSessionId;
                     const soldOut = session.availableSeats <= 0;
                     return (
                       <button
                         key={sessionId ?? session.sessionTime}
-                        className={`group/btn relative overflow-hidden rounded-xl border px-4 py-2 transition-all duration-300 font-display md:px-6 md:py-2.5 ${
-                          isActive
-                            ? "border-accent/60 bg-accent/10 shadow-[0_0_10px_rgba(116,208,241,0.1)] ring-1 ring-accent/60 ring-offset-2 ring-offset-black"
-                            : "border-white/10 bg-white/5 hover:border-accent/50"
-                        } ${soldOut ? "cursor-not-allowed opacity-60" : ""}`}
+                        className={`group/btn relative overflow-hidden rounded-xl border border-white/10 bg-white/5 px-4 py-2 transition-all duration-300 hover:border-accent/50 font-display md:px-6 md:py-2.5 ${soldOut ? "cursor-not-allowed opacity-60" : ""}`}
                         type="button"
                         disabled={soldOut}
-                        onClick={() => setSelectedSessionId(sessionId)}
+                        onClick={() =>
+                          setActiveSession({
+                            event,
+                            session: {
+                              ...session,
+                              id: sessionId,
+                              time: session.sessionTime,
+                              label: session.version || "VF",
+                            },
+                          })
+                        }
                       >
                         <div className="absolute inset-0 bg-accent/20 opacity-0 transition-opacity duration-300 group-hover/btn:opacity-100" />
                         <span className="relative z-10 flex flex-col items-center">
                           <span
-                            className={`text-base font-bold tracking-wide transition-colors md:text-lg ${
-                              isActive
-                                ? "text-accent group-hover/btn:text-white"
-                                : "text-white"
-                            }`}
+                            className="text-base font-bold tracking-wide text-white transition-colors md:text-lg"
                           >
                             {session.sessionTime}
                           </span>
                           <span
-                            className={`text-[9px] font-medium uppercase tracking-wider transition-colors md:text-[10px] ${
-                              isActive
-                                ? "text-accent/80 group-hover/btn:text-white/90"
-                                : "text-white/60 group-hover/btn:text-white/90"
-                            } font-body`}
+                            className="text-[9px] font-medium uppercase tracking-wider text-white/60 transition-colors group-hover/btn:text-white/90 md:text-[10px] font-body"
                           >
                             {session.version || "VF"}
                           </span>
@@ -293,38 +271,13 @@ export default function SessionSelector({ sessions = [] }) {
             </div>
           </div>
         </div>
-        <div className="flex flex-col items-center justify-between gap-4 border-t border-white/10 bg-white/10 p-4 md:flex-row md:p-6">
-          <div className="hidden md:block font-body">
-            <span className="mb-1 block text-xs font-semibold uppercase tracking-wider text-white/50 font-display">
-              Votre sélection
-            </span>
-            {selectedSession ? (
-              <div className="flex items-center gap-2 text-lg">
-                <span className="text-white">{selectedDateLabel}</span>
-                <span className="text-white/30">•</span>
-                <span className="font-bold text-accent">
-                  {selectedSession.sessionTime}
-                </span>
-              </div>
-            ) : (
-              <div className="text-white/40">Aucune séance disponible.</div>
-            )}
-          </div>
-          <button
-            className={`flex w-full items-center justify-center gap-2 rounded-xl bg-accent px-8 py-3 font-semibold uppercase tracking-wider text-black shadow-[0_0_15px_rgba(116,208,241,0.35)] transition-all md:w-auto font-display ${
-              selectedSession
-                ? "hover:brightness-110"
-                : "cursor-not-allowed opacity-60"
-            }`}
-            type="button"
-            disabled={!selectedSession}
-            onClick={handleConfirm}
-          >
-            <span>Confirmer la séance</span>
-            <MdArrowForward className="h-5 w-5" />
-          </button>
-        </div>
       </div>
     </section>
+    <SessionDetailModal
+      selection={activeSession}
+      dateLabel={selectedDateLabel}
+      onClose={closeSessionModal}
+    />
+    </>
   );
 }

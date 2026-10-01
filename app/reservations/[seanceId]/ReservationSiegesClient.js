@@ -103,6 +103,7 @@ export default function ReservationSiegesClient({ seanceId, socketUrl }) {
   const [desktopViewportHeight, setDesktopViewportHeight] = useState(420);
   const indexRef = useRef(new Map());
   const pendingSeatActionsRef = useRef(new Map());
+  const seatActionQueueRef = useRef(Promise.resolve());
   const nextSeatOpRef = useRef(0);
   const selectedSeatKeysRef = useRef(new Set());
   const selectedSeatsRef = useRef([]);
@@ -914,7 +915,7 @@ export default function ReservationSiegesClient({ seanceId, socketUrl }) {
     }
   }, [myReservation?.expiresAt, myReservation?.seats, updateSeatStatuses]);
 
-  const handleToggleSeat = useCallback(
+  const performToggleSeat = useCallback(
     async (cell) => {
       if (!cell) {
         return;
@@ -1069,6 +1070,17 @@ export default function ReservationSiegesClient({ seanceId, socketUrl }) {
       syncSelectedSeats,
       updateSeatStatuses]
 
+  );
+
+  const handleToggleSeat = useCallback(
+    (cell) => {
+      seatActionQueueRef.current = seatActionQueueRef.current.then(
+        () => performToggleSeat(cell),
+        () => performToggleSeat(cell),
+      );
+      return seatActionQueueRef.current;
+    },
+    [performToggleSeat],
   );
 
   const isFixedPricingSoldOut = useCallback(
@@ -1320,10 +1332,12 @@ export default function ReservationSiegesClient({ seanceId, socketUrl }) {
     (myReservation?.seats?.length || 0) > 0 && (
       selectedVariableSeatsCount === 0 || hasAvailableVariablePricing)
   );
-  const handleGoCheckout = useCallback(() => {
+  const handleGoCheckout = useCallback(async () => {
     if (!canGoCheckout || isSessionUnavailable) {
       return;
     }
+
+    await seatActionQueueRef.current;
     router.push(`/reservations/${seanceId}/checkout`);
   }, [canGoCheckout, isSessionUnavailable, router, seanceId]);
 

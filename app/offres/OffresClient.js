@@ -4,7 +4,6 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import {
   MdContentCopy,
-  MdLocalOffer,
   MdNightlight,
   MdStars,
 } from "react-icons/md";
@@ -59,6 +58,7 @@ export default function OffresClient({
   error = "",
 }) {
   const [copiedCode, setCopiedCode] = useState("");
+  const [activeView, setActiveView] = useState("subscriptions");
 
   useEffect(() => {
     if (!copiedCode) return undefined;
@@ -126,10 +126,6 @@ export default function OffresClient({
       </div>
 
       <section className="mb-14">
-        <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-white/70 font-display">
-          <MdLocalOffer className="h-4 w-4 text-accent" />
-          Privileges Majestic
-        </div>
         <h1 className="text-4xl font-bold uppercase tracking-tight text-white sm:text-6xl font-display text-glow">
           Offres &amp; Promos
         </h1>
@@ -138,18 +134,28 @@ export default function OffresClient({
           l&apos;administration Majestic.
         </p>
         <div className="mt-8 flex flex-wrap gap-4">
-          <Link
-            href="#offres"
-            className="flex h-11 items-center rounded-full bg-accent px-6 text-xs font-semibold uppercase tracking-[0.2em] text-black shadow-[0_0_24px_rgba(116,208,241,0.4)] transition-all hover:brightness-110 font-display"
+          <button
+            type="button"
+            onClick={() => setActiveView("subscriptions")}
+            className={`flex h-11 items-center rounded-full px-6 text-xs font-semibold uppercase tracking-[0.2em] transition-all font-display ${
+              activeView === "subscriptions"
+                ? "bg-accent text-black shadow-[0_0_24px_rgba(116,208,241,0.4)]"
+                : "border border-white/20 text-white/80 hover:border-accent hover:text-accent"
+            }`}
           >
-            Voir les offres
-          </Link>
-          <Link
-            href="#codes"
-            className="flex h-11 items-center rounded-full border border-white/20 px-6 text-xs font-semibold uppercase tracking-[0.2em] text-white/80 transition-all hover:border-accent hover:text-accent hover:shadow-[0_0_15px_rgba(116,208,241,0.3)] font-display"
+            Abonnement
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveView("promos")}
+            className={`flex h-11 items-center rounded-full px-6 text-xs font-semibold uppercase tracking-[0.2em] transition-all font-display ${
+              activeView === "promos"
+                ? "bg-accent text-black shadow-[0_0_24px_rgba(116,208,241,0.4)]"
+                : "border border-white/20 text-white/80 hover:border-accent hover:text-accent"
+            }`}
           >
             Codes promo
-          </Link>
+          </button>
         </div>
       </section>
 
@@ -159,7 +165,8 @@ export default function OffresClient({
         </section>
       ) : null}
 
-      <section id="offres" className="mb-14">
+      {activeView === "subscriptions" ? (
+      <section className="mb-14">
         <div className="mb-8 flex items-center gap-4">
           <span className="h-10 w-1 rounded-full bg-accent" />
           <div>
@@ -221,8 +228,8 @@ export default function OffresClient({
           </div>
         ) : null}
       </section>
-
-      <section id="codes" className="mb-12">
+      ) : (
+      <section className="mb-12">
         <div className="mb-8 flex items-center gap-4">
           <span className="h-10 w-1 rounded-full bg-accent" />
           <div>
@@ -275,6 +282,7 @@ export default function OffresClient({
           </div>
         ) : null}
       </section>
+      )}
     </main>
   );
 }

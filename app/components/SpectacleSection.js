@@ -44,7 +44,7 @@ export default function SpectacleSection({ items = [], lastExpiredItem = null })
                 <span className="mb-1 block text-xs font-semibold uppercase tracking-wider text-accent/70 font-display">
                   {lastExpiredItem.genre}
                 </span>
-                <h3 className="text-base font-semibold leading-tight text-white/80 font-display">
+                <h3 className="text-xs font-semibold leading-tight text-white/80 md:text-sm xl:text-base font-display">
                   {lastExpiredItem.title}
                 </h3>
               </div>
@@ -72,12 +72,9 @@ export default function SpectacleSection({ items = [], lastExpiredItem = null })
                     <span className="mb-1 block text-xs font-semibold uppercase tracking-wider text-accent font-display">
                       {show.genre}
                     </span>
-                    <h3 className="text-base font-semibold leading-tight text-white sm:text-xl font-display">
+                    <h3 className="text-xs font-semibold leading-tight text-white md:text-sm xl:text-base font-display">
                       {show.title}
                     </h3>
-                    <p className="mt-1 text-sm text-white/60 font-body">
-                      {show.meta}
-                    </p>
                   </div>
                   <span className="flex w-full translate-y-4 items-center justify-center gap-2 rounded-lg bg-accent py-3 text-sm font-semibold text-black opacity-0 shadow-[0_0_16px_rgba(116,208,241,0.35)] transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
                     Réserver

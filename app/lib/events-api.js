@@ -127,7 +127,13 @@ export async function getEventsWithALaffiche({
     return { events, aLaffiche, showTypes, prochainement, expiredShows };
   } catch (error) {
     console.error("Events fetch failed:", error);
-    return { events: [], aLaffiche: [], showTypes: [], prochainement: [] };
+    return {
+      events: [],
+      aLaffiche: [],
+      showTypes: [],
+      prochainement: [],
+      expiredShows: [],
+    };
   } finally {
     clearTimeout(timeoutId);
   }

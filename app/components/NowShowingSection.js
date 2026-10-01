@@ -69,12 +69,9 @@ export default function NowShowingSection({ items = [], showCta = true }) {
                     ) : null}
                   </div>
                   <div className="mt-3">
-                    <h3 className="text-sm font-semibold leading-tight text-white transition-colors group-hover:text-accent sm:text-lg font-display">
+                    <h3 className="text-xs font-semibold leading-tight text-white transition-colors group-hover:text-accent md:text-sm xl:text-base font-display">
                       {movie.title}
                     </h3>
-                    <p className="mt-1 text-xs text-white/50 font-body">
-                      {movie.meta}
-                    </p>
                   </div>
                 </article>
               </Link>

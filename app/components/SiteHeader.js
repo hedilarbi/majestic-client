@@ -390,6 +390,15 @@ export default function SiteHeader() {
               className="fixed inset-0 z-9999 flex flex-col items-center bg-black/85 backdrop-blur-sm"
               onClick={(e) => { if (e.target === e.currentTarget) setIsSearchOpen(false); }}
             >
+              <button
+                type="button"
+                aria-label="Fermer la recherche"
+                onClick={() => setIsSearchOpen(false)}
+                className="absolute right-4 top-4 z-10 flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-black/60 text-white transition hover:border-accent hover:bg-accent hover:text-black sm:right-6 sm:top-6"
+              >
+                <MdClose className="h-6 w-6" />
+              </button>
+
               {/* Search bar at top */}
               <div className="w-full max-w-2xl px-4 pt-16 sm:pt-20">
                 <div className="relative flex items-center gap-3 rounded-2xl border border-white/15 bg-white/5 px-4 py-3 backdrop-blur-xl">

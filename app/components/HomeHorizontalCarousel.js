@@ -56,7 +56,7 @@ export default function HomeHorizontalCarousel({ children, label }) {
         aria-label={`Faire défiler ${label} vers la gauche`}
         onClick={() => scroll(-1)}
         disabled={!canGoBack}
-        className="absolute left-2 top-1/2 z-20 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-black/80 text-white shadow-xl backdrop-blur-md transition hover:border-accent hover:text-accent disabled:pointer-events-none disabled:opacity-0 lg:flex"
+        className="absolute -left-16 top-1/2 z-20 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-accent bg-accent text-black shadow-[0_0_20px_rgba(116,208,241,0.35)] transition hover:scale-105 hover:brightness-110 hover:shadow-[0_0_28px_rgba(116,208,241,0.55)] disabled:pointer-events-none disabled:opacity-0 lg:flex"
       >
         <MdArrowBack className="h-5 w-5" />
       </button>
@@ -65,7 +65,7 @@ export default function HomeHorizontalCarousel({ children, label }) {
         aria-label={`Faire défiler ${label} vers la droite`}
         onClick={() => scroll(1)}
         disabled={!canGoForward}
-        className="absolute right-2 top-1/2 z-20 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-black/80 text-white shadow-xl backdrop-blur-md transition hover:border-accent hover:text-accent disabled:pointer-events-none disabled:opacity-0 lg:flex"
+        className="absolute -right-16 top-1/2 z-20 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-accent bg-accent text-black shadow-[0_0_20px_rgba(116,208,241,0.35)] transition hover:scale-105 hover:brightness-110 hover:shadow-[0_0_28px_rgba(116,208,241,0.55)] disabled:pointer-events-none disabled:opacity-0 lg:flex"
       >
         <MdArrowForward className="h-5 w-5" />
       </button>

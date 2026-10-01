@@ -2,16 +2,15 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import {
   Md3dRotation,
-  MdClose,
   MdMovieFilter,
   MdSchedule,
 } from "react-icons/md";
 
 import CinemaCalendarButton from "../components/CinemaCalendarButton";
+import SessionDetailModal from "../components/SessionDetailModal";
 import TrailerModalButton from "../components/TrailerModalButton";
 
 const SESSION_DATE_FORMATTER = new Intl.DateTimeFormat("fr-FR", {
@@ -60,7 +59,6 @@ export default function ProgrammePageClient({
   todayKey = "",
   availableDateKeys = [],
 }) {
-  const router = useRouter();
   const [activeSession, setActiveSession] = useState(null);
 
   const activeSessionDateLabel = useMemo(
@@ -72,32 +70,6 @@ export default function ProgrammePageClient({
     setActiveSession(null);
   }, []);
 
-  useEffect(() => {
-    if (!activeSession) {
-      return undefined;
-    }
-
-    const handleKeyDown = (event) => {
-      if (event.key === "Escape") {
-        closeSessionModal();
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [activeSession, closeSessionModal]);
-
-  useEffect(() => {
-    const previousOverflow = document.body.style.overflow;
-    if (activeSession) {
-      document.body.style.overflow = "hidden";
-    }
-
-    return () => {
-      document.body.style.overflow = previousOverflow;
-    };
-  }, [activeSession]);
-
   const handleOpenSession = useCallback((eventItem, sessionItem) => {
     if (!eventItem || !sessionItem) {
       return;
@@ -107,18 +79,6 @@ export default function ProgrammePageClient({
       session: sessionItem,
     });
   }, []);
-
-  const handleReserveNow = useCallback(() => {
-    const sessionId = activeSession?.session?.id;
-    if (!sessionId) {
-      return;
-    }
-    router.push(`/reservations/${sessionId}`);
-  }, [activeSession, router]);
-
-  const modalSessionTime = String(activeSession?.session?.time || "").trim();
-  const modalSessionVersion = String(activeSession?.session?.label || "").trim();
-  const modalSessionDuration = String(activeSession?.event?.durationLabel || "").trim();
 
   return (
     <>
@@ -403,75 +363,11 @@ export default function ProgrammePageClient({
         </div>
       </main>
 
-      {activeSession ? (
-        <div className="fixed inset-0 z-[120]">
-          <button
-            type="button"
-            aria-label="Fermer le detail de la séance"
-            onClick={closeSessionModal}
-            className="absolute inset-0 bg-black/70 backdrop-blur-[1px]"
-          />
-          <aside className="absolute right-0 top-0 h-dvh w-full overflow-y-auto border-l border-white/10 bg-[#0a0f17] shadow-2xl sm:w-[min(72vw,560px)] lg:w-[min(40vw,620px)]">
-            <div className="relative flex h-full flex-col">
-              <div className="absolute inset-0">
-                <Image
-                  src={activeSession.event.poster}
-                  alt={`Affiche ${activeSession.event.title}`}
-                  fill
-                  sizes="(max-width: 767px) 100vw, 33vw"
-                  className="object-cover opacity-30"
-                />
-                <div className="absolute inset-0 bg-gradient-to-b from-[#0a0f17]/40 via-[#0a0f17]/90 to-[#0a0f17]" />
-              </div>
-
-              <div className="relative z-10 flex h-full flex-col p-6 md:p-8">
-                <div className="flex items-start justify-between gap-4">
-                  <div>
-                    <p className="text-xs font-semibold uppercase tracking-[0.22em] text-accent/80">
-                      Details séance
-                    </p>
-                    <h3 className="mt-2 text-2xl font-black leading-tight text-white font-display">
-                      {activeSession.event.title}
-                    </h3>
-                  </div>
-                  <button
-                    type="button"
-                    aria-label="Fermer"
-                    onClick={closeSessionModal}
-                    className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-black/35 text-white/80 transition hover:text-white"
-                  >
-                    <MdClose className="h-5 w-5" />
-                  </button>
-                </div>
-                <div className="flex flex-1 flex-col items-center justify-center text-center">
-                  <p className="text-2xl font-semibold text-white/90 md:text-3xl">
-                    {activeSessionDateLabel}
-                  </p>
-                  <p className="mt-2 text-5xl font-black tracking-tight text-white md:text-6xl">
-                    {modalSessionTime || "--:--"}
-                  </p>
-                  <p className="mt-3 text-sm font-normal uppercase tracking-[0.24em] text-white/75 md:text-base">
-                    {modalSessionVersion || "Version"}
-                  </p>
-                  {modalSessionDuration ? (
-                    <p className="mt-10 text-sm font-medium text-white/85 md:text-base">
-                      Duree: {modalSessionDuration}
-                    </p>
-                  ) : null}
-
-                  <button
-                    type="button"
-                    onClick={handleReserveNow}
-                    className="mt-8 inline-flex w-full items-center justify-center rounded-xl bg-accent px-5 py-4 text-sm font-black uppercase tracking-[0.18em] text-black transition hover:brightness-110"
-                  >
-                    Reserver maintenant
-                  </button>
-                </div>
-              </div>
-            </div>
-          </aside>
-        </div>
-      ) : null}
+      <SessionDetailModal
+        selection={activeSession}
+        dateLabel={activeSessionDateLabel}
+        onClose={closeSessionModal}
+      />
     </>
   );
 }

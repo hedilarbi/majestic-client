@@ -35,12 +35,9 @@ export default function UpcomingSection({ items = [] }) {
                   <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-80 transition-opacity group-hover:opacity-60" />
                 </div>
                 <div className="mt-3">
-                  <h3 className="text-sm font-semibold leading-tight text-white transition-colors group-hover:text-accent sm:text-lg font-display">
+                  <h3 className="text-xs font-semibold leading-tight text-white transition-colors group-hover:text-accent md:text-sm xl:text-base font-display">
                     {movie.title}
                   </h3>
-                  <p className="mt-1 line-clamp-1 text-xs text-white/60 font-body">
-                    {movie.description}
-                  </p>
                 </div>
               </article>
             </Link>

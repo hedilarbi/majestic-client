@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import GenreFilter from "../components/GenreFilter";
 import TrailerModalButton from "../components/TrailerModalButton";
+import UpcomingEventsGrid from "../components/UpcomingEventsGrid";
 import { getEventsWithALaffiche } from "../lib/events-api";
 
 export const dynamic = "force-dynamic";
@@ -56,15 +57,14 @@ export default async function EvenementsPage({ searchParams }) {
   const heroMeta = heroEvent?.meta || "Expérience cinéma premium";
   const heroEventId = heroEntry?.eventId || heroEvent?.id;
   const heroTrailerLink = heroEvent?.trailerLink || "";
-  const countLabel = type === "show" ? "spectacles" : "films";
   const ctaLabel =
     type === "show" ? "VOIR PLUS DE SPECTACLES" : "VOIR PLUS DE FILMS";
   const genres = type === "show" ? allShowTypes : MOVIE_GENRES;
 
   return (
     <main className="flex min-h-screen flex-col items-center bg-black text-white">
-      <section className="w-full px-4 py-6 sm:px-8 lg:px-20">
-        <div className="group relative w-full overflow-hidden rounded-2xl border border-white/10 shadow-2xl">
+      <section className="w-full pb-6">
+        <div className="group relative h-[40vh] w-full overflow-hidden border border-white/10 shadow-2xl md:h-[60vh] lg:h-[80vh]">
           <div className="absolute inset-0 z-10 bg-linear-to-r from-black/90 via-black/40 to-transparent" />
           {heroImageDesktop || heroImageMobile ? (
             <>
@@ -92,23 +92,23 @@ export default async function EvenementsPage({ searchParams }) {
           ) : (
             <div className="absolute inset-0 bg-black" />
           )}
-          <div className="relative z-20 flex min-h-120 flex-col items-start justify-end gap-4 px-5 pb-12 sm:px-10 sm:pb-16 lg:px-20">
+          <div className="relative z-20 flex h-full flex-col items-start justify-center gap-3 px-5 sm:px-10 lg:px-20">
             {/* <span className="rounded border border-accent/40 bg-accent/10 px-2 py-1 text-xs font-semibold text-accent font-display">
               TENDANCE
             </span> */}
-            <h1 className="text-3xl font-bold leading-tight tracking-[-0.03em] text-white drop-shadow-lg sm:text-6xl font-display">
+            <h1 className="text-xl font-bold leading-tight tracking-[-0.03em] text-white drop-shadow-lg sm:text-3xl lg:text-5xl font-display">
               {heroTitle}
             </h1>
-            <div className="text-sm text-white/70 sm:text-base font-body">
+            <div className="text-xs text-white/70 sm:text-sm lg:text-base font-body">
               {heroMeta}
             </div>
-            <p className="line-clamp-3 max-w-lg text-sm leading-relaxed text-white/70 sm:text-lg font-body">
+            <p className="line-clamp-3 max-w-lg text-xs leading-relaxed text-white/70 sm:text-base lg:text-lg font-body">
               {heroSubtitle}
             </p>
             <div className="mt-2 flex flex-wrap gap-3">
               {heroEventId ? (
                 <Link
-                  className="flex h-11 items-center gap-2 rounded-lg bg-accent px-4 text-sm font-semibold text-black shadow-[0_0_20px_rgba(116,208,241,0.4)] transition-all hover:-translate-y-0.5 hover:brightness-110 hover:shadow-[0_0_30px_rgba(116,208,241,0.6)] sm:h-12 sm:px-6 sm:text-base font-display"
+                  className="flex h-9 items-center gap-2 rounded-lg bg-accent px-3 text-[11px] font-semibold text-black shadow-[0_0_20px_rgba(116,208,241,0.4)] transition-all hover:-translate-y-0.5 hover:brightness-110 hover:shadow-[0_0_30px_rgba(116,208,241,0.6)] sm:h-10 sm:px-4 sm:text-xs lg:h-11 lg:px-5 lg:text-sm font-display"
                   href={`/evenements/${heroEventId}`}
                 >
                   Réserver
@@ -118,7 +118,7 @@ export default async function EvenementsPage({ searchParams }) {
                 trailerLink={heroTrailerLink}
                 title={heroTitle}
                 label="Bande-annonce"
-                className="flex h-11 items-center gap-2 rounded-lg border border-accent/40 bg-accent/10 px-4 text-sm font-semibold text-accent shadow-[0_0_12px_rgba(116,208,241,0.2)] transition-all hover:-translate-y-0.5 hover:bg-accent hover:text-black sm:h-12 sm:px-6 sm:text-base font-display"
+                className="flex h-9 items-center gap-2 rounded-lg border border-accent/40 bg-accent/10 px-3 text-[11px] font-semibold text-accent shadow-[0_0_12px_rgba(116,208,241,0.2)] transition-all hover:-translate-y-0.5 hover:bg-accent hover:text-black sm:h-10 sm:px-4 sm:text-xs lg:h-11 lg:px-5 lg:text-sm font-display"
               />
             </div>
           </div>
@@ -127,16 +127,10 @@ export default async function EvenementsPage({ searchParams }) {
 
       <section className="w-full px-4 py-2 sm:px-8 lg:px-20">
         <div className="rounded-xl border border-white/10 bg-black/70 p-4 shadow-lg backdrop-blur-lg">
-          <div className="mb-4 flex flex-col items-start justify-between gap-4 md:mb-0 md:flex-row md:items-center">
-            <h2 className="text-xl font-semibold text-white font-display">
+          <div className="flex items-center justify-between gap-4">
+            <h2 className="text-base font-semibold text-white sm:text-xl font-display">
               À l&apos;affiche
             </h2>
-            <div className="text-sm text-white/60 font-body">
-              <span className="font-bold text-white">{events.length}</span>{" "}
-              {countLabel} trouvés
-            </div>
-          </div>
-          <div className="hide-scrollbar mt-2 flex w-full gap-3 overflow-x-auto pb-2 font-display">
             <GenreFilter genres={genres} currentGenre={genre} type={type} />
           </div>
         </div>
@@ -183,12 +177,12 @@ export default async function EvenementsPage({ searchParams }) {
         </div>
       </section>
 
-      {type === "show" && allExpiredShows.length ? (
+      {type === "show" && events.length === 0 && allExpiredShows.length ? (
         <section className="w-full px-4 py-8 sm:px-8 lg:px-20">
           <div className="mb-8 flex items-center gap-3">
             <span className="h-8 w-1 rounded-full bg-white/30" />
-            <h2 className="text-2xl font-semibold text-white/60 sm:text-3xl font-display">
-              Expiré
+            <h2 className="text-xl font-semibold text-white/60 sm:text-3xl font-display">
+              Spectacles passés
             </h2>
           </div>
           <div className="grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
@@ -208,7 +202,7 @@ export default async function EvenementsPage({ searchParams }) {
                   />
                   <div className="absolute inset-0 bg-linear-to-t from-black/90 via-transparent to-transparent opacity-80" />
                   <span className="absolute left-3 top-3 rounded-full bg-white/15 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-white backdrop-blur-sm">
-                    Expiré
+                    Terminé
                   </span>
                   <div className="absolute bottom-0 left-0 w-full translate-y-2 p-4 transition-transform duration-300 group-hover:translate-y-0">
                     <h3 className="text-lg font-semibold leading-tight text-white/80 drop-shadow-md font-display">
@@ -229,45 +223,14 @@ export default async function EvenementsPage({ searchParams }) {
         <section className="mb-20 w-full px-4 py-8 sm:px-8 lg:px-20">
           <div className="mb-8 flex items-center gap-3">
             <span className="h-8 w-1 rounded-full bg-accent" />
-            <h2 className="text-2xl font-semibold text-white sm:text-3xl font-display">
+            <h2 className="text-xl font-semibold text-white sm:text-3xl font-display">
               Prochainement
             </h2>
           </div>
-          <div className="grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-            {upcomingEvents.map((movie) => (
-              <Link
-                key={movie.id ?? movie.title}
-                href={`/evenements/${movie.id}`}
-                className="group relative flex flex-col gap-3 rounded-xl border border-white/5 bg-white/5 transition-all duration-300 hover:shadow-[0_0_20px_rgba(16,52,166,0.4)]"
-              >
-                <div className="relative aspect-2/3 w-full overflow-hidden rounded-t-xl">
-                  <Image
-                    src={movie.image}
-                    alt={movie.imageAlt}
-                    fill
-                    sizes="(min-width: 1280px) 18vw, (min-width: 1024px) 22vw, (min-width: 768px) 30vw, 45vw"
-                    className="object-cover transition-transform duration-500 group-hover:scale-110"
-                  />
-                  <div className="absolute inset-0 bg-linear-to-t from-black/90 via-transparent to-transparent opacity-80" />
-                  <div className="absolute bottom-0 left-0 w-full translate-y-2 p-4 transition-transform duration-300 group-hover:translate-y-0">
-                    <h3 className="text-lg font-semibold leading-tight text-white drop-shadow-md font-display">
-                      {movie.title}
-                    </h3>
-                    <div className="mt-1 line-clamp-1 text-xs text-white/70 font-body">
-                      {movie.meta ||
-                        movie.description ||
-                        "Prochainement"}
-                    </div>
-                  </div>
-                  <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                    <span className="rounded-full bg-accent px-6 py-2 text-sm font-semibold text-black shadow-[0_0_20px_rgba(116,208,241,0.45)] font-display">
-                      Réserver
-                    </span>
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </div>
+          <UpcomingEventsGrid
+            items={upcomingEvents}
+            paginated={type === "movie"}
+          />
         </section>
       ) : null}
     </main>

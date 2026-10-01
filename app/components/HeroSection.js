@@ -17,6 +17,7 @@ export default function HeroSection({ slides = [] }) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [dragOffset, setDragOffset] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
+  const [isPressed, setIsPressed] = useState(false);
   const sliderRef = useRef(null);
   const gestureRef = useRef(null);
   const didSwipeRef = useRef(false);
@@ -24,13 +25,13 @@ export default function HeroSection({ slides = [] }) {
   const safeIndex = slideCount > 0 ? Math.min(activeIndex, slideCount - 1) : 0;
 
   useEffect(() => {
-    if (slideCount <= 1) return;
-    const interval = setInterval(() => {
+    if (slideCount <= 1 || isPressed) return;
+    const timeout = setTimeout(() => {
       setActiveIndex((current) => (current + 1) % slideCount);
     }, AUTOPLAY_DELAY);
 
-    return () => clearInterval(interval);
-  }, [slideCount]);
+    return () => clearTimeout(timeout);
+  }, [activeIndex, isPressed, slideCount]);
 
   const handlePrev = () => {
     setActiveIndex((current) => (current - 1 + slideCount) % slideCount);
@@ -47,13 +48,12 @@ export default function HeroSection({ slides = [] }) {
   };
 
   const handlePointerDown = (event) => {
-    if (
-      slideCount <= 1 ||
-      event.pointerType === "mouse" ||
-      !window.matchMedia("(max-width: 1279px)").matches
-    ) {
-      return;
-    }
+    if (slideCount <= 1) return;
+
+    if (event.target.closest("a, button, input, select, textarea")) return;
+
+    setIsPressed(true);
+    event.currentTarget.setPointerCapture(event.pointerId);
 
     gestureRef.current = {
       pointerId: event.pointerId,
@@ -62,7 +62,6 @@ export default function HeroSection({ slides = [] }) {
       horizontal: false,
     };
     didSwipeRef.current = false;
-    event.currentTarget.setPointerCapture(event.pointerId);
   };
 
   const handlePointerMove = (event) => {
@@ -86,6 +85,7 @@ export default function HeroSection({ slides = [] }) {
   };
 
   const handlePointerEnd = (event) => {
+    setIsPressed(false);
     const gesture = gestureRef.current;
     if (!gesture || gesture.pointerId !== event.pointerId) return;
 
@@ -96,8 +96,20 @@ export default function HeroSection({ slides = [] }) {
       didSwipeRef.current = true;
       if (deltaX < 0) handleNext();
       else handlePrev();
+
+      window.setTimeout(() => {
+        didSwipeRef.current = false;
+      }, 0);
     }
 
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId);
+    }
+    resetGesture();
+  };
+
+  const handlePointerCancel = () => {
+    setIsPressed(false);
     resetGesture();
   };
 
@@ -112,12 +124,12 @@ export default function HeroSection({ slides = [] }) {
     <section className="relative w-full">
       <div
         ref={sliderRef}
-        className="relative h-[85vh] touch-pan-y overflow-hidden select-none xl:select-auto"
+        className="relative h-[85vh] touch-pan-y overflow-hidden select-none"
         onClickCapture={preventClickAfterSwipe}
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerEnd}
-        onPointerCancel={resetGesture}
+        onPointerCancel={handlePointerCancel}
       >
         <div
           className={`flex h-full ease-[cubic-bezier(0.4,0,0.2,1)] ${
@@ -156,12 +168,12 @@ export default function HeroSection({ slides = [] }) {
               <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/50 to-transparent" />
               <div className="relative z-10 mx-auto flex h-full w-full items-center px-4 sm:px-8 lg:px-24">
                 <div className="max-w-2xl space-y-6">
-                  <h1 className="text-4xl font-semibold leading-[1.1] tracking-tight text-white sm:text-7xl font-display">
+                  <h1 className="text-4xl font-semibold leading-[1.1] tracking-tight text-white sm:text-5xl xl:text-7xl font-display">
                     <span className="text-glow bg-gradient-to-r from-white via-white/90 to-accent bg-clip-text text-transparent">
                       {slide.titleHighlight}
                     </span>
                   </h1>
-                  <p className="line-clamp-3 max-w-lg text-base leading-relaxed text-white/80 sm:text-lg font-body">
+                  <p className="line-clamp-3 max-w-lg text-base leading-relaxed text-white/80 xl:text-lg font-body">
                     {slide.synopsis}
                   </p>
                   <div className="flex flex-wrap gap-4 pt-4">
@@ -192,38 +204,20 @@ export default function HeroSection({ slides = [] }) {
 
         {slideCount > 1 ? (
           <>
-            <div className="absolute right-6 top-6 z-20 flex items-center gap-2 sm:hidden">
+            <div className="absolute inset-y-0 left-4 z-20 hidden items-center xl:flex">
               <button
                 aria-label="Diapositive précédente"
-                className="rounded-full border border-white/20 bg-black/40 p-2 text-white transition hover:bg-black/60"
-                onClick={handlePrev}
-                type="button"
-              >
-                <MdArrowBack className="h-4 w-4" />
-              </button>
-              <button
-                aria-label="Diapositive suivante"
-                className="rounded-full border border-white/20 bg-black/40 p-2 text-white transition hover:bg-black/60"
-                onClick={handleNext}
-                type="button"
-              >
-                <MdArrowForward className="h-4 w-4" />
-              </button>
-            </div>
-            <div className="absolute inset-y-0 left-4 z-20 hidden items-center sm:flex">
-              <button
-                aria-label="Diapositive précédente"
-                className="rounded-full border border-white/20 bg-black/40 p-3 text-white transition hover:bg-black/60"
+                className="rounded-full border border-accent bg-accent p-3 text-black shadow-[0_0_20px_rgba(116,208,241,0.35)] transition hover:scale-105 hover:brightness-110"
                 onClick={handlePrev}
                 type="button"
               >
                 <MdArrowBack className="h-5 w-5" />
               </button>
             </div>
-            <div className="absolute inset-y-0 right-4 z-20 hidden items-center sm:flex">
+            <div className="absolute inset-y-0 right-4 z-20 hidden items-center xl:flex">
               <button
                 aria-label="Diapositive suivante"
-                className="rounded-full border border-white/20 bg-black/40 p-3 text-white transition hover:bg-black/60"
+                className="rounded-full border border-accent bg-accent p-3 text-black shadow-[0_0_20px_rgba(116,208,241,0.35)] transition hover:scale-105 hover:brightness-110"
                 onClick={handleNext}
                 type="button"
               >

@@ -11,6 +11,12 @@ import {
 
 import ActualiteTypeBadge from "./ActualiteTypeBadge";
 
+const CTA_LABELS = {
+  article: "Lire l'article",
+  trailer: "Voir la vidéo",
+  form: "Ouvrir le formulaire",
+};
+
 export default function ActualiteHomeSection({ items = [] }) {
   if (!items.length) {
     return null;
@@ -19,7 +25,7 @@ export default function ActualiteHomeSection({ items = [] }) {
   return (
     <section className="relative w-full border-t border-white/5 py-14">
       <div className="mx-auto px-4 sm:px-8 lg:px-20">
-        <div className="mb-10 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+        <div className="mb-10">
           <div>
             <h2 className="text-2xl font-semibold uppercase tracking-wide text-white md:text-3xl font-display">
               Actualités
@@ -29,16 +35,9 @@ export default function ActualiteHomeSection({ items = [] }) {
               publiés par Le Majestic.
             </p>
           </div>
-          <Link
-            href="/actualite"
-            className="inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.22em] text-accent transition hover:brightness-110"
-          >
-            Voir tout
-            <RiArrowRightLine className="h-4 w-4" />
-          </Link>
         </div>
 
-        <div className="grid gap-6 lg:grid-cols-3">
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {items.map((item) => (
             <Link
               key={item.id}
@@ -46,7 +45,7 @@ export default function ActualiteHomeSection({ items = [] }) {
               className="group block h-full overflow-hidden rounded-[1.8rem] border border-white/10 bg-white/5 shadow-[0_20px_60px_rgba(0,0,0,0.25)] backdrop-blur-xl transition hover:border-primary/30 hover:bg-white/[0.07]"
             >
               <article className="flex h-full flex-col">
-                <div className="relative aspect-[16/10]">
+                <div className="relative aspect-[16/10] overflow-hidden">
                   <Image
                     src={getActualiteCardImage(item)}
                     alt={item.title || "Actualité"}
@@ -56,7 +55,7 @@ export default function ActualiteHomeSection({ items = [] }) {
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
                 </div>
-                <div className="flex h-64 flex-col gap-4 p-6">
+                <div className="flex h-56 flex-col gap-3 p-5">
                   <div className="flex h-7 shrink-0 items-center gap-3 overflow-hidden">
                     <ActualiteTypeBadge type={item.type} />
                     <span className="truncate whitespace-nowrap text-[11px] font-semibold uppercase tracking-[0.22em] text-white/40">
@@ -66,13 +65,27 @@ export default function ActualiteHomeSection({ items = [] }) {
                   <h3 className="line-clamp-2 min-h-12 text-xl font-semibold text-white font-display transition group-hover:text-accent">
                     {item.title}
                   </h3>
-                  <p className="line-clamp-3 text-sm leading-7 text-white/60">
+                  <p className="line-clamp-2 text-sm leading-6 text-white/60">
                     {getActualiteSummary(item)}
                   </p>
+                  <span className="mt-auto inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-accent">
+                    {CTA_LABELS[item.type] || "Voir le détail"}
+                    <RiArrowRightLine className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                  </span>
                 </div>
               </article>
             </Link>
           ))}
+        </div>
+
+        <div className="mt-10 flex justify-center">
+          <Link
+            href="/actualite"
+            className="group inline-flex items-center gap-2 rounded-full bg-accent px-7 py-3 text-sm font-semibold uppercase tracking-[0.18em] text-black shadow-[0_0_22px_rgba(116,208,241,0.32)] transition hover:-translate-y-0.5 hover:brightness-110 hover:shadow-[0_0_30px_rgba(116,208,241,0.5)]"
+          >
+            Voir tout
+            <RiArrowRightLine className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+          </Link>
         </div>
       </div>
     </section>
