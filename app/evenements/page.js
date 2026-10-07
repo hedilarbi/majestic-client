@@ -3,9 +3,17 @@ import Link from "next/link";
 import GenreFilter from "../components/GenreFilter";
 import TrailerModalButton from "../components/TrailerModalButton";
 import UpcomingEventsGrid from "../components/UpcomingEventsGrid";
+import FaqSection from "../components/FaqSection";
 import { getEventsWithALaffiche } from "../lib/events-api";
+import { evenementsFaq } from "../lib/seo-faqs";
 
 export const dynamic = "force-dynamic";
+
+export const metadata = {
+  title: "Événements Le Majestic Bizerte | Programme, Séances & Réservation en ligne",
+  description:
+    "Consultez le programme du Ciné-Théâtre Le Majestic à Bizerte et réservez vos billets en ligne rapidement. Films, spectacles et événements toute l’année.",
+};
 
 const MOVIE_GENRES = [
   "Action",
@@ -93,12 +101,12 @@ export default async function EvenementsPage({ searchParams }) {
             <div className="absolute inset-0 bg-black" />
           )}
           <div className="relative z-20 flex h-full flex-col items-start justify-center gap-3 px-5 sm:px-10 lg:px-20">
-            {/* <span className="rounded border border-accent/40 bg-accent/10 px-2 py-1 text-xs font-semibold text-accent font-display">
-              TENDANCE
-            </span> */}
-            <h1 className="text-xl font-bold leading-tight tracking-[-0.03em] text-white drop-shadow-lg sm:text-3xl lg:text-5xl font-display">
-              {heroTitle}
+            <h1 className="text-[11px] font-bold uppercase tracking-wider text-accent drop-shadow-lg sm:text-sm font-display">
+              Programme &amp; Événements du Ciné-Théâtre Le Majestic
             </h1>
+            <h2 className="text-xl font-bold leading-tight tracking-[-0.03em] text-white drop-shadow-lg sm:text-3xl lg:text-5xl font-display">
+              {heroTitle}
+            </h2>
             <div className="text-xs text-white/70 sm:text-sm lg:text-base font-body">
               {heroMeta}
             </div>
@@ -233,6 +241,10 @@ export default async function EvenementsPage({ searchParams }) {
           />
         </section>
       ) : null}
+      <FaqSection
+        title="FAQ – Réserver au Ciné-Théâtre Le Majestic"
+        items={evenementsFaq}
+      />
     </main>
   );
 }

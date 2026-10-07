@@ -4,6 +4,12 @@ import {
 } from "../lib/cinema-api";
 import ProgrammePageClient from "./ProgrammePageClient";
 
+export const metadata = {
+  title: "Cinéma Bizerte programme | Films à l’affiche Majestic Bizerte horaires",
+  description:
+    "Cinéma Bizerte programme : découvrez les spectacles et films du moment au Majestic Bizerte, les horaires des séances et les événements culturels à voir aujourd’hui à Bizerte.",
+};
+
 const WEEKDAY_FORMATTER = new Intl.DateTimeFormat("fr-FR", {
   weekday: "short",
 });

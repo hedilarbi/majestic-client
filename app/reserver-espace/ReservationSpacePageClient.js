@@ -18,6 +18,14 @@ const ESTABLISHMENT_OPTIONS = [
   { value: "organisation", label: "Organisation" },
 ];
 
+const EVENT_TYPES = [
+  "Ateliers et formations",
+  "Projections privées",
+  "Conférences et rencontres",
+  "Spectacles et activités artistiques",
+  "Événements culturels ou associatifs",
+];
+
 const INPUT_CLASSES =
   "w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-white/30 transition focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/25";
 
@@ -147,30 +155,37 @@ export default function ReservationSpacePageClient() {
               Réservation d&apos;espace
             </p>
             <h1 className="mt-4 text-3xl font-semibold tracking-tight text-white sm:text-4xl">
-              Organisez votre événement au Majestic
+              Réserver votre espace au Majestic Bizerte
             </h1>
             <p className="mt-4 text-sm leading-7 text-white/65 sm:text-base">
-              Remplissez ce formulaire pour nous indiquer votre besoin,
-              l&apos;établissement concerné et la date souhaitée. Notre équipe
-              reviendra vers vous avec une proposition adaptee.
+              Le Majestic Bizerte est un espace culturel ouvert aux
+              associations, aux entreprises et aux particuliers souhaitant
+              organiser un événement, un atelier ou une activité culturelle
+              dans un cadre adapté et accessible.
+            </p>
+            <p className="mt-4 text-sm leading-7 text-white/65 sm:text-base">
+              Plusieurs espaces et salles du Majestic peuvent être réservés pour
+              différents types d&apos;événements :
             </p>
 
-            <div className="mt-8 space-y-4 text-sm text-white/70">
-              <div className="flex items-start gap-3 rounded-2xl border border-white/10 bg-black/20 px-4 py-4">
-                <RiCheckboxCircleLine className="mt-0.5 h-5 w-5 shrink-0 text-accent" />
-                <p>
-                  Associations et organisations peuvent deposer une demande
-                  directement depuis cette page.
-                </p>
-              </div>
-              <div className="flex items-start gap-3 rounded-2xl border border-white/10 bg-black/20 px-4 py-4">
-                <RiCalendarScheduleLine className="mt-0.5 h-5 w-5 shrink-0 text-accent" />
-                <p>
-                  Indiquez la date et l&apos;heure souhaitees pour accelerer le
-                  traitement de votre dossier.
-                </p>
-              </div>
-            </div>
+            <ul className="mt-4 space-y-2 text-sm text-white/70">
+              {EVENT_TYPES.map((eventType) => (
+                <li
+                  key={eventType}
+                  className="flex items-start gap-3 rounded-2xl border border-white/10 bg-black/20 px-4 py-3"
+                >
+                  <RiCheckboxCircleLine className="mt-0.5 h-5 w-5 shrink-0 text-accent" />
+                  {eventType}
+                </li>
+              ))}
+            </ul>
+
+            <p className="mt-4 text-sm leading-7 text-white/65 sm:text-base">
+              Si vous souhaitez réserver un espace au Majestic Bizerte, vous
+              pouvez effectuer une demande directement via le formulaire.
+              Notre équipe vous répondra rapidement pour confirmer la
+              disponibilité et discuter des modalités d&apos;organisation.
+            </p>
           </div>
         </section>
 

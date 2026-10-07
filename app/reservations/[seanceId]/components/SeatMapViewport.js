@@ -1,6 +1,11 @@
 import { RiDragMove2Line, RiZoomInLine } from "react-icons/ri";
 
-import { getSeatStatus, isAisleCell, seatKey } from "@/app/lib/seat-utils";
+import {
+  formatSeatLabel,
+  getSeatStatus,
+  isAisleCell,
+  seatKey,
+} from "@/app/lib/seat-utils";
 
 import SeatIcon from "./SeatIcon";
 
@@ -104,7 +109,7 @@ export default function SeatMapViewport({
                       className={`flex h-[34px] w-[34px] items-center justify-center rounded-md p-0 ${
                         isDisabled ? "cursor-not-allowed" : "cursor-pointer"
                       }`}
-                      aria-label={`Siège ${row.label}${cell.col}`}
+                      aria-label={`Siège ${formatSeatLabel({ ...cell, row: row.label })}`}
                       disabled={isDisabled}
                       onClick={() => onToggleSeat(cell)}
                       onTouchEnd={(event) => onTouchSeatEnd?.(event, cell)}

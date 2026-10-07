@@ -6,7 +6,9 @@ import { io } from "socket.io-client";
 import { RiArrowLeftSLine } from "react-icons/ri";
 
 import {
+  buildSeatNumberMap,
   buildSeatRows,
+  formatSeatLabel,
   normalizeSeatsPayload,
   seatKey
 } from
@@ -81,6 +83,8 @@ export default function ReservationSiegesClient({ seanceId, socketUrl }) {
   const router = useRouter();
   const [seatRows, setSeatRows] = useState([]);
   const [maxCols, setMaxCols] = useState(0);
+  // Seat numbers shown to people (aisles not counted), keyed by seatKey
+  const [seatNumberMap, setSeatNumberMap] = useState(() => new Map());
   const [selectedSeats, setSelectedSeats] = useState([]);
   const [myReservation, setMyReservation] = useState(null);
   const [seanceInfo, setSeanceInfo] = useState({
@@ -454,6 +458,7 @@ export default function ReservationSiegesClient({ seanceId, socketUrl }) {
     indexRef.current = indexByKey;
     setSeatRows(rows);
     setMaxCols(computedMaxCols);
+    setSeatNumberMap(buildSeatNumberMap(seatMap));
   }, []);
 
   const updateSeatStatuses = useCallback((seats, status, options = {}) => {
@@ -1020,7 +1025,10 @@ export default function ReservationSiegesClient({ seanceId, socketUrl }) {
         }
 
         if (!exists && fixedSeatMeta) {
-          const seatLabel = `${cell.row}${cell.col}`;
+          const seatLabel = formatSeatLabel({
+            ...cell,
+            number: cell.number ?? seatNumberMap.get(seatKey(cell.row, cell.col))
+          });
           const pricingId = fixedSeatMeta.id ?
             String(fixedSeatMeta.id) :
             cell?.pricingOverrideId ?
@@ -1067,6 +1075,7 @@ export default function ReservationSiegesClient({ seanceId, socketUrl }) {
       isPricingMetaAvailable,
       pricingById,
       seanceId,
+      seatNumberMap,
       syncSelectedSeats,
       updateSeatStatuses]
 
@@ -1295,8 +1304,8 @@ export default function ReservationSiegesClient({ seanceId, socketUrl }) {
     filter(Boolean).
     join(" • ");
   const reservedSeatLabels = useMemo(
-    () => sortSeatLabels(selectedSeats),
-    [selectedSeats]
+    () => sortSeatLabels(selectedSeats, seatNumberMap),
+    [seatNumberMap, selectedSeats]
   );
   const selectedFixedSeatsCount = useMemo(
     () => selectedSeats.filter((seat) => Boolean(getFixedSeatMeta(seat))).length,

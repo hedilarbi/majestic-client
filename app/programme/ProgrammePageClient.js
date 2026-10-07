@@ -96,12 +96,12 @@ export default function ProgrammePageClient({
           </div>
           <div className="relative mb-6 flex flex-col items-end justify-between gap-4 md:mb-8 md:gap-6 md:flex-row">
             <div>
-              <p className="mb-1 text-xs font-bold uppercase tracking-wider text-accent font-display md:mb-2 md:text-sm">
-                A l&apos;affiche
-              </p>
-              <h3 className="text-2xl font-bold text-white drop-shadow-lg md:text-4xl lg:text-5xl font-display">
+              <h1 className="mb-1 text-xs font-bold uppercase tracking-wider text-accent font-display md:mb-2 md:text-sm">
+                Programme ciné Bizerte – Films à l&apos;affiche au Majestic
+              </h1>
+              <h2 className="text-2xl font-bold text-white drop-shadow-lg md:text-4xl lg:text-5xl font-display">
                 Selectionnez une date
-              </h3>
+              </h2>
             </div>
             <div className="flex gap-2">
               <CinemaCalendarButton

@@ -17,6 +17,21 @@ export default function ActualiteTrailerCard({ item }) {
 
   return (
     <article className="overflow-hidden rounded-[2rem] border border-white/10 bg-white/5 shadow-[0_30px_90px_rgba(0,0,0,0.28)] backdrop-blur-2xl">
+      {/* Banner image */}
+      {coverImage ? (
+        <div className="relative h-64 w-full sm:h-80 lg:h-105 bg-black/40">
+          <Image
+            src={coverImage}
+            alt={item.title || "Vidéo"}
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover"
+          />
+          <div className="absolute inset-0 bg-linear-to-t from-black/60 via-black/10 to-transparent" />
+        </div>
+      ) : null}
+
       <div className="p-6 sm:p-8">
         <div className="flex flex-wrap items-center gap-3">
           <ActualiteTypeBadge type={item.type} />
@@ -25,7 +40,7 @@ export default function ActualiteTrailerCard({ item }) {
           </span>
         </div>
 
-        <div className="mt-5 flex min-w-0 flex-col gap-8 lg:grid lg:grid-cols-[minmax(0,1fr)_320px]">
+        <div className="mt-5 min-w-0">
           <div className="min-w-0 overflow-hidden">
             <h2 className="wrap-break-word text-2xl font-semibold text-white sm:text-3xl font-display">
               {item.title}
@@ -71,19 +86,6 @@ export default function ActualiteTrailerCard({ item }) {
               </Link>
             ) : null}
           </div>
-
-          {coverImage ? (
-            <div className="relative aspect-2/3 w-full overflow-hidden rounded-[1.6rem] border border-white/10 bg-black/40">
-              <Image
-                src={coverImage}
-                alt={item.title || "Vidéo"}
-                fill
-                sizes="(min-width: 1024px) 320px, 100vw"
-                className="object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
-            </div>
-          ) : null}
         </div>
       </div>
     </article>

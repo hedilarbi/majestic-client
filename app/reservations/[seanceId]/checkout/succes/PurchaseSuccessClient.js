@@ -53,7 +53,7 @@ const formatSeatLabel = (seat) => {
   if (!seat || seat.row === undefined || seat.col === undefined) {
     return "";
   }
-  return `${seat.row}${seat.col}`;
+  return `${seat.row}${seat.number ?? seat.col}`;
 };
 
 const normalizePayload = ({ payload, seanceId, bookingId }) => {

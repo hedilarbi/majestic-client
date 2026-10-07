@@ -135,3 +135,44 @@ export const buildSeatRows = (seatMap = []) => {
 
   return { rows, maxCols, indexByKey };
 };
+
+// Seat number shown to people: aisles ("couloir") do not count, so a row
+// chair, chair, aisle, chair is numbered 1, 2, -, 3. Mirrors the server's
+// utils/seatNumbers.js; `col` is only the grid position.
+export const buildSeatNumberMap = (seatMap = []) => {
+  const chairsByRow = new Map();
+
+  (Array.isArray(seatMap) ? seatMap : []).forEach((cell) => {
+    if (!cell || isAisleCell(cell)) {
+      return;
+    }
+    const row = String(cell.row ?? "").trim();
+    const col = Number(cell.col);
+    if (!row || !Number.isFinite(col)) {
+      return;
+    }
+    if (!chairsByRow.has(row)) {
+      chairsByRow.set(row, []);
+    }
+    chairsByRow.get(row).push(col);
+  });
+
+  const map = new Map();
+  chairsByRow.forEach((cols, row) => {
+    cols
+      .sort((a, b) => a - b)
+      .forEach((col, index) => {
+        map.set(seatKey(row, col), index + 1);
+      });
+  });
+
+  return map;
+};
+
+// Falls back to the grid column for seats saved before seat numbers existed.
+export const formatSeatLabel = (seat) => {
+  if (!seat) {
+    return "";
+  }
+  return `${seat.row ?? ""}${seat.number ?? seat.col ?? ""}`;
+};

@@ -1,4 +1,4 @@
-import { seatKey } from "@/app/lib/seat-utils";
+import { formatSeatLabel, seatKey } from "@/app/lib/seat-utils";
 
 export const FALLBACK_POSTER = "/images/logo.png";
 
@@ -414,7 +414,7 @@ export const formatPrice = (value) => {
   return `${numeric.toFixed(2).replace(".", ",")} DT`;
 };
 
-export const sortSeatLabels = (seats = []) => {
+export const sortSeatLabels = (seats = [], seatNumberMap = new Map()) => {
   return seats.
   filter((seat) => seat && seat.row !== undefined && seat.col !== undefined).
   slice().
@@ -426,7 +426,12 @@ export const sortSeatLabels = (seats = []) => {
     }
     return Number(a.col) - Number(b.col);
   }).
-  map((seat) => `${seat.row}${seat.col}`);
+  map((seat) =>
+  formatSeatLabel({
+    ...seat,
+    number: seat.number ?? seatNumberMap.get(seatKey(seat.row, seat.col))
+  })
+  );
 };
 
 export const toSeatKeySet = (seats = []) =>

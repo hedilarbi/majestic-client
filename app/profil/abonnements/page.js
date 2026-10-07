@@ -1,6 +1,8 @@
 import { MdCalendarMonth } from "react-icons/md";
 import { getProfileSubscriptionSales } from "@/app/lib/profile-api";
 
+import SubscriptionQrCode from "./SubscriptionQrCode";
+
 const formatPrice = (value) => {
   const amount = typeof value === "number" ? value : Number.parseFloat(value);
   if (!Number.isFinite(amount)) {
@@ -175,13 +177,9 @@ export default async function AbonnementsPage() {
                     {sale.subscriptionCode}
                   </p>
                 </div>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={`https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=${encodeURIComponent(sale.subscriptionCode)}`}
-                  alt={`QR ${sale.subscriptionCode}`}
-                  width={80}
-                  height={80}
-                  className="rounded-lg bg-white p-1"
+                <SubscriptionQrCode
+                  code={sale.subscriptionCode}
+                  title={sale?.subscription?.name}
                 />
               </div>
             ) : null}
@@ -257,13 +255,9 @@ export default async function AbonnementsPage() {
                     {sale.subscriptionCode}
                   </p>
                 </div>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={`https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=${encodeURIComponent(sale.subscriptionCode)}`}
-                  alt={`QR ${sale.subscriptionCode}`}
-                  width={80}
-                  height={80}
-                  className="rounded-lg bg-white p-1"
+                <SubscriptionQrCode
+                  code={sale.subscriptionCode}
+                  title={sale?.subscription?.name}
                 />
               </div>
             ) : null}

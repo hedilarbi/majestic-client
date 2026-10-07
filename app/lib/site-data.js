@@ -24,7 +24,7 @@ export const footerLinks = [
     title: "Support",
     links: [
       { label: "Nous contacter", href: "#" },
-      { label: "FAQ", href: "#" },
+      { label: "FAQ", href: "/#faq" },
       { label: "Politique de confidentialité", href: "#" },
       { label: "Conditions d'utilisation", href: "#" },
     ],
