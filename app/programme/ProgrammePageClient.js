@@ -10,6 +10,7 @@ import {
 } from "react-icons/md";
 
 import CinemaCalendarButton from "../components/CinemaCalendarButton";
+import ExpandableText from "../components/ExpandableText";
 import SessionDetailModal from "../components/SessionDetailModal";
 import TrailerModalButton from "../components/TrailerModalButton";
 
@@ -100,7 +101,7 @@ export default function ProgrammePageClient({
                 Programme ciné Bizerte – Films à l&apos;affiche au Majestic
               </h1>
               <h2 className="text-2xl font-bold text-white drop-shadow-lg md:text-4xl lg:text-5xl font-display">
-                Selectionnez une date
+                Sélectionnez une date
               </h2>
             </div>
             <div className="flex gap-2">
@@ -291,9 +292,11 @@ export default function ProgrammePageClient({
                           </div>
                         ) : null}
                       </div>
-                      <p className="max-w-2xl text-sm leading-relaxed text-white/70 md:text-base font-body">
-                        {event.description}
-                      </p>
+                      <ExpandableText
+                        text={event.description}
+                        lines={3}
+                        className="max-w-2xl text-sm leading-relaxed text-white/70 md:text-base font-body"
+                      />
                     </div>
                     <div className="space-y-3">
                       <TrailerModalButton
@@ -359,7 +362,7 @@ export default function ProgrammePageClient({
 
         <div className="mt-12 flex items-center justify-center text-white/40">
           <MdMovieFilter className="mr-2 text-lg" />
-          Programme Cinema
+          Programme cinéma
         </div>
       </main>
 

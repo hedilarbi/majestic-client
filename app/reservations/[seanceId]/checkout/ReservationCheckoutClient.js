@@ -1041,11 +1041,16 @@ export default function ReservationCheckoutClient({ seanceId, socketUrl }) {
         booking: booking || null,
         seanceId: String(seanceId || ""),
         seanceInfo: seanceInfo || null,
-        seats: safeSeats.
+        // Prefer the booked seats returned by the server: they carry the seat
+        // number shown to people (aisles not counted), not just the grid col.
+        seats: (Array.isArray(booking?.seats) && booking.seats.length ?
+          booking.seats :
+          safeSeats).
           filter((seat) => seat && seat.row !== undefined && seat.col !== undefined).
           map((seat) => ({
             row: String(seat.row),
-            col: Number(seat.col)
+            col: Number(seat.col),
+            number: Number(seat.number) > 0 ? Number(seat.number) : null
           })),
         pricingSelections: Array.isArray(selections) ? selections : [],
         totalAmount: Number.isFinite(toNumber(booking?.totalAmount)) ?
@@ -1235,7 +1240,7 @@ export default function ReservationCheckoutClient({ seanceId, socketUrl }) {
         }
         setSubmitState({
           status: "success",
-          message: "Réservation finalisee avec succès.",
+          message: "Réservation finalisée avec succès.",
           booking: createdBooking
         });
 
@@ -1574,7 +1579,7 @@ export default function ReservationCheckoutClient({ seanceId, socketUrl }) {
         <Link
           href={`/reservations/${seanceId}`}
           className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-accent text-black/80 transition hover:border-accent/70 hover:text-accent"
-          aria-label="Retour a la selection des sièges">
+          aria-label="Retour à la sélection des sièges">
 
           <RiArrowLeftSLine className="h-5 w-5" />
         </Link>
@@ -1612,7 +1617,7 @@ export default function ReservationCheckoutClient({ seanceId, socketUrl }) {
             <div className="flex min-w-[240px] flex-1 items-center justify-between rounded-2xl border border-white/10 bg-[#161e22]/90 p-5">
               <div className="flex flex-col gap-1">
                 <p className="text-xs font-semibold uppercase tracking-[0.24em] text-white/50">
-                  Restantes a attribuer
+                  Places restantes à attribuer
                 </p>
                 <p className="text-4xl font-black tracking-tight text-accent">
                   {remainingToAssign}

@@ -3,7 +3,7 @@ import Link from "next/link";
 import { RiArrowRightLine } from "react-icons/ri";
 
 import {
-  formatActualiteDate,
+  formatActualitePublishedDate,
   getActualiteCardImage,
   getActualiteHref,
   getActualiteSummary,
@@ -42,7 +42,7 @@ export default function ActualiteListCard({ item }) {
           <div className="flex h-7 shrink-0 items-center gap-3 overflow-hidden">
             <ActualiteTypeBadge type={item?.type} />
             <span className="truncate whitespace-nowrap text-[11px] font-semibold uppercase tracking-[0.22em] text-white/40">
-              {formatActualiteDate(item?.createdAt)}
+              {formatActualitePublishedDate(item?.createdAt)}
             </span>
           </div>
 

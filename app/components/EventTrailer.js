@@ -130,7 +130,7 @@ export default function EventTrailer({
 
         {!hasTrailer ? (
           <div className="absolute inset-x-4 bottom-4 rounded-full border border-white/10 bg-black/65 px-4 py-2 text-center text-xs font-semibold uppercase tracking-[0.18em] text-white/55">
-            Bande annonce indisponible
+            Bande-annonce indisponible
           </div>
         ) : null}
       </div>
@@ -170,7 +170,7 @@ export default function EventTrailer({
                     <iframe
                       className="h-full w-full"
                       src={videoConfig.src}
-                      title={`Bande annonce ${title}`}
+                      title={`Bande-annonce ${title}`}
                       allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
                       allowFullScreen
                     />

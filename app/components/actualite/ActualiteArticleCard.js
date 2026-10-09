@@ -1,7 +1,7 @@
 import Image from "next/image";
 
 import {
-  formatActualiteDate,
+  formatActualitePublishedDate,
   getActualiteDetailImage,
   getActualiteSummary,
 } from "@/app/lib/actualites-utils";
@@ -37,7 +37,7 @@ export default function ActualiteArticleCard({ item }) {
         <div className="flex flex-wrap items-center gap-3">
           <ActualiteTypeBadge type={item.type} />
           <span className="text-xs font-semibold uppercase tracking-[0.25em] text-white/45">
-            {formatActualiteDate(item.createdAt)}
+            {formatActualitePublishedDate(item.createdAt)}
           </span>
         </div>
         <h1 className="mt-5 text-3xl font-bold leading-tight tracking-tight text-white sm:text-4xl lg:text-5xl font-display">

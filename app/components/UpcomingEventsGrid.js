@@ -12,7 +12,12 @@ const getVisibilityClass = (index, rows) => {
   return "hidden";
 };
 
-export default function UpcomingEventsGrid({ items = [], paginated = false }) {
+// Upcoming items have no session yet: the card opens the event page (C06)
+export default function UpcomingEventsGrid({
+  items = [],
+  paginated = false,
+  ctaLabel = "Découvrir",
+}) {
   const [visibleRows, setVisibleRows] = useState(2);
   const rows = paginated ? visibleRows : Number.POSITIVE_INFINITY;
 
@@ -44,7 +49,7 @@ export default function UpcomingEventsGrid({ items = [], paginated = false }) {
               </div>
               <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
                 <span className="rounded-full bg-accent px-6 py-2 text-sm font-semibold text-black shadow-[0_0_20px_rgba(116,208,241,0.45)] font-display">
-                  Réserver
+                  {ctaLabel}
                 </span>
               </div>
             </div>

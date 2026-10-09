@@ -21,7 +21,7 @@ export const metadata = {
         url: "/images/logo.png",
         width: 512,
         height: 512,
-        alt: "Lumière Cinéma",
+        alt: "Le Majestic Bizerte",
       },
     ],
   },

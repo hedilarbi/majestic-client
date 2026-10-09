@@ -193,7 +193,7 @@ export default function PurchaseSuccessClient({ seanceId, bookingId }) {
           </h1>
           <p className="mt-3 max-w-2xl text-sm text-white/60 md:text-base">
             Votre réservation est enregistrée. Retrouvez ci-dessous les détails
-            de votre séance et votre code booking.
+            de votre séance et votre référence de réservation.
           </p>
         </section>
 
@@ -227,8 +227,8 @@ export default function PurchaseSuccessClient({ seanceId, bookingId }) {
                     <RiTicket2Line className="h-4 w-4 text-accent" />
                     <span>
                       {seatLabels.length
-                        ? `Sieges: ${seatLabels.join(", ")}`
-                        : "Sieges non disponibles"}
+                        ? `Sièges : ${seatLabels.join(", ")}`
+                        : "Sièges non disponibles"}
                     </span>
                   </p>
                   <p className="flex items-center gap-2">
@@ -241,7 +241,7 @@ export default function PurchaseSuccessClient({ seanceId, bookingId }) {
 
             <div className="mt-6 rounded-2xl border border-primary/30 bg-accent/10 p-4">
               <p className="text-xs font-semibold uppercase tracking-[0.22em] text-accent/80">
-                Code booking
+                Référence de réservation
               </p>
               <p className="mt-2 break-all text-xl font-black text-white md:text-2xl">
                 {displayBookingCode}
@@ -261,7 +261,7 @@ export default function PurchaseSuccessClient({ seanceId, bookingId }) {
                 className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl border border-white/20 bg-white/5 px-5 py-3 text-sm font-semibold uppercase tracking-[0.16em] text-white/85 transition hover:border-accent hover:text-accent"
               >
                 <RiHome4Line className="h-4 w-4" />
-                Retour accueil
+                Retour à l&apos;accueil
               </Link>
             </div>
           </article>
@@ -276,7 +276,7 @@ export default function PurchaseSuccessClient({ seanceId, bookingId }) {
                     </p>
                     <p className="mt-2 text-lg font-bold text-white">
                       {remainingSubscriptionCredits === null
-                        ? "Credits abonnement utilises"
+                        ? "Crédits d'abonnement utilisés"
                         : `${remainingSubscriptionCredits} crédit${
                             remainingSubscriptionCredits > 1 ? "s" : ""
                           } restant${
@@ -290,11 +290,11 @@ export default function PurchaseSuccessClient({ seanceId, bookingId }) {
                           } utilisé${
                             usedSubscriptionCredits > 1 ? "s" : ""
                           } pour cet achat.`
-                        : "Paiement regle via votre abonnement."}
+                        : "Paiement réglé via votre abonnement."}
                     </p>
                     {subscriptionTransaction?.subscriptionCode ? (
                       <p className="mt-2 text-sm text-white/55">
-                        Code abonnement:{" "}
+                        Code abonnement :{" "}
                         <span className="font-semibold text-white/80">
                           {subscriptionTransaction.subscriptionCode}
                         </span>
@@ -313,7 +313,7 @@ export default function PurchaseSuccessClient({ seanceId, bookingId }) {
                 <RiMailLine className="h-5 w-5" />
               </span>
               <div>
-                <p className="text-lg font-bold text-white">Confirmation envoyée</p>
+                <p className="text-lg font-bold text-white">Confirmation par e-mail</p>
                 <p className="text-sm text-white/60">{displayEmail}</p>
               </div>
             </div>
@@ -336,8 +336,10 @@ export default function PurchaseSuccessClient({ seanceId, bookingId }) {
             </div>
 
             <p className="mt-5 text-sm leading-relaxed text-white/65">
-              Un email de confirmation contenant votre récapitulatif booking a
-              ete envoyé. Conservez le code booking pour toute assistance.
+              Un e-mail de confirmation contenant le récapitulatif de votre
+              réservation va être envoyé à cette adresse. Pensez à vérifier vos
+              courriers indésirables. Conservez votre référence de réservation
+              pour toute assistance.
             </p>
           </article>
         </section>

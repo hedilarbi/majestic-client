@@ -2,7 +2,7 @@ import { getPublicSubscriptionById } from "@/app/lib/offers-api";
 import SubscriptionCheckoutClient from "./SubscriptionCheckoutClient";
 
 export const metadata = {
-  title: "Checkout abonnement | Majestic",
+  title: "Finaliser votre abonnement | Majestic",
   description:
     "Finalisez votre abonnement Majestic en quelques étapes.",
 };

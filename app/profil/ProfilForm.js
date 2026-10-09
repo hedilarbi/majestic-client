@@ -68,7 +68,7 @@ export default function ProfilForm({ user }) {
       if (!response.ok) {
         throw new Error(data?.message || "Erreur serveur");
       }
-      setSuccessMessage("Profil mis a jour avec succès.");
+      setSuccessMessage("Profil mis à jour avec succès.");
     } catch (error) {
       setErrorMessage(error?.message || "Erreur serveur");
     } finally {

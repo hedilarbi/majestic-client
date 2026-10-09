@@ -77,7 +77,7 @@ export default function SpectacleSection({ items = [], lastExpiredItem = null })
                     </h3>
                   </div>
                   <span className="flex w-full translate-y-4 items-center justify-center gap-2 rounded-lg bg-accent py-3 text-sm font-semibold text-black opacity-0 shadow-[0_0_16px_rgba(116,208,241,0.35)] transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
-                    Réserver
+                    Réserver maintenant
                     <MdArrowForward className="h-4 w-4" />
                   </span>
                 </div>

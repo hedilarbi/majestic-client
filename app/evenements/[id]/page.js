@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import EventTrailer from "../../components/EventTrailer";
+import ExpandableText from "../../components/ExpandableText";
 import SessionSelector from "../../components/SessionSelector";
 import { getEventSessions } from "../../lib/event-api";
 import { MdInfoOutline, MdSchedule } from "react-icons/md";
@@ -65,6 +66,9 @@ export default async function EvenementPage({ params }) {
     availableFromDate,
     availableToDate
   );
+  // Expired once its availability window is over (C09), otherwise upcoming
+  const isExpired = Boolean(availableToDate && new Date() > availableToDate);
+  const isShow = event.type === "show";
 
   return (
     <div className="min-h-screen bg-black text-white">
@@ -106,7 +110,11 @@ export default async function EvenementPage({ params }) {
                     {event.name}
                   </h1>
                   <div className="mb-6 flex flex-wrap items-center justify-center gap-3 lg:justify-start font-display">
-                    {!isAvailableNow ? (
+                    {isExpired ? (
+                      <span className="rounded border border-white/20 bg-white/10 px-3 py-1 text-xs text-white/70">
+                        Expiré
+                      </span>
+                    ) : !isAvailableNow ? (
                       <span className="rounded border border-accent/40 bg-accent/10 px-3 py-1 text-xs text-accent">
                         Prochainement
                       </span>
@@ -132,9 +140,11 @@ export default async function EvenementPage({ params }) {
                     <MdInfoOutline className="h-5 w-5 text-accent" />
                     Synopsis
                   </h2>
-                  <p className="text-sm leading-relaxed text-white/70 md:text-base font-body">
-                    {synopsis}
-                  </p>
+                  <ExpandableText
+                    text={synopsis}
+                    lines={4}
+                    className="text-sm leading-relaxed text-white/70 md:text-base font-body"
+                  />
                 </div>
                 <div className="grid grid-cols-1 gap-4 text-sm sm:grid-cols-2 font-body">
                   <div>
@@ -166,7 +176,21 @@ export default async function EvenementPage({ params }) {
           </div>
         </section>
 
-        {isAvailableNow ? (
+        {isExpired ? (
+          <section className="mx-auto mt-12 px-4 pb-20 sm:px-8 lg:px-20">
+            <p className="rounded-2xl border border-white/10 bg-white/5 px-6 py-5 text-sm text-white/70 font-body">
+              Cet événement est expiré.{" "}
+              <Link
+                href={isShow ? "/evenements?type=show" : "/evenements?type=movie"}
+                className="font-semibold text-accent underline-offset-4 hover:underline"
+              >
+                {isShow
+                  ? "Consultez nos spectacles à l’affiche."
+                  : "Consultez nos films à l’affiche."}
+              </Link>
+            </p>
+          </section>
+        ) : isAvailableNow ? (
           <SessionSelector
             sessions={sessions}
             event={{
@@ -174,6 +198,11 @@ export default async function EvenementPage({ params }) {
               poster: event.poster,
               durationLabel,
             }}
+            emptyMessage={
+              isShow
+                ? "La programmation de ce spectacle sera annoncée prochainement."
+                : "La programmation de ce film sera annoncée prochainement."
+            }
           />
         ) : null}
       </main>

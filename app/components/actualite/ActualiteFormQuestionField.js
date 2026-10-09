@@ -78,7 +78,7 @@ export default function ActualiteFormQuestionField({
           onChange={(event) => onChange(event.target.value)}
           className={inputClassName}
         >
-          <option value="">Selectionnez une option</option>
+          <option value="">Sélectionnez une option</option>
           {options.map((option) => (
             <option key={`${questionId}-${option}`} value={option}>
               {option}

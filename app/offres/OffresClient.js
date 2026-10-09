@@ -7,6 +7,7 @@ import {
   MdNightlight,
   MdStars,
 } from "react-icons/md";
+import { formatOfferValidity } from "@/app/lib/offer-utils";
 
 const formatPrice = (value) => {
   const amount = typeof value === "number" ? value : Number.parseFloat(value);
@@ -41,15 +42,15 @@ const buildPromoLabel = (promoCode) => {
   }
 
   if (promoCode.reductionType === "percent") {
-    return `Reduction ${reductionValue}%`;
+    return `Réduction ${reductionValue}%`;
   }
 
-  return `Reduction ${reductionValue} DT`;
+  return `Réduction ${reductionValue} DT`;
 };
 
 const buildPromoDetail = (promoCode) => {
   const expiresAt = formatDate(promoCode?.expiresAt);
-  return expiresAt ? `Expiré le ${expiresAt}` : "";
+  return expiresAt ? `Valable jusqu’au ${expiresAt}` : "";
 };
 
 export default function OffresClient({
@@ -102,7 +103,7 @@ export default function OffresClient({
             : "Premium",
           icon: index % 2 === 0 ? MdStars : MdNightlight,
           price: formatPrice(subscription.price),
-          expirationDate: formatDate(subscription.expirationDate),
+          validity: formatOfferValidity(subscription.expirationDate),
         }),
       ),
     [subscriptions],
@@ -130,8 +131,7 @@ export default function OffresClient({
           Offres &amp; Promos
         </h1>
         <p className="mt-4 max-w-2xl text-base text-white/60 sm:text-lg font-body">
-          Decouvrez les abonnements et codes promo configurees depuis
-          l&apos;administration Majestic.
+          Découvrez nos abonnements et profitez de nos offres.
         </p>
         <div className="mt-8 flex flex-wrap gap-4">
           <button
@@ -206,9 +206,11 @@ export default function OffresClient({
                   <span className="rounded-full border border-white/15 px-3 py-1">
                     {offer.price}
                   </span>
-                  <span className="rounded-full border border-white/15 px-3 py-1">
-                    Expiré le {offer.expirationDate}
-                  </span>
+                  {offer.validity ? (
+                    <span className="rounded-full border border-white/15 px-3 py-1">
+                      {offer.validity}
+                    </span>
+                  ) : null}
                 </div>
                 {offer.checkoutId ? (
                   <Link

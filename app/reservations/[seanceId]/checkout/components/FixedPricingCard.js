@@ -21,7 +21,7 @@ export default function FixedPricingCard({ fixedPricingGroups, formatPrice }) {
               </span>
             </div>
             <p className="mt-1 text-xs font-semibold text-white/50">
-              Sieges: {group.seats.join(", ")}
+              Sièges : {group.seats.join(", ")}
             </p>
           </div>
         ))}

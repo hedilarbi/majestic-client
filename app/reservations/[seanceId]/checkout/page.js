@@ -1,7 +1,7 @@
 import ReservationCheckoutClient from "./ReservationCheckoutClient";
 
 export const metadata = {
-  title: "Checkout réservation | Majestic",
+  title: "Finaliser votre réservation | Majestic",
   description: "Récapitulatif et affectation des tarifs pour vos places.",
 };
 

@@ -3,9 +3,9 @@ import { getCustomerMe, getTokenCookie } from "../lib/auth-server";
 import OtpForm from "./OtpForm";
 
 export const metadata = {
-  title: "Verification email | Majestic",
+  title: "Vérification e-mail | Majestic",
   description:
-    "Saisissez le code de verification pour confirmer votre adresse email.",
+    "Saisissez le code de vérification pour confirmer votre adresse e-mail.",
 };
 
 const maskEmail = (email) => {
@@ -72,7 +72,7 @@ export default async function VerifyEmailPage({ searchParams }) {
             Verification
           </p>
           <h1 className="text-3xl font-bold uppercase tracking-tight text-white sm:text-4xl font-display text-glow">
-            Verifier votre email
+            Vérifier votre e-mail
           </h1>
           <p className="mt-3 text-sm text-white/60 font-body">
             Nous avons envoyé un code vers la boîte{" "}

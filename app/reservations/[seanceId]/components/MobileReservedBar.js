@@ -10,7 +10,7 @@ export default function MobileReservedBar({
   return (
     <div className="fixed inset-x-3 bottom-3 z-40 rounded-2xl border border-accent/30 bg-[#060911]/95 p-3 shadow-[0_10px_35px_rgba(0,0,0,0.45)] backdrop-blur lg:hidden">
       <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-white/50">
-        Sieges reserves
+        Sièges réservés
       </p>
       <p className="mt-1 truncate text-sm font-semibold text-white">
         {reservedSeatLabels.join(", ")}

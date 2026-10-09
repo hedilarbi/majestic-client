@@ -74,17 +74,24 @@ export default function CheckoutSidebar({
           {submitStatus === "success" ? (
             <div className="flex items-center gap-2 text-sm font-semibold text-emerald-300">
               <RiCheckboxCircleLine className="h-5 w-5" />
-              Vente finalisee.
+              Réservation finalisée.
             </div>
-          ) : canContinue ? (
+          ) : submitStatus === "loading" ? (
+            <div className="flex items-center gap-2 text-sm font-semibold text-white/70">
+              <RiTimeLine className="h-5 w-5 text-accent" />
+              Finalisation de votre réservation…
+            </div>
+          ) : canContinue || remainingToAssign === 0 ? (
             <div className="flex items-center gap-2 text-sm font-semibold text-emerald-300">
               <RiCheckboxCircleLine className="h-5 w-5" />
-              Toutes les places sont attribuees.
+              Toutes les places sont attribuées.
             </div>
           ) : (
             <div className="flex items-center gap-2 text-sm font-semibold text-amber-200">
               <RiCloseCircleLine className="h-5 w-5" />
-              Attribution incomplete ({remainingToAssign} restantes).
+              Attribution incomplète ({remainingToAssign} place
+              {remainingToAssign > 1 ? "s" : ""} restante
+              {remainingToAssign > 1 ? "s" : ""}).
             </div>
           )}
         </div>

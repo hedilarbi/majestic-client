@@ -194,6 +194,8 @@ export const formatPrice = (value) => {
   return `${numeric.toFixed(2).replace(".", ",")} DT`;
 };
 
+const EVENT_TYPE_LABELS = { movie: "Film", show: "Spectacle" };
+
 export const formatSeatLabel = (seat) => {
   if (!seat || seat.row === undefined || seat.col === undefined) {
     return "";
@@ -257,6 +259,7 @@ export const resolveSeanceInfo = (data) => {
   const genre =
     sanitizeDisplayValue(event?.genre) ||
     sanitizeDisplayValue(event?.category) ||
+    EVENT_TYPE_LABELS[String(event?.type || "").toLowerCase()] ||
     sanitizeDisplayValue(event?.type) ||
     "";
 

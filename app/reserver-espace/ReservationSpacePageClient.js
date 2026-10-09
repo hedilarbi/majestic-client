@@ -16,6 +16,7 @@ import {
 const ESTABLISHMENT_OPTIONS = [
   { value: "association", label: "Association" },
   { value: "organisation", label: "Organisation" },
+  { value: "particulier", label: "Particulier" },
 ];
 
 const EVENT_TYPES = [
@@ -113,7 +114,13 @@ export default function ReservationSpacePageClient() {
       const response = await fetch("/api/space-reservation-requests", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formState),
+        body: JSON.stringify({
+          ...formState,
+          organisationName:
+            formState.establishmentType === "particulier"
+              ? ""
+              : formState.organisationName,
+        }),
       });
 
       const data = await response.json().catch(() => ({}));
@@ -126,7 +133,7 @@ export default function ReservationSpacePageClient() {
       }
 
       setSuccessMessage(
-        "Votre demande a bien été envoyée. Notre equipe vous recontactera prochainement.",
+        "Votre demande a bien été envoyée. Notre équipe vous recontactera prochainement.",
       );
       setFormState(buildInitialState());
     } catch (_error) {
@@ -239,18 +246,7 @@ export default function ReservationSpacePageClient() {
                 />
               </Field>
 
-              <Field icon={RiBuildingLine} label="Nom de l'organisation">
-                <input
-                  name="organisationName"
-                  type="text"
-                  value={formState.organisationName}
-                  onChange={handleChange}
-                  className={INPUT_CLASSES}
-                  placeholder="Ex: Association Culturelle Al Wafa"
-                />
-              </Field>
-
-              <Field icon={RiBuildingLine} label="Type d'établissement">
+              <Field icon={RiBuildingLine} label="Vous êtes">
                 <select
                   name="establishmentType"
                   value={formState.establishmentType}
@@ -268,6 +264,19 @@ export default function ReservationSpacePageClient() {
                   ))}
                 </select>
               </Field>
+
+              {formState.establishmentType !== "particulier" ? (
+              <Field icon={RiBuildingLine} label="Nom de l'organisation (facultatif)">
+                <input
+                  name="organisationName"
+                  type="text"
+                  value={formState.organisationName}
+                  onChange={handleChange}
+                  className={INPUT_CLASSES}
+                  placeholder="Ex: Association Culturelle Al Wafa"
+                />
+              </Field>
+              ) : null}
 
               <Field icon={RiCalendarScheduleLine} label="Date de réservation">
                 <input
@@ -287,9 +296,14 @@ export default function ReservationSpacePageClient() {
                     value={formState.description}
                     onChange={handleChange}
                     className={`${INPUT_CLASSES} min-h-40 resize-y`}
-                    placeholder="Precisez le contexte, le nombre de participants, les besoins techniques, etc."
+                    placeholder="Décrivez votre projet."
+                    aria-describedby="description-help"
                   />
                 </Field>
+                <p id="description-help" className="mt-2 text-xs leading-5 text-white/55">
+                  Précisez l&apos;espace souhaité, la date, les horaires, le
+                  nombre de participants et vos besoins techniques.
+                </p>
               </div>
             </div>
 
@@ -305,7 +319,12 @@ export default function ReservationSpacePageClient() {
               </div>
             ) : null}
 
-            <div className="mt-6 flex justify-end">
+            <p className="mt-6 text-xs leading-5 text-white/55">
+              L&apos;envoi de cette demande ne vaut pas confirmation de
+              disponibilité ni réservation définitive.
+            </p>
+
+            <div className="mt-4 flex justify-end">
               <button
                 type="submit"
                 disabled={isSubmitting}

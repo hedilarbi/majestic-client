@@ -1,8 +1,8 @@
 import ResetPasswordVerifyForm from "./ResetPasswordVerifyForm";
 
 export const metadata = {
-  title: "Verification mot de passe | Majestic",
-  description: "Saisissez le code recu et choisissez un nouveau mot de passe.",
+  title: "Vérification mot de passe | Majestic",
+  description: "Saisissez le code reçu et choisissez un nouveau mot de passe.",
 };
 
 export default async function ForgotPasswordVerifyPage({ searchParams }) {
@@ -26,7 +26,7 @@ export default async function ForgotPasswordVerifyPage({ searchParams }) {
             Reinitialiser le mot de passe
           </h1>
           <p className="mt-3 text-sm text-white/60 font-body">
-            Entrez le code recu pour {email || "votre email"}.
+            Entrez le code reçu pour {email || "votre email"}.
           </p>
         </div>
 

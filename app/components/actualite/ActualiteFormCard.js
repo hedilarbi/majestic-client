@@ -6,7 +6,7 @@ import { useMemo, useState } from "react";
 import { RiArrowRightLine, RiCheckboxCircleLine, RiSendPlaneLine } from "react-icons/ri";
 
 import {
-  formatActualiteDate,
+  formatActualitePublishedDate,
   getActualiteDetailImage,
   getActualiteSummary,
 } from "@/app/lib/actualites-utils";
@@ -136,7 +136,7 @@ export default function ActualiteFormCard({ item }) {
       <div className="flex flex-wrap items-center gap-3">
         <ActualiteTypeBadge type={item.type} />
         <span className="text-xs font-semibold uppercase tracking-[0.25em] text-white/45">
-          {formatActualiteDate(item.createdAt)}
+          {formatActualitePublishedDate(item.createdAt)}
         </span>
       </div>
 

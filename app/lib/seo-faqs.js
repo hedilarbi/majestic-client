@@ -114,7 +114,12 @@ export const homeFaq = [
         ],
       },
       "Pour réserver l’espace Majestic, vous pouvez faire une demande directement via la page dédiée ou contacter l’équipe par téléphone.",
-      { links: [{ label: "Réserver l’espace", href: "/reserver-espace" }] },
+      {
+        links: [
+          { label: "Réserver l’espace", href: "/reserver-espace" },
+          { label: "Contacter l’équipe", href: "/contact" },
+        ],
+      },
     ],
   },
   {
@@ -149,6 +154,7 @@ export const homeFaq = [
         ],
       },
       "vous pouvez contacter directement l’équipe du cinéma Majestic Bizerte.",
+      { links: [{ label: "Page contact", href: "/contact" }] },
     ],
   },
   {
@@ -195,14 +201,17 @@ export const reserverEspaceFaq = [
   {
     question: "Comment réserver une salle ou un espace au Majestic Bizerte ?",
     answer: [
-      "Pour réserver un espace au Majestic, il suffit de remplir le formulaire de demande sur cette page en précisant :",
+      "Pour réserver un espace au Majestic, il suffit de remplir le formulaire de demande sur cette page. Dans la description, précisez :",
       {
         list: [
-          "la date souhaitée",
+          "l’espace souhaité",
+          "la date et les horaires",
           "le type d’événement",
           "le nombre de participants",
+          "vos besoins techniques",
         ],
       },
+      "L’envoi de la demande ne vaut pas confirmation de disponibilité ni réservation définitive.",
       "L’équipe du Majestic vous contactera ensuite pour confirmer la disponibilité et organiser la réservation.",
     ],
   },
@@ -239,7 +248,7 @@ export const reserverEspaceFaq = [
     question: "Les espaces du Majestic peuvent-ils accueillir des groupes ?",
     answer: [
       "Oui. Les salles et espaces du Majestic peuvent accueillir différents types de groupes, selon la nature de l’événement organisé.",
-      "Lors de votre demande de réservation, il est recommandé d’indiquer le nombre de participants prévu afin de proposer l’espace le plus adapté.",
+      "Lors de votre demande de réservation, indiquez dans la description le nombre de participants prévu afin que nous puissions vous proposer l’espace le plus adapté.",
     ],
   },
   {

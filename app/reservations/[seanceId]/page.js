@@ -2,7 +2,7 @@ import ReservationSiegesClient from "./ReservationSiegesClient";
 
 export const metadata = {
   title: "Selection de sièges | Majestic",
-  description: "Selectionnez vos sièges et consultez les tarifs disponibles.",
+  description: "Sélectionnez vos sièges et consultez les tarifs disponibles.",
 };
 
 const resolveSocketUrl = () => {

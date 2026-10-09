@@ -99,3 +99,9 @@ export const getVideoEmbedUrl = (value) => {
 
   return "";
 };
+
+// "Publié le 9 oct. 2026": publication date, not the date of the event (C22)
+export const formatActualitePublishedDate = (value) => {
+  const label = formatActualiteDate(value);
+  return label ? `Publié le ${label}` : "";
+};

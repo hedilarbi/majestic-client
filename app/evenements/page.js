@@ -26,7 +26,7 @@ const MOVIE_GENRES = [
   "Fantastique",
   "Crime",
   "Animation",
-  "Comedie",
+  "Comédie",
   "Famille",
   "Musical",
   "Historique",
@@ -62,7 +62,14 @@ export default async function EvenementsPage({ searchParams }) {
     heroEntry?.subtitle ||
     heroEvent?.description ||
     "Découvrez les plus grands films et expériences cinéma du moment.";
-  const heroMeta = heroEvent?.meta || "Expérience cinéma premium";
+  const heroMeta = heroEvent?.meta || "";
+  const showHeroSubtitle =
+    heroSubtitle.trim().toLowerCase() !== String(heroTitle).trim().toLowerCase();
+  // Dynamic H1: one per section (SEO + C08)
+  const pageHeading =
+    type === "show"
+      ? "Spectacles au Majestic Bizerte"
+      : "Films à l’affiche au Majestic Bizerte";
   const heroEventId = heroEntry?.eventId || heroEvent?.id;
   const heroTrailerLink = heroEvent?.trailerLink || "";
   const ctaLabel =
@@ -102,30 +109,34 @@ export default async function EvenementsPage({ searchParams }) {
           )}
           <div className="relative z-20 flex h-full flex-col items-start justify-center gap-3 px-5 sm:px-10 lg:px-20">
             <h1 className="text-[11px] font-bold uppercase tracking-wider text-accent drop-shadow-lg sm:text-sm font-display">
-              Programme &amp; Événements du Ciné-Théâtre Le Majestic
+              {pageHeading}
             </h1>
             <h2 className="text-xl font-bold leading-tight tracking-[-0.03em] text-white drop-shadow-lg sm:text-3xl lg:text-5xl font-display">
               {heroTitle}
             </h2>
-            <div className="text-xs text-white/70 sm:text-sm lg:text-base font-body">
-              {heroMeta}
-            </div>
-            <p className="line-clamp-3 max-w-lg text-xs leading-relaxed text-white/70 sm:text-base lg:text-lg font-body">
-              {heroSubtitle}
-            </p>
+            {heroMeta ? (
+              <div className="text-xs text-white/70 sm:text-sm lg:text-base font-body">
+                {heroMeta}
+              </div>
+            ) : null}
+            {showHeroSubtitle ? (
+              <p className="line-clamp-3 max-w-lg text-xs leading-relaxed text-white/70 sm:text-base lg:text-lg font-body">
+                {heroSubtitle}
+              </p>
+            ) : null}
             <div className="mt-2 flex flex-wrap gap-3">
               {heroEventId ? (
                 <Link
                   className="flex h-9 items-center gap-2 rounded-lg bg-accent px-3 text-[11px] font-semibold text-black shadow-[0_0_20px_rgba(116,208,241,0.4)] transition-all hover:-translate-y-0.5 hover:brightness-110 hover:shadow-[0_0_30px_rgba(116,208,241,0.6)] sm:h-10 sm:px-4 sm:text-xs lg:h-11 lg:px-5 lg:text-sm font-display"
                   href={`/evenements/${heroEventId}`}
                 >
-                  Réserver
+                  Réserver maintenant
                 </Link>
               ) : null}
               <TrailerModalButton
                 trailerLink={heroTrailerLink}
                 title={heroTitle}
-                label="Bande-annonce"
+                label="Voir la bande-annonce"
                 className="flex h-9 items-center gap-2 rounded-lg border border-accent/40 bg-accent/10 px-3 text-[11px] font-semibold text-accent shadow-[0_0_12px_rgba(116,208,241,0.2)] transition-all hover:-translate-y-0.5 hover:bg-accent hover:text-black sm:h-10 sm:px-4 sm:text-xs lg:h-11 lg:px-5 lg:text-sm font-display"
               />
             </div>
@@ -176,7 +187,7 @@ export default async function EvenementsPage({ searchParams }) {
                 </div>
                 <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
                   <span className="rounded-full bg-accent px-6 py-2 text-sm font-semibold text-black shadow-[0_0_20px_rgba(116,208,241,0.45)] font-display">
-                    Réserver
+                    Réserver maintenant
                   </span>
                 </div>
               </div>
@@ -185,7 +196,8 @@ export default async function EvenementsPage({ searchParams }) {
         </div>
       </section>
 
-      {type === "show" && events.length === 0 && allExpiredShows.length ? (
+      {/* Archives stay visible even when a show is active (C11) */}
+      {type === "show" && allExpiredShows.length ? (
         <section className="w-full px-4 py-8 sm:px-8 lg:px-20">
           <div className="mb-8 flex items-center gap-3">
             <span className="h-8 w-1 rounded-full bg-white/30" />
@@ -210,7 +222,7 @@ export default async function EvenementsPage({ searchParams }) {
                   />
                   <div className="absolute inset-0 bg-linear-to-t from-black/90 via-transparent to-transparent opacity-80" />
                   <span className="absolute left-3 top-3 rounded-full bg-white/15 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-white backdrop-blur-sm">
-                    Terminé
+                    Expiré
                   </span>
                   <div className="absolute bottom-0 left-0 w-full translate-y-2 p-4 transition-transform duration-300 group-hover:translate-y-0">
                     <h3 className="text-lg font-semibold leading-tight text-white/80 drop-shadow-md font-display">
@@ -238,6 +250,7 @@ export default async function EvenementsPage({ searchParams }) {
           <UpcomingEventsGrid
             items={upcomingEvents}
             paginated={type === "movie"}
+            ctaLabel={type === "show" ? "Découvrir le spectacle" : "Découvrir le film"}
           />
         </section>
       ) : null}

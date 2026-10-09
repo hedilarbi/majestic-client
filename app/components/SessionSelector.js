@@ -99,7 +99,11 @@ const groupSessionsByDate = (sessions, now) => {
   };
 };
 
-export default function SessionSelector({ sessions = [], event }) {
+export default function SessionSelector({
+  sessions = [],
+  event,
+  emptyMessage = "La programmation sera annoncée prochainement.",
+}) {
   const now = useMemo(() => new Date(), []);
   const todayKey = useMemo(() => getLocalDateKey(now), [now]);
   const { sessionsByDate, dateKeys } = useMemo(
@@ -165,6 +169,13 @@ export default function SessionSelector({ sessions = [], event }) {
             <MdCalendarMonth className="h-5 w-5 text-accent md:h-6 md:w-6" />
             Sélectionnez votre séance
           </h2>
+          {/* One message only when nothing is scheduled (C06) */}
+          {!scheduleDays.length ? (
+            <p className="text-sm text-white/60 font-body">
+              {emptyMessage}
+            </p>
+          ) : (
+          <>
           <div className="mb-10">
             {scheduleDays.length ? (
               <div className="hide-scrollbar flex snap-x gap-4 overflow-x-auto pb-4 py-4">
@@ -206,11 +217,7 @@ export default function SessionSelector({ sessions = [], event }) {
                   </button>
                 ))}
               </div>
-            ) : (
-              <p className="text-sm text-white/60 font-body">
-                Aucune séance disponible pour le moment.
-              </p>
-            )}
+            ) : null}
           </div>
           <div className="space-y-8">
             <div className="relative overflow-hidden rounded-xl border border-primary/30 bg-black/40 p-5">
@@ -270,6 +277,8 @@ export default function SessionSelector({ sessions = [], event }) {
               </div>
             </div>
           </div>
+          </>
+          )}
         </div>
       </div>
     </section>

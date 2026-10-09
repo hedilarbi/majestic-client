@@ -62,7 +62,7 @@ export default function ResetPasswordForm() {
         throw new Error(data?.message || "Erreur serveur");
       }
 
-      setSuccessMessage(data?.message || "Mot de passe mis a jour.");
+      setSuccessMessage(data?.message || "Mot de passe mis à jour.");
       setFormValues(initialState);
     } catch (error) {
       setErrorMessage(error?.message || "Erreur serveur");

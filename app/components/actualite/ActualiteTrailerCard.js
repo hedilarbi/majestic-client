@@ -1,9 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
-import { RiPlayCircleLine } from "react-icons/ri";
+import { RiExternalLinkLine, RiPlayCircleLine } from "react-icons/ri";
 
 import {
-  formatActualiteDate,
+  formatActualitePublishedDate,
   getActualiteDetailImage,
   getActualiteSummary,
   getVideoEmbedUrl,
@@ -36,7 +36,7 @@ export default function ActualiteTrailerCard({ item }) {
         <div className="flex flex-wrap items-center gap-3">
           <ActualiteTypeBadge type={item.type} />
           <span className="text-xs font-semibold uppercase tracking-[0.25em] text-white/45">
-            {formatActualiteDate(item.createdAt)}
+            {formatActualitePublishedDate(item.createdAt)}
           </span>
         </div>
 
@@ -82,7 +82,11 @@ export default function ActualiteTrailerCard({ item }) {
                 className="mt-6 inline-flex items-center gap-2 rounded-full bg-accent px-5 py-3 text-xs font-semibold uppercase tracking-[0.22em] text-black transition hover:brightness-110"
               >
                 <RiPlayCircleLine className="h-4 w-4" />
-                Ouvrir la vidéo
+                {/youtu\.?be/i.test(item.videoUrl)
+                  ? "Voir la vidéo sur YouTube"
+                  : "Voir la vidéo"}
+                <RiExternalLinkLine className="h-4 w-4" aria-hidden="true" />
+                <span className="sr-only">(s&apos;ouvre dans un nouvel onglet)</span>
               </Link>
             ) : null}
           </div>

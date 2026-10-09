@@ -182,7 +182,7 @@ export default function SiteHeader() {
           <Link className="flex items-center gap-2" href="/">
             <Image
               src="/images/logo_light.png"
-              alt="Lumière Cinéma"
+              alt="Le Majestic Bizerte"
               width={140}
               height={40}
               className="h-10 w-auto xl:h-14"
@@ -280,7 +280,7 @@ export default function SiteHeader() {
                   <Link href="/" onClick={() => setIsMenuOpen(false)}>
                     <Image
                       src="/images/logo_light.png"
-                      alt="Lumière Cinéma"
+                      alt="Le Majestic Bizerte"
                       width={120}
                       height={32}
                       className="h-10 w-auto"

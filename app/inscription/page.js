@@ -45,7 +45,7 @@ export default async function InscriptionPage({ searchParams }) {
               className="text-accent underline underline-offset-4 transition hover:text-white"
               href={`/connexion?redirect=${encodeURIComponent(redirectPath)}`}
             >
-              Connectez vous
+              Connectez-vous
             </Link>
           </div>
         </div>

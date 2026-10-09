@@ -1,7 +1,7 @@
 import ForgotPasswordForm from "./ForgotPasswordForm";
 
 export const metadata = {
-  title: "Mot de passe oublie | Majestic",
+  title: "Mot de passe oublié | Majestic",
   description: "Recevez un code pour reinitialiser votre mot de passe.",
 };
 
@@ -19,7 +19,7 @@ export default function ForgotPasswordPage() {
             Réinitialisation
           </p>
           <h1 className="text-3xl font-bold uppercase tracking-tight text-white sm:text-4xl font-display text-glow">
-            Mot de passe oublie
+            Mot de passe oublié
           </h1>
           <p className="mt-3 text-sm text-white/60 font-body">
             Entrez votre email pour recevoir un code de réinitialisation.

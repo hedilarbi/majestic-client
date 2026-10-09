@@ -96,7 +96,7 @@ export default async function AbonnementsPage() {
         </h1>
         <p className="max-w-2xl text-sm text-white/50 font-body sm:text-base">
           Gérez vos accès exclusifs et vos entrées cinéma en toute simplicité.
-          Profitez de l&apos;experience premium sans limite.
+          Profitez de l&apos;expérience premium sans limite.
         </p>
       </header>
 
@@ -134,7 +134,7 @@ export default async function AbonnementsPage() {
 
             <div className="relative z-10 mt-6 space-y-4">
               <div className="flex items-end justify-between text-sm font-body text-white/60">
-                <span>Credits restants</span>
+                <span>Crédits restants</span>
                 <span className="text-2xl font-bold text-white">
                   {resolveRemainingCredits(sale)}
                   <span className="ml-1 text-base font-medium text-white/45">
@@ -212,7 +212,7 @@ export default async function AbonnementsPage() {
 
             <div className="relative z-10 mt-6 space-y-4">
               <div className="flex items-end justify-between text-sm font-body text-white/60">
-                <span>Credits restants</span>
+                <span>Crédits restants</span>
                 <span className="text-2xl font-bold text-white">
                   {resolveRemainingCredits(sale)}
                   <span className="ml-1 text-base font-medium text-white/45">
@@ -267,7 +267,7 @@ export default async function AbonnementsPage() {
 
       {!error && items.length === 0 ? (
         <div className="rounded-2xl border border-white/10 bg-black/50 px-5 py-4 text-sm text-white/60">
-          Aucun abonnement trouve.
+          Aucun abonnement trouvé.
         </div>
       ) : null}
     </div>

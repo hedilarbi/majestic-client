@@ -293,7 +293,7 @@ export default function ResetPasswordVerifyForm({ email }) {
       </button>
 
       <div className="text-center text-xs text-white font-body">
-        Vous n&apos;avez pas recu de code ?{" "}
+        Vous n&apos;avez pas reçu de code ?{" "}
         <button
           className="text-accent underline underline-offset-4 transition hover:text-white"
           type="button"

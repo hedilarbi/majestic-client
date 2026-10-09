@@ -4,26 +4,17 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { FaFacebookF, FaInstagram } from "react-icons/fa";
-import { FaXTwitter } from "react-icons/fa6";
-import { footerLinks } from "../lib/site-data";
+import { footerLinks, socialLinks as officialSocialLinks } from "../lib/site-data";
 
-const socialLinks = [
-  {
-    label: "Facebook",
-    href: "#",
-    Icon: FaFacebookF,
-  },
-  {
-    label: "Twitter",
-    href: "#",
-    Icon: FaXTwitter,
-  },
-  {
-    label: "Instagram",
-    href: "#",
-    Icon: FaInstagram,
-  },
-];
+const SOCIAL_ICONS = {
+  Facebook: FaFacebookF,
+  Instagram: FaInstagram,
+};
+
+const socialLinks = officialSocialLinks.map((social) => ({
+  ...social,
+  Icon: SOCIAL_ICONS[social.label],
+}));
 
 export default function SiteFooter() {
   const pathname = usePathname();
@@ -44,15 +35,14 @@ export default function SiteFooter() {
             <Link className="flex items-center gap-2" href="/">
               <Image
                 src="/images/logo_light.png"
-                alt="Lumière Cinéma"
+                alt="Le Majestic Bizerte"
                 width={120}
                 height={32}
                 className="h-12 w-auto"
               />
             </Link>
             <p className="text-white/60 font-body">
-              Des expériences cinématographiques premium pour les passionnés de
-              cinéma moderne.
+              Cinéma, spectacles et rencontres culturelles à Bizerte.
             </p>
             <div className="flex gap-4">
               {socialLinks.map((social) => (
@@ -60,8 +50,12 @@ export default function SiteFooter() {
                   key={social.label}
                   className="text-white/50 transition-colors hover:text-white"
                   href={social.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
                 >
-                  <span className="sr-only">{social.label}</span>
+                  <span className="sr-only">
+                    {social.label} (s&apos;ouvre dans un nouvel onglet)
+                  </span>
                   <social.Icon className="h-6 w-6" />
                 </a>
               ))}

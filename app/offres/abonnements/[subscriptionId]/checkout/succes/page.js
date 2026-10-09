@@ -9,6 +9,7 @@ import {
 } from "react-icons/ri";
 
 import { getProfileSubscriptionSaleById } from "@/app/lib/profile-api";
+import { formatOfferValidity } from "@/app/lib/offer-utils";
 
 export const metadata = {
   title: "Paiement réussi | Abonnement Majestic",
@@ -127,7 +128,7 @@ export default async function SubscriptionCheckoutSuccessPage({
                   {remainingCredits} / {totalCredits} crédits
                 </span>
                 <span className="rounded-full border border-white/20 px-3 py-1">
-                  Expiré le {formatDate(subscription?.expirationDate)}
+                  {formatOfferValidity(subscription?.expirationDate)}
                 </span>
               </div>
             </div>

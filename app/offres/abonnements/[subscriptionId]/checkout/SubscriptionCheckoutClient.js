@@ -11,6 +11,7 @@ import {
   RiShieldCheckLine,
   RiVipCrown2Line,
 } from "react-icons/ri";
+import { formatOfferValidity } from "@/app/lib/offer-utils";
 
 const formatPrice = (value) => {
   const amount = typeof value === "number" ? value : Number.parseFloat(value);
@@ -18,21 +19,6 @@ const formatPrice = (value) => {
     return "-";
   }
   return `${amount.toFixed(2).replace(".", ",")} DT`;
-};
-
-const formatDate = (value) => {
-  if (!value) {
-    return "-";
-  }
-  const parsed = new Date(value);
-  if (Number.isNaN(parsed.getTime())) {
-    return "-";
-  }
-  return new Intl.DateTimeFormat("fr-FR", {
-    day: "2-digit",
-    month: "long",
-    year: "numeric",
-  }).format(parsed);
 };
 
 const resolveRedirectPath = (value, fallback = "/profil/abonnements") => {
@@ -164,7 +150,7 @@ export default function SubscriptionCheckoutClient({
 
         setSubmitState({
           status: "success",
-          message: "Abonnement active avec succès.",
+          message: "Abonnement activé avec succès.",
         });
 
         const saleId =
@@ -277,15 +263,11 @@ export default function SubscriptionCheckoutClient({
         <div className="rounded-3xl border border-white/10 bg-black/60 p-6 shadow-[0_25px_100px_rgba(0,0,0,0.45)] backdrop-blur-2xl md:p-8">
           <div className="mb-8">
             <p className="text-xs font-semibold uppercase tracking-[0.28em] text-accent">
-              Checkout abonnement
+              Abonnement
             </p>
             <h1 className="mt-2 text-3xl font-black tracking-tight text-white md:text-4xl">
               Finaliser votre abonnement
             </h1>
-            <p className="mt-3 text-sm text-white/60 md:text-base">
-              Le paiement sera intégré plus tard. Pour le moment, la validation
-              créé directement votre abonnement actif.
-            </p>
           </div>
 
           {initialError ? (
@@ -325,17 +307,17 @@ export default function SubscriptionCheckoutClient({
                 <span className="rounded-full border border-white/20 px-3 py-1">
                   {Number.isFinite(subscription?.totalCredits)
                     ? `${subscription.totalCredits} crédits`
-                    : "Credits"}
+                    : "Crédits"}
                 </span>
                 <span className="rounded-full border border-white/20 px-3 py-1">
-                  Expiré le {formatDate(subscription?.expirationDate)}
+                  {formatOfferValidity(subscription?.expirationDate)}
                 </span>
               </div>
             </div>
 
             <div className="rounded-2xl border border-primary/30 bg-accent/10 p-5">
               <p className="text-xs font-semibold uppercase tracking-[0.2em] text-accent/80">
-                Total a payer
+                Total à payer
               </p>
               <p className="mt-2 text-4xl font-black text-white">
                 {formatPrice(subscription?.price)}
@@ -343,7 +325,7 @@ export default function SubscriptionCheckoutClient({
               <div className="mt-5 rounded-xl border border-white/15 bg-black/25 p-3 text-xs text-white/70">
                 <div className="mt-2 flex items-center gap-2">
                   <RiPriceTag3Line className="h-4 w-4 text-accent" />
-                  L&apos;abonnement sera rattache a votre compte apres
+                  L&apos;abonnement sera rattaché à votre compte après
                   confirmation
                 </div>
               </div>

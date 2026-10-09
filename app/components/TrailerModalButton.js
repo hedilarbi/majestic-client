@@ -56,7 +56,7 @@ const isVideoFile = (url) => /\.(mp4|webm|ogg|mov|m4v)(\?|#|$)/i.test(url);
 export default function TrailerModalButton({
   trailerLink,
   title,
-  label = "Voir trailer",
+  label = "Voir la bande-annonce",
   className = "",
 }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -99,6 +99,11 @@ export default function TrailerModalButton({
       document.body.style.overflow = previousOverflow;
     };
   }, [isOpen]);
+
+  // No usable video: no fake button (C10)
+  if (!hasTrailer) {
+    return null;
+  }
 
   return (
     <>
@@ -155,7 +160,7 @@ export default function TrailerModalButton({
                     <iframe
                       className="h-full w-full"
                       src={videoConfig.src}
-                      title={`Bande annonce ${title}`}
+                      title={`Bande-annonce ${title}`}
                       allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
                       allowFullScreen
                     />

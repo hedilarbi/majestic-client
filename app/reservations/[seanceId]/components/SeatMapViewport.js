@@ -57,7 +57,7 @@ export default function SeatMapViewport({
               className="mt-1 text-center text-[10px] font-semibold uppercase tracking-[0.55em] text-white/40"
               style={{ width: `${seatGridWidth}px` }}
             >
-              Ecran
+              Écran
             </p>
           </div>
 

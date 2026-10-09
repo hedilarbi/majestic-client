@@ -148,7 +148,7 @@ export default function ConnexionForm() {
             Se souvenir de moi
           </label>
           <Link className="text-accent underline" href="/mot-de-passe-oublie">
-            Mot de passe oublie ?
+            Mot de passe oublié ?
           </Link>
         </div>
 

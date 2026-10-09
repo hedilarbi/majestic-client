@@ -9,11 +9,11 @@ export default function SeatLegend() {
       </div>
       <div className="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.3em] text-accent">
         <RiArmchairFill className="h-6 w-6 text-accent" />
-        Selectionne
+        Sélectionné
       </div>
       <div className="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.3em] text-red-400">
         <RiArmchairFill className="h-6 w-6 text-red-400" />
-        Occupe
+        Occupé
       </div>
       <div className="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.3em] text-accent">
         <RiArmchairLine className="h-6 w-6 text-accent" />
