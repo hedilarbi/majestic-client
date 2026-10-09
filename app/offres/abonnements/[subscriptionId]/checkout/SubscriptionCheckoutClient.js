@@ -276,6 +276,16 @@ export default function SubscriptionCheckoutClient({
             </div>
           ) : null}
 
+          {searchParams?.get("payment") === "failed" ? (
+            <div
+              role="alert"
+              className="mb-6 rounded-2xl border border-rose-400/30 bg-rose-500/10 px-5 py-4 text-sm font-semibold text-rose-200"
+            >
+              Le paiement n&apos;a pas abouti et aucun montant n&apos;a été
+              validé. Vous pouvez réessayer, par exemple avec une autre carte.
+            </div>
+          ) : null}
+
           {submitState.status === "error" ? (
             <div className="mb-6 rounded-2xl border border-rose-400/30 bg-rose-500/10 px-5 py-4 text-sm font-semibold text-rose-200">
               {submitState.message}

@@ -3,6 +3,17 @@
 import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
+// Page the customer paid from, to retry after a failed payment
+const resolveFailureRedirect = (data) => {
+  if (data?.type === "subscription" && data?.subscriptionId) {
+    return `/offres/abonnements/${data.subscriptionId}/checkout?payment=failed`;
+  }
+  if (data?.seanceId) {
+    return `/reservations/${data.seanceId}/checkout?payment=failed`;
+  }
+  return "/";
+};
+
 function PaymentVerifyContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -30,7 +41,8 @@ function PaymentVerifyContent() {
 
         const data = await response.json().catch(() => ({}));
 
-        if (response.ok) {
+        // A payment already marked as failed comes back with 200 + status "failed"
+        if (response.ok && data?.status !== "failed") {
           setStatus("success");
           setTimeout(() => {
             if (data.type === "booking" && data.seanceId) {
@@ -42,11 +54,7 @@ function PaymentVerifyContent() {
         } else {
           setStatus("failed");
           setTimeout(() => {
-            if (data.seanceId) {
-              router.push(`/reservations/${data.seanceId}/checkout`);
-            } else {
-              router.push("/");
-            }
+            router.push(resolveFailureRedirect(data));
           }, 3000);
         }
       } catch (error) {
@@ -78,7 +86,7 @@ function PaymentVerifyContent() {
               <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
             </div>
             <h1 className="text-2xl font-bold mb-2">Paiement validé !</h1>
-            <p className="text-zinc-400">Votre réservation est confirmée. Redirection en cours...</p>
+            <p className="text-zinc-400">Votre achat est confirmé. Redirection en cours...</p>
           </div>
         )}
 
@@ -88,7 +96,7 @@ function PaymentVerifyContent() {
               <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
             </div>
             <h1 className="text-2xl font-bold mb-2">Paiement échoué</h1>
-            <p className="text-zinc-400">La transaction n&apos;a pas pu aboutir. Redirection vers la commande en cours...</p>
+            <p className="text-zinc-400">La transaction n&apos;a pas pu aboutir. Retour à votre commande pour réessayer...</p>
           </div>
         )}
       </div>

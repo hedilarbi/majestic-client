@@ -1602,7 +1602,8 @@ export default function ReservationCheckoutClient({ seanceId, socketUrl }) {
             isLoading={isLoading}
             errorMessage={errorMessage}
             reservation={reservation}
-            expiredReservationMessage={expiredReservationMessage} />
+            expiredReservationMessage={expiredReservationMessage}
+            isPaymentFailed={searchParams?.get("payment") === "failed"} />
 
           {requiresEmailVerification ? (
             <div className="rounded-2xl border border-amber-400/30 bg-amber-500/10 px-5 py-4 text-sm text-amber-100">
