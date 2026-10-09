@@ -40,7 +40,15 @@ const resolveSaleState = (sale) => {
 
   const isCancelled = String(sale?.status || "").toLowerCase() === "cancelled";
 
-  if (isCancelled || isExpiredByDate || isSaleExpired) {
+  if (isCancelled) {
+    return {
+      label: "Annulé",
+      tone: "border border-white/15 text-white/60",
+      card: "bg-black/50 opacity-75",
+    };
+  }
+
+  if (isExpiredByDate || isSaleExpired) {
     return {
       label: "Expiré",
       tone: "border border-white/15 text-white/60",
@@ -164,7 +172,7 @@ export default async function AbonnementsPage() {
 
             <div className="relative z-10 mt-6 flex items-center gap-2 border-t border-white/10 pt-6 text-sm text-white/50">
               <MdCalendarMonth className="h-4 w-4 text-white/30" />
-              Achat le {formatDate(sale.createdAt)} • L'offre expire le{" "}
+              Achat le {formatDate(sale.createdAt)} • L&apos;offre expire le{" "}
               {formatDate(sale?.expiresAt || sale?.subscription?.expirationDate)}
             </div>
             {sale?.subscriptionCode ? (
@@ -242,7 +250,7 @@ export default async function AbonnementsPage() {
 
             <div className="relative z-10 mt-6 flex items-center gap-2 border-t border-white/10 pt-6 text-sm text-white/50">
               <MdCalendarMonth className="h-4 w-4 text-white/30" />
-              Achat le {formatDate(sale.createdAt)} • L'offre expire le{" "}
+              Achat le {formatDate(sale.createdAt)} • L&apos;offre expire le{" "}
               {formatDate(sale?.expiresAt || sale?.subscription?.expirationDate)}
             </div>
             {sale?.subscriptionCode ? (
